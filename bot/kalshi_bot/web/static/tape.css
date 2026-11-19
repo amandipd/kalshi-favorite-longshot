@@ -1,0 +1,193 @@
+/*
+ * The Tape page's content (SPEC_TAPE.md): what tape.js draws into tape.html's regions. tape.html holds the tokens and
+ * the shell (the header, the panels and their sizes); this file only styles what goes inside them, with the tokens
+ * alone. A dark trading-terminal look: panels butted with 4 px seams, 2 px corners, no shadows, mono figures, sentence case.
+ */
+
+/* ------------------------------------------------------------------ the header: accounts and pages, balance, status, halt */
+#modes .nav-b { font-size: var(--fs-14); font-weight: 500; color: var(--ink-2); padding: 6px 10px; border-radius: var(--r-btn); white-space: nowrap; }
+#modes .nav-b:hover { color: var(--ink); background: rgba(var(--slate), 0.08); }
+#modes .nav-b[aria-current="true"] { color: var(--ink); background: var(--raised); }
+
+#navBal { display: flex; align-items: center; gap: 8px; }
+#navBal .chip { font-size: var(--fs-12); color: var(--ink-2); background: rgba(var(--slate), 0.14); padding: 1px 6px; border-radius: var(--r-btn); }
+#navBal .nb-v { font: 500 var(--fs-14) var(--mono); color: var(--ink); }
+#navBal .nb-p { font-family: var(--mono); }
+#navBal.stale .nb-v, #navBal.stale .nb-p { opacity: 0.55; }
+.eye { display: inline-flex; padding: 4px; border-radius: var(--r-btn); color: var(--muted); }
+.eye:hover { color: var(--ink); background: rgba(var(--slate), 0.1); }
+
+#status { display: flex; align-items: center; gap: 6px; color: var(--ink-2); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.dot.on { background: var(--win); }
+.dot.warn { background: var(--warn); }
+.dot.off { background: var(--loss); }
+
+.halt-btn { font-size: var(--fs-12); font-weight: 500; color: var(--loss); padding: 5px 12px; border: 1px solid var(--loss); border-radius: var(--r-btn); white-space: nowrap; }
+.halt-btn:hover { background: var(--loss-wash); }
+.halt-btn.arm { background: var(--loss); color: var(--ink); }
+.halt-btn:disabled { cursor: default; background: none; color: var(--loss); border-color: var(--line); }
+
+/* ------------------------------------------------------------------ banners: only what needs attention */
+#banners .note { background: var(--loss-wash); border-left: 2px solid var(--loss); border-radius: var(--r-panel); padding: 10px 16px;
+  color: var(--ink-2); font-size: var(--fs-14); }
+#banners .note.warn { background: var(--warn-wash); border-left-color: var(--warn); }
+#banners .note b { color: var(--ink); }
+
+/* ------------------------------------------------------------------ the strip: one row of figures, sideways on a phone */
+#strip { display: flex; align-items: center; overflow-x: auto; scrollbar-width: thin; padding: 10px 0; }
+#strip .sf { flex: none; display: flex; flex-direction: column; padding: 0 16px; border-left: 1px solid var(--line-soft); white-space: nowrap; }
+#strip .sf:first-child { border-left: 0; }
+#strip .sl { font-size: var(--fs-12); color: var(--muted); }
+#strip .sv { font: 500 var(--fs-16)/1.35 var(--mono); color: var(--ink); }
+#strip .sf:first-child .sv { font-size: var(--fs-20); }
+#strip .ss { font-size: var(--fs-12); color: var(--muted); }
+#strip .ss .up, #strip .ss .down { font-family: var(--mono); }
+
+/* ------------------------------------------------------------------ the left panel: its tabs, and what each one shows */
+#ltabs .lt { flex: none; font-size: var(--fs-14); font-weight: 500; color: var(--muted); padding: 7px 10px 8px; margin-bottom: -1px;
+  border-bottom: 2px solid transparent; white-space: nowrap; }
+#ltabs .lt:hover { color: var(--ink-2); }
+#ltabs .lt[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.lp-head { display: flex; justify-content: flex-end; padding: 8px 16px 0; font-size: var(--fs-12); color: var(--muted); }
+.bstat { display: inline-flex; align-items: center; gap: 6px; }
+.lp-none { padding: 16px; color: var(--muted); }
+.empty { display: grid; gap: 6px; padding: 24px 16px; color: var(--muted); }
+.empty b { color: var(--ink); font-size: var(--fs-16); }
+
+/* every bet: a row per market, a 12 px square per 15-minute window */
+.gtop { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 16px; padding: 12px 16px 8px; font-size: var(--fs-12); color: var(--ink-2); }
+.gwrap { overflow-x: auto; padding: 0 16px 10px 0; scrollbar-width: thin; }
+.g { width: max-content; min-width: 100%; }
+.gr { display: flex; align-items: center; gap: 2px; height: 14px; margin-bottom: 2px; }
+.gr-h { height: 16px; }
+.gm { position: sticky; left: 0; z-index: 1; flex: none; width: 92px; height: 14px; padding: 0 8px 0 16px; text-align: left;
+  font-size: var(--fs-12); line-height: 14px; color: var(--ink-2); background: var(--panel); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+button.gm:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+.gm.on { color: var(--ink); background: var(--raised); }
+.gh { flex: none; width: 12px; height: 14px; overflow: visible; white-space: nowrap; font: var(--fs-10)/14px var(--mono); color: var(--muted); }
+.gg { padding: 8px 0 2px; font-size: var(--fs-12); color: var(--muted); }
+.gg span { position: sticky; left: 0; padding-left: 16px; }
+.c { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 1px; background: rgba(var(--slate), 0.08); }
+.c.won { background: var(--win); }
+.c.lost { background: var(--loss); }
+.c.open { background: transparent; outline: 1px solid var(--ink-2); outline-offset: -1px; }
+.gkey { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 2px 16px 12px; font-size: var(--fs-12); color: var(--muted); }
+.gkey .c { width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; }
+.g-empty { padding: 16px; color: var(--muted); }
+
+/* ------------------------------------------------------------------ the chart */
+#chartHead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; padding: 10px 16px 6px; }
+.chh-l { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; min-width: 0; }
+.chh-l h2 { font-size: var(--fs-14); font-weight: 500; }
+.chh-v { font: 500 var(--fs-16) var(--mono); }
+.chh-c { font-size: var(--fs-12); }
+.chh-c > span:first-child { font-family: var(--mono); }
+.chh-r { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: var(--r-btn); background: rgba(var(--slate), 0.1); }
+.seg button { font-size: var(--fs-12); color: var(--muted); padding: 3px 10px; border-radius: var(--r-panel); white-space: nowrap; }
+.seg button:hover { color: var(--ink-2); }
+.seg button[aria-pressed="true"] { color: var(--ink); background: var(--raised); }
+
+.ch-box { position: absolute; inset: 0; overflow: hidden; }
+.ch-box svg { display: block; }
+.cv { color: var(--win); }
+.cv.down { color: var(--loss); }
+.cv text { font: var(--fs-10) var(--mono); fill: var(--muted); }
+.ch-grid { stroke: var(--line-soft); }
+.ch-base { stroke: var(--muted); stroke-dasharray: 2 4; opacity: 0.7; }
+.ch-line { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
+.ch-dot, .ch-tag { fill: currentColor; }
+.cv text.ch-tag-t { fill: var(--abyss); font-weight: 500; }
+.ch-loss line { stroke: var(--loss); stroke-width: 2; }
+.ch-xh { stroke: var(--ink-2); stroke-dasharray: 3 3; opacity: 0.6; }
+.ch-hd { fill: var(--ink); }
+.ch-tip { position: absolute; display: flex; align-items: baseline; gap: 8px; padding: 4px 8px; background: var(--raised); border: 1px solid var(--line);
+  border-radius: var(--r-panel); font: var(--fs-12) var(--mono); white-space: nowrap; pointer-events: none; }
+.ch-tip span:first-child { font-family: var(--sans); color: var(--muted); }
+.ch-empty { padding: 16px; color: var(--muted); }
+
+/* the long view (since markets opened): when each asset class came in. Rules down the plot where a class had its first
+   bet, a band under the plot for each class from then on, and a notch on its band for each market's first bet. The
+   classes take colours of their own, never the green and red that mean won and lost. */
+.chh-n { flex-basis: 100%; font-size: var(--fs-12); color: var(--muted); }
+.ch-cls { stroke: var(--ink-2); stroke-dasharray: 3 3; opacity: 0.45; }
+.cv text.ch-cls-t { font-family: var(--sans); fill: var(--ink-2); }
+.ch-band { fill-opacity: 0.32; }
+.ch-b1 { fill: var(--cls-crypto); }
+.ch-b2 { fill: var(--cls-metals); }
+.ch-b3 { fill: var(--cls-energy); }
+.ch-b4 { fill: var(--cls-other); }
+.cv text.ch-band-t { font-family: var(--sans); fill: var(--ink-2); }
+.ch-mk rect { fill: transparent; cursor: help; }
+.ch-mk line { stroke: var(--ink); stroke-width: 1.5; opacity: 0.75; pointer-events: none; }
+.ch-mk:hover line { opacity: 1; stroke-width: 2.5; }
+
+/* ------------------------------------------------------------------ the tape: open bets, the filter chips, the feed */
+#tapeHead { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 16px 8px; }
+#tapeHead h2 { font-size: var(--fs-14); font-weight: 500; }
+#tapeHead span { font-size: var(--fs-12); }
+
+#openNow { border-bottom: 1px solid var(--line-soft); }
+.on-none { padding: 0 16px 10px; font-size: var(--fs-12); color: var(--muted); }
+.on-h { display: flex; justify-content: space-between; gap: 12px; padding: 0 16px 4px; font-size: var(--fs-12); color: var(--muted); }
+.on-h .num, .on-h .up, .on-h .down { font-family: var(--mono); }
+.on-h .num { color: var(--ink); }
+.on-list { max-height: 152px; overflow-y: auto; padding-bottom: 6px; }
+.on-r { display: grid; grid-template-columns: 74px minmax(0, 1fr) 64px auto; gap: 8px; align-items: center; height: 24px; padding: 0 16px;
+  font: var(--fs-12) var(--mono); color: var(--ink-2); }
+.on-r .m { font-family: var(--sans); color: var(--ink); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.on-r .m:hover { text-decoration: underline; text-underline-offset: 2px; }
+.on-r .sz { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.on-r .pl { text-align: right; }
+.on-r .cl { text-align: right; white-space: nowrap; color: var(--muted); }
+.on-r .cl-t { font-family: var(--sans); }
+
+#filters .chips { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 16px; }
+.chip-f, .chip-m { font-size: var(--fs-12); padding: 2px 10px; border: 1px solid transparent; border-radius: 999px; color: var(--muted);
+  background: rgba(var(--slate), 0.1); white-space: nowrap; }
+.chip-f:hover { color: var(--ink-2); }
+.chip-f[aria-pressed="true"] { color: var(--ink); background: var(--raised); border-color: var(--line); }
+.chip-m { color: var(--ink); background: var(--raised); border-color: var(--line); }
+.chip-m:hover { border-color: var(--muted); }
+
+.th, .tr { display: grid; grid-template-columns: 58px 74px 64px 44px minmax(0, 1fr); gap: 8px; align-items: center; padding: 0 16px; }
+.th { font-size: var(--fs-12); color: var(--muted); padding-bottom: 6px; border-bottom: 1px solid var(--line-soft); }
+.th span:nth-child(4), .th span:last-child, .tr .p, .tr .why { text-align: right; }
+.tr { height: 24px; font: var(--fs-12) var(--mono); color: var(--ink-2); }
+.tr:hover { background: rgba(var(--slate), 0.06); }
+.tr .t { color: var(--muted); white-space: nowrap; }
+.tr .m, .tr .e, .tr .why { font-family: var(--sans); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tr .why { color: var(--muted); }
+.tr.skip .e { color: var(--muted); }
+.tr.bet .e { color: var(--ink); font-weight: 500; }
+.tr.won .e, .tr.won .why { color: var(--win); }
+.tr.lost { background: var(--loss-wash); }
+.tr.lost:hover { background: var(--loss-wash); }
+.tr.lost .e, .tr.lost .why { color: var(--loss); }
+.tr.error .e, .tr.error .why, .tr.halted .e { color: var(--warn); }
+.tday { padding: 8px 16px 4px; font-size: var(--fs-12); color: var(--muted); border-top: 1px solid var(--line-soft); }
+.t-empty { padding: 16px; color: var(--muted); }
+.t-end { padding: 10px 16px 14px; font-size: var(--fs-12); color: var(--muted); }
+
+/* a row that just arrived lights up and fades: the page's one motion */
+.tr.fresh { animation: tape-in 0.6s ease-out both; }
+.tr.lost.fresh { animation-name: tape-in-lost; }
+@keyframes tape-in { from { background-color: rgba(var(--slate), 0.3); } to { background-color: transparent; } }
+@keyframes tape-in-lost { from { background-color: rgba(var(--slate), 0.3); } to { background-color: var(--loss-wash); } }
+@media (prefers-reduced-motion: reduce) { .tr.fresh { animation: none; } }
+
+/* ------------------------------------------------------------------ a phone */
+@media (max-width: 480px) {
+  /* the header's row can't run wider than the phone: the balance wraps rather than push it, and the Paper tab says
+     what the Paper chip would */
+  #navBal { flex-wrap: wrap; justify-content: flex-end; column-gap: 6px; row-gap: 0; }
+  #navBal .chip { display: none; }
+  #strip .sf { padding: 0 12px; }
+  .th, .tr { grid-template-columns: 50px 58px 54px 38px minmax(0, 1fr); gap: 6px; padding: 0 12px; }
+  .on-r { grid-template-columns: 58px minmax(0, 1fr) 56px auto; gap: 6px; padding: 0 12px; }
+  .on-r .cl-t { display: none; }
+  #filters .chips, #tapeHead, #chartHead, .gtop { padding-left: 12px; padding-right: 12px; }
+  .gm { width: 84px; padding-left: 12px; }
+  .gg span { padding-left: 12px; }
+}

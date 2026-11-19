@@ -1,0 +1,429 @@
+{
+ "note": "The series the study ingested: each category's top-N by volume when it was first ranked. Pinned so a rerun downloads the same sample instead of re-ranking by today's volumes.",
+ "categories": {
+  "Politics": {
+   "selected_at": "2026-08-29T04:58:18.291516+00:00",
+   "top_n": 20,
+   "selected": [
+    {
+     "ticker": "PRES",
+     "volume": 535948943.0,
+     "title": "Presidential elections"
+    },
+    {
+     "ticker": "KXFEDCHAIRNOM",
+     "volume": 216970762.0,
+     "title": "Fed Chair nominee"
+    },
+    {
+     "ticker": "KXMAYORNYCPARTY",
+     "volume": 121642553.0,
+     "title": "Mayor of NYC party winner"
+    },
+    {
+     "ticker": "KXGOVSHUTLENGTH",
+     "volume": 120044322.0,
+     "title": "Number of days of government shutdown?"
+    },
+    {
+     "ticker": "POPVOTE",
+     "volume": 81933515.0,
+     "title": "Popular vote winner"
+    },
+    {
+     "ticker": "KXGOVSHUT",
+     "volume": 68855964.0,
+     "title": "Government shutdown"
+    },
+    {
+     "ticker": "KXHORMUZNORM",
+     "volume": 41905648.0,
+     "title": "When will traffic at the Strait of Hormuz return to normal?"
+    },
+    {
+     "ticker": "KXALIENS",
+     "volume": 40137075.0,
+     "title": "Aliens"
+    },
+    {
+     "ticker": "KXGOVTSHUTDOWN",
+     "volume": 30291261.0,
+     "title": "Will the government shut down?"
+    },
+    {
+     "ticker": "PRESPARTYFULL",
+     "volume": 28921006.0,
+     "title": "Popular vote/Electoral College winner"
+    },
+    {
+     "ticker": "CLOSESTSTATE",
+     "volume": 25934826.0,
+     "title": "Closest state "
+    },
+    {
+     "ticker": "KXGOVTSHUTLENGTH",
+     "volume": 22710015.0,
+     "title": "How long will the next government shutdown last?"
+    },
+    {
+     "ticker": "KXUSAIRANAGREEMENT",
+     "volume": 20934379.0,
+     "title": "US Iran nuclear deal"
+    },
+    {
+     "ticker": "PRESPARTYGA",
+     "volume": 19884204.0,
+     "title": "Georgia presidential winner"
+    },
+    {
+     "ticker": "KXDHSFUND",
+     "volume": 18502610.0,
+     "title": "When will Congress fund DHS again?"
+    },
+    {
+     "ticker": "PRESPARTYPA",
+     "volume": 17042008.0,
+     "title": "Pennsylvania presidential winner"
+    },
+    {
+     "ticker": "KXMAYORNYCNOMD",
+     "volume": 16963803.0,
+     "title": "New York City mayoral nominations"
+    },
+    {
+     "ticker": "HOUSEMOV",
+     "volume": 16252923.0,
+     "title": "House margin of victory"
+    },
+    {
+     "ticker": "KXCABOUT",
+     "volume": 15629402.0,
+     "title": "Next Cabinet memeber out"
+    },
+    {
+     "ticker": "KXATTENDSOTU",
+     "volume": 15535513.0,
+     "title": "Who will attend the State of the Union?"
+    }
+   ]
+  },
+  "Economics": {
+   "selected_at": "2026-08-29T04:58:21.565652+00:00",
+   "top_n": 20,
+   "selected": [
+    {
+     "ticker": "KXFEDDECISION",
+     "volume": 529045336.0,
+     "title": "Fed meeting"
+    },
+    {
+     "ticker": "KXAAAGASM",
+     "volume": 60856522.0,
+     "title": "US gas price"
+    },
+    {
+     "ticker": "KXFED",
+     "volume": 57061248.0,
+     "title": "Fed funds rate"
+    },
+    {
+     "ticker": "KXAAAGASW",
+     "volume": 45933409.0,
+     "title": "US gas price up"
+    },
+    {
+     "ticker": "KXCPIYOY",
+     "volume": 35181772.0,
+     "title": "Inflation"
+    },
+    {
+     "ticker": "KXRATECUTCOUNT",
+     "volume": 35050212.0,
+     "title": "Number of rate cuts"
+    },
+    {
+     "ticker": "KXLAYOFFSYINFO",
+     "volume": 31961366.0,
+     "title": "Tech layoffs"
+    },
+    {
+     "ticker": "KXCPI",
+     "volume": 23633124.0,
+     "title": "CPI"
+    },
+    {
+     "ticker": "KXAAAGASD",
+     "volume": 21949770.0,
+     "title": "US gas price up"
+    },
+    {
+     "ticker": "KXPAYROLLS",
+     "volume": 18764573.0,
+     "title": "Jobs numbers"
+    },
+    {
+     "ticker": "KXGDP",
+     "volume": 14827634.0,
+     "title": "US GDP growth"
+    },
+    {
+     "ticker": "KXGOVTCUTS",
+     "volume": 12569128.0,
+     "title": "Government budget cuts"
+    },
+    {
+     "ticker": "KXU3",
+     "volume": 10862090.0,
+     "title": "Unemployment"
+    },
+    {
+     "ticker": "KXRATECUT",
+     "volume": 10795879.0,
+     "title": "Fed rate cut"
+    },
+    {
+     "ticker": "KXRECSSNBER",
+     "volume": 9101613.0,
+     "title": "Recession"
+    },
+    {
+     "ticker": "KXTSAW",
+     "volume": 6256349.0,
+     "title": "TSA check-ins this week"
+    },
+    {
+     "ticker": "KXFEDHIKE",
+     "volume": 5089625.0,
+     "title": "Next Fed rate hike"
+    },
+    {
+     "ticker": "KXECONSTATCPIYOY",
+     "volume": 5032528.0,
+     "title": "year over year inflation"
+    },
+    {
+     "ticker": "KXCPICORE",
+     "volume": 4977853.0,
+     "title": "CPI core"
+    },
+    {
+     "ticker": "KXGDPYEAR",
+     "volume": 3736313.0,
+     "title": "Annual GDP"
+    }
+   ]
+  },
+  "Sports": {
+   "selected_at": "2026-08-29T04:58:30.943347+00:00",
+   "top_n": 20,
+   "selected": [
+    {
+     "ticker": "KXNBAGAME",
+     "volume": 11675973898.0,
+     "title": "Pro Basketball Game"
+    },
+    {
+     "ticker": "KXMLBGAME",
+     "volume": 8879323743.0,
+     "title": "Professional Baseball Game"
+    },
+    {
+     "ticker": "KXATPMATCH",
+     "volume": 5990623473.0,
+     "title": "ATP Tennis Match"
+    },
+    {
+     "ticker": "KXNCAAMBGAME",
+     "volume": 5936932933.0,
+     "title": "Men's College Basketball Men's Game"
+    },
+    {
+     "ticker": "KXNFLGAME",
+     "volume": 5568579550.0,
+     "title": "Professional Football Game"
+    },
+    {
+     "ticker": "KXATPCHALLENGERMATCH",
+     "volume": 4987882296.0,
+     "title": "Challenger ATP "
+    },
+    {
+     "ticker": "KXWCGAME",
+     "volume": 4494733439.0,
+     "title": "World Cup Game"
+    },
+    {
+     "ticker": "KXNCAAFGAME",
+     "volume": 4035274705.0,
+     "title": "College Football Game"
+    },
+    {
+     "ticker": "KXPGATOUR",
+     "volume": 3804299348.0,
+     "title": "PGA Tour"
+    },
+    {
+     "ticker": "KXWTAMATCH",
+     "volume": 3787305260.0,
+     "title": "WTA Tennis Match"
+    },
+    {
+     "ticker": "KXITFMATCH",
+     "volume": 2849873943.0,
+     "title": "ITF Men's Match"
+    },
+    {
+     "ticker": "KXITFWMATCH",
+     "volume": 2751686171.0,
+     "title": "ITF Women's Match"
+    },
+    {
+     "ticker": "KXWCADVANCE",
+     "volume": 2502023069.0,
+     "title": "World Cup Advance"
+    },
+    {
+     "ticker": "KXMLBTOTAL",
+     "volume": 2079670597.0,
+     "title": "Pro Baseball Total Points"
+    },
+    {
+     "ticker": "KXNBASPREAD",
+     "volume": 1590362212.0,
+     "title": "Pro Basketball Spread"
+    },
+    {
+     "ticker": "KXNHLGAME",
+     "volume": 1567229165.0,
+     "title": "NHL Game"
+    },
+    {
+     "ticker": "KXMENWORLDCUP",
+     "volume": 1540161824.0,
+     "title": "Men's World Cup winner"
+    },
+    {
+     "ticker": "KXNBATOTAL",
+     "volume": 1331875601.0,
+     "title": "Pro Basketball Total Points"
+    },
+    {
+     "ticker": "KXUFCFIGHT",
+     "volume": 1203790937.0,
+     "title": "UFC Fight"
+    },
+    {
+     "ticker": "KXMLBSPREAD",
+     "volume": 1169999024.0,
+     "title": "Pro Baseball Spread"
+    }
+   ]
+  },
+  "Crypto": {
+   "selected_at": "2026-08-29T05:01:16.201587+00:00",
+   "top_n": 20,
+   "selected": [
+    {
+     "ticker": "KXBTCMAXY",
+     "volume": 38138988.0,
+     "title": "How high will Bitcoin get this year?"
+    },
+    {
+     "ticker": "KXBTCMAX150",
+     "volume": 36237040.0,
+     "title": "When will bitcoin hit 150k?"
+    },
+    {
+     "ticker": "KXBTCY",
+     "volume": 33501245.0,
+     "title": "BTC price range EOY"
+    },
+    {
+     "ticker": "KXBTCMINY",
+     "volume": 26053323.0,
+     "title": "How low will Bitcoin fall this year?"
+    },
+    {
+     "ticker": "KXBTCMAXMON",
+     "volume": 22871486.0,
+     "title": "Bitcoin monthly one touch"
+    },
+    {
+     "ticker": "KXETHMAXY",
+     "volume": 21716245.0,
+     "title": "How high will Ethereum get this year?"
+    },
+    {
+     "ticker": "KXBTCMAX100",
+     "volume": 14586225.0,
+     "title": "When will bitcoin hit 100k?"
+    },
+    {
+     "ticker": "KXBTCMAX125",
+     "volume": 14561675.0,
+     "title": "When will bitcoin hit 125k?"
+    },
+    {
+     "ticker": "KXETHY",
+     "volume": 12031812.0,
+     "title": "ETH price EOY "
+    },
+    {
+     "ticker": "KXBTCMINMON",
+     "volume": 10721649.0,
+     "title": "BTC one touch minimum"
+    },
+    {
+     "ticker": "KXBTC2025100",
+     "volume": 10016515.0,
+     "title": "Will Bitcoin reach 100k again this year? "
+    },
+    {
+     "ticker": "KXETHMINY",
+     "volume": 9152739.0,
+     "title": "How low will Ethereum fall this year?"
+    },
+    {
+     "ticker": "KXBTC2026200",
+     "volume": 7982096.0,
+     "title": "Will Bitcoin hit 200k in 2026? "
+    },
+    {
+     "ticker": "KXETHMAXMON",
+     "volume": 3238264.0,
+     "title": "ETH Monthly One touch"
+    },
+    {
+     "ticker": "KXBTCMAXM",
+     "volume": 2242109.0,
+     "title": "How high will Bitcoin get this month?"
+    },
+    {
+     "ticker": "KXXRPMAXMON",
+     "volume": 2211701.0,
+     "title": "XRP Max Monthly"
+    },
+    {
+     "ticker": "KXSHIBA",
+     "volume": 1911717.0,
+     "title": "Shiba range"
+    },
+    {
+     "ticker": "KXCRYPTORETURNY",
+     "volume": 1815306.0,
+     "title": "Crypto being positive"
+    },
+    {
+     "ticker": "KXSOLMAXMON",
+     "volume": 1576708.0,
+     "title": "SOL Monthly One touch "
+    },
+    {
+     "ticker": "KXDOGEMAX1",
+     "volume": 1392233.0,
+     "title": "Dogecoin hitting $1"
+    }
+   ]
+  }
+ }
+}

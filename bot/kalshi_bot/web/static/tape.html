@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Favorites Bot</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300da80'/%3E%3Cpath d='M10 23V9.5h12M10 16h9' stroke='%23000' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/*
+ * The Tape page (SPEC_TAPE.md, Nov 6, 2026): the bot's account in a dark trading-terminal layout, with the tape, every
+ * decision and every result newest first, as the main event. This file holds the tokens and the shell; tape.css styles what
+ * tape.js draws, tape_panels.css what tape_panels.js draws. Nothing loads from outside: the faces fall back to the
+ * system's when IBM Plex isn't installed.
+ */
+:root {
+  color-scheme: dark;
+  --abyss: #050506;          /* the page, and the seams between panels */
+  --panel: #0e0e11;          /* every panel */
+  --raised: #17171b;         /* a selected tab, an input, a hovered row */
+  --slate: 112, 113, 135;    /* a cool grey, as an rgb triple for tints: rgba(var(--slate), .2) */
+  --line: rgba(112, 113, 135, 0.22);
+  --line-soft: rgba(112, 113, 135, 0.12);
+  --ink: #ffffff;
+  --ink-2: #cbcbd3;
+  --muted: #85869b;
+  --win: #00da80;
+  --win-wash: rgba(20, 158, 97, 0.24);
+  --loss: #ff3d5a;
+  --loss-wash: rgba(245, 57, 94, 0.22);
+  --warn: #f0a63a;
+  --warn-wash: rgba(240, 166, 58, 0.14);
+  --violet: #5741d8;
+  --violet-ink: #9a8cff;
+  --cls-crypto: #8f7dff;     /* the asset classes on the long chart: never the win green or the loss red */
+  --cls-metals: #b9b9c6;
+  --cls-energy: #4f8fd6;
+  --cls-other: #85869b;
+  --sans: "IBM Plex Sans", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --mono: "IBM Plex Mono", "Cascadia Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fs-10: 10px; --fs-12: 12px; --fs-14: 14px; --fs-16: 16px; --fs-20: 20px; --fs-28: 28px;
+  --r-panel: 2px; --r-btn: 4px; --seam: 4px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--abyss); color: var(--ink); font: 400 var(--fs-14)/1.45 var(--sans);
+  font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3, b, strong { font-weight: 500; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
+code { font-family: var(--mono); font-size: 0.92em; color: var(--ink); background: var(--raised); padding: 1px 4px; border-radius: var(--r-panel); }
+:focus-visible { outline: 2px solid var(--violet-ink); outline-offset: 2px; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.up { color: var(--win); }
+.down { color: var(--loss); }
+.muted { color: var(--muted); }
+
+/* ------------------------------------------------------------------ the shell */
+/* a wide screen is one screen tall, every panel scrolling inside itself, as a trading terminal is laid out */
+body { height: 100vh; display: grid; grid-template-rows: auto auto auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
+  gap: var(--seam); padding: 0 var(--seam) var(--seam); }   /* minmax(0, 1fr): a wide row scrolls inside itself, never widens the page */
+body.offline main, body.offline #strip { opacity: 0.55; }
+.top { display: flex; align-items: center; gap: 24px; min-height: 48px; padding: 0 12px; margin: 0 calc(-1 * var(--seam));
+  border-bottom: 1px solid var(--line-soft); }
+.brand { font-weight: 600; font-size: var(--fs-16); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+.brand i { width: 16px; height: 16px; border-radius: 4px; background: var(--win); }
+#modes { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.top .right { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: var(--fs-12); white-space: nowrap; }
+#banners:empty, #strip:empty { display: none; }
+#banners { display: grid; gap: var(--seam); }
+#strip { background: var(--panel); border-radius: var(--r-panel); overflow-x: auto; scrollbar-width: thin; }
+.top, #modes, .top .right { min-width: 0; }
+
+main.main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); gap: var(--seam); min-height: 0; }
+.left { display: grid; grid-template-rows: minmax(0, 1fr) minmax(240px, 42%); gap: var(--seam); min-width: 0; min-height: 0; }
+.right { display: flex; min-width: 0; min-height: 0; }
+.panel { background: var(--panel); border-radius: var(--r-panel); display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.right .panel { flex: 1; }
+#ltabs { display: flex; gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid var(--line-soft); overflow-x: auto; scrollbar-width: none; flex: none; }
+#lpanel { flex: 1; min-height: 0; overflow: auto; }
+#chartHead, #tapeHead { flex: none; }
+#chart { flex: 1; min-height: 160px; position: relative; }
+#openNow, #filters { flex: none; }
+#feed { flex: 1; min-height: 0; overflow-y: auto; }
+#foot { color: var(--muted); font-size: var(--fs-12); padding: 2px 4px; }
+
+@media (max-width: 1100px), (max-height: 640px) {
+  body { height: auto; min-height: 100vh; }
+  main.main { grid-template-columns: minmax(0, 1fr); }
+  .left { grid-template-rows: auto 280px; }
+  #lpanel { max-height: 70vh; }
+  .right .panel { height: 75vh; }
+}
+@media (max-width: 640px) {
+  .top { flex-wrap: wrap; gap: 8px 16px; padding: 8px 12px; margin: 0; }
+  #modes { width: 100%; }
+  .top .right { margin-left: 0; width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+<link rel="stylesheet" href="/tape.css">
+<link rel="stylesheet" href="/tape_panels.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand" id="brand"><i aria-hidden="true"></i>Favorites Bot</div>
+  <nav id="modes" aria-label="Accounts and pages"></nav>
+  <div class="right">
+    <div id="navBal"></div>
+    <div id="status" role="status"></div>
+    <div id="haltTop"></div>
+  </div>
+</header>
+<div id="banners"></div>
+<section id="strip" aria-label="The account at a glance"></section>
+<main class="main">
+  <div class="left">
+    <section class="panel" id="lp">
+      <div id="ltabs" role="tablist" aria-label="Details"></div>
+      <div id="lpanel" role="tabpanel"></div>
+    </section>
+    <section class="panel" id="cp" aria-label="Account value">
+      <div id="chartHead"></div>
+      <div id="chart"></div>
+    </section>
+  </div>
+  <div class="right">
+    <section class="panel" id="tp" aria-label="Tape">
+      <div id="tapeHead"></div>
+      <div id="openNow"></div>
+      <div id="filters"></div>
+      <div id="feed" aria-live="off"></div>
+    </section>
+  </div>
+</main>
+<footer id="foot"></footer>
+<script src="/tape_fmt.js"></script>
+<script src="/tape_panels.js"></script>
+<script src="/tape.js"></script>
+</body>
+</html>

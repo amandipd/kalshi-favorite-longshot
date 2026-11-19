@@ -1,0 +1,20 @@
+# The dashboard on port 8080. --lan listens on every interface, so keep the port closed to the internet (a firewall
+# rule, or a private network such as a VPN) and open the page only from machines you trust. Its halt button only
+# works from the page itself, opened by IP address or as localhost. Placeholders as in kalshi-bot.service.
+[Unit]
+Description=Kalshi bot: dashboard (port 8080)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=kalshi
+WorkingDirectory=/opt/kalshi-bot/bot
+ExecStart=/opt/kalshi-bot/venv/bin/python -u dashboard.py --lan
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/opt/kalshi-bot/bot/state/dashboard.log
+StandardError=append:/opt/kalshi-bot/bot/state/dashboard.err.log
+
+[Install]
+WantedBy=multi-user.target

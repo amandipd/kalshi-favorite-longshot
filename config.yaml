@@ -1,0 +1,363 @@
+# See docs/adr for the research decisions each key encodes.
+# No magic numbers should live in code; every threshold belongs here.
+
+# Chosen from docs/journal.md (2026-08-05): the window where Economics and
+# Sports both show real, simultaneous settlement volume (top-20-by-volume
+# series per category, sub-daily recurring series excluded). Politics stays
+# thin across every window tried -- see the journal entry's caveat before
+# treating it as a fully-covered category.
+date_range:
+  start: "2025-12-01"
+  end: "2026-06-06"  # Kalshi's live/historical cutoff at query time (GET /historical/cutoff)
+
+categories:
+  - Politics
+  - Economics
+  - Sports
+  - Crypto
+
+# Confirmed against docs.kalshi.com/getting_started/api_environments.
+kalshi_base_url: "https://external-api.kalshi.com/trade-api/v2"
+
+# Kalshi's unauthenticated "Basic" tier read bucket refills at 200
+# tokens/sec; default request cost is 10 tokens => ~20 req/sec ceiling.
+# Set below that ceiling for headroom. See docs.kalshi.com/getting_started/rate_limits.
+rate_limit_per_second: 15
+
+# Retry policy for every venue client (kalshi_calibration/ingest/base.py).
+# Applies to 429s, 5xx responses, and transport-level errors.
+#
+# max_attempts counts the FIRST try, so 5 = one attempt plus four retries.
+# Backoff is exponential (initial * 2^n) capped at max_backoff_seconds, with up
+# to jitter_seconds of uniform random noise added. Jitter matters because a
+# rate-limited run retries many in-flight requests at once; without noise they
+# all wake on the same schedule and re-collide (the thundering-herd problem).
+# A server-supplied Retry-After header always wins over this computed backoff.
+retry:
+  max_attempts: 5
+  initial_backoff_seconds: 1.0
+  max_backoff_seconds: 60.0
+  jitter_seconds: 1.0
+  timeout_seconds: 30.0
+
+# Ingestion scope and layout (kalshi_calibration/ingest/kalshi.py).
+ingest:
+  raw_dir: "data/raw"
+
+  # /historical/markets is queried per series, so a category is ingested by
+  # walking its highest-volume series. 20 mirrors the exploration that chose
+  # date_range above (docs/journal.md, 2026-08-05), so that exploration
+  # describes the same slice we actually ingest.
+  # A handful of series carry most of a category's volume; the long tail is
+  # near-zero-volume markets where price reflects noise, not a market view.
+  top_n_series_per_category: 20
+
+  # Markets per page. 200 is Kalshi's max, so this minimises round trips.
+  page_limit: 200
+
+  # Sub-daily recurring series (a Bitcoin price settling every 15 minutes)
+  # settle so often they dwarf every other series' counts, and a 15-minute
+  # price bet is not the same object as an election or a CPI print.
+  # `frequency` is a server-side enum: custom, one_off, annual, monthly,
+  # weekly, daily, hourly, fifteen_min. Match on it -- never on the ticker
+  # string, which false-positives on Sports "1H" (First Half) markets.
+  subdaily_frequencies:
+    - hourly
+    - fifteen_min
+
+  # The series each category was sampled from, pinned under version control so a
+  # rerun on a fresh checkout downloads the study's sample rather than whatever
+  # ranks highest by volume today. Remove a category from it to re-rank that one.
+  series_manifest: "data/manifest/kalshi_series.json"
+
+  # Second ingestion pass: the price the market was actually forecasting at.
+  #
+  # The settled snapshot's last_price is unusable -- 92.5% of binary markets
+  # have it pinned to the settlement value, because the market had already
+  # stopped being uncertain (median market lifetime is only ~24h, and the last
+  # trade *before close* is 90% pinned too). Full measurements and the horizon
+  # sweep are in docs/adr/003-implied-price-definition.md.
+  trades:
+    trades_dir: "data/raw_trades"
+
+    # Hours before close_time to read the last trade at. The FIRST entry is the
+    # study's primary horizon; the rest are sensitivity runs.
+    #
+    # 1h maximises usable yield -- retention x (1 - pinned):
+    #     T-0h   99.6% retained, 90.0% pinned ->  10.0%
+    #     T-1h   89.2% retained, 17.5% pinned ->  73.6%   <- primary
+    #     T-6h   74.8% retained,  4.8% pinned ->  71.2%
+    #     T-24h  30.8% retained,  7.8% pinned ->  28.4%
+    #     T-72h   6.8% retained, 29.4% pinned ->   4.8%
+    # Sample too late and the price is just the answer; sample too early and
+    # the market did not exist yet, leaving a sample selected on longevity.
+    # Each horizon is independently resumable, so adding one re-fetches nothing.
+    horizons_hours:
+      - 1
+      - 6
+      - 24
+
+    # /historical/trades returns newest-first, so one row is enough: it *is*
+    # the last trade at or before the cutoff.
+    request_limit: 1
+
+  # Third ingestion pass: the price the market OPENED at (kalshi_calibration/ingest/open_trades.py).
+  #
+  # Tests whether a newly listed market is mispriced before its book deepens --
+  # a question nobody has measured on Kalshi. The hypothesis, the price bands
+  # and the pass/fail rule were all fixed before the first fetch, in
+  # research/opening_price/PREREG.md. Read that before reading any output.
+  open_trades:
+    # Shares the raw_trades root with the T-1h pass; the two never collide
+    # because the window directory is OPEN<n>h and the horizon one is T<n>h.
+    open_trades_dir: "data/raw_trades"
+
+    # Fixed-window passes. Only needed for the prereg's SECONDARY test, which
+    # asks for the LAST trade in a window. The primary question -- what did the
+    # market open at -- is answered by the ladder below, in one pass.
+    #
+    # Do not run a wide fixed window to find the OPENING trade. Measured on
+    # real markets: reaching the open took 39 pages for an ITF tennis market at
+    # 24h and over 80 for an NCAA game, against one page each at 1h. Wide
+    # windows fail worst on the busiest markets, and Sports is 91% of the
+    # 143,143 markets in the raw layer -- including the thick-volume control
+    # group the whole finding is a comparison against.
+    window_hours:
+      - 1
+      - 6
+      - 24
+      - 72
+
+    # The climbing ladder for the first-trade pass, ascending.
+    #
+    # The pass starts at ladder_start_hours and moves in whichever direction
+    # the failure points: it WIDENS when a window is empty (the market had not
+    # traded yet) and NARROWS when a window is too busy to walk back to the
+    # open. It stops at the first window that is both non-empty and fully
+    # walked, which is nearly always the window where trading had just started.
+    #
+    # 6h is the starting rung because a 12-market pilot found 33% of markets
+    # had traded within 1h and 58% within 6h, so starting here finishes most
+    # markets in one request. That pilot is far too small to trust, which is
+    # the other reason to prefer the ladder: it corrects itself per market
+    # instead of betting the whole run on one retention estimate.
+    ladder_hours:
+      - 0.25
+      - 1
+      - 6
+      - 24
+      - 72
+    ladder_start_hours: 6
+
+    # Unlike the T-1h pass, one row is not enough. The opening trade is the
+    # LAST row of the LAST page, so a page that comes back SHORT is the only
+    # evidence the walk reached the open. 100 keeps most markets to one request.
+    request_limit: 100
+
+    # Cap on pages walked back per market, so one busy market cannot dominate
+    # a run. Exceeding it marks the record incomplete instead of pricing it
+    # off whichever trade happened to be oldest in what we fetched.
+    max_pages: 5
+
+    # Store the window's oldest N trades, not just the first, so clean.py can
+    # choose between the first print and an average of the first few without
+    # another pass over the API.
+    keep_trades: 10
+
+# raw -> interim -> processed (kalshi_calibration/clean.py).
+clean:
+  # How the market's implied probability is read off the data.
+  #
+  #   horizon_trade  the last trade at or before close - price_horizon_hours.
+  #                  The only defensible choice here; see design decision doc 003.
+  #   last_trade     the settled snapshot's last_price. 92.5% pinned to the
+  #                  settlement value -- kept so the writeup can SHOW the
+  #                  degenerate curve it produces, not because it is usable.
+  #   bid_ask_mid    unavailable: 54.9% of settled books are 0/1 wide.
+  #   close_price    previous_price_dollars; identical to last_trade on 96.5%
+  #                  of records, so it inherits the same defect.
+  price_method: "horizon_trade"
+
+  # Must be one of ingest.trades.horizons_hours -- validated at load time.
+  price_horizon_hours: 1
+
+  interim_path: "data/interim/contracts.parquet"
+  processed_path: "data/processed/contracts.parquet"
+
+# Calibration measurement (kalshi_calibration/analysis/). See docs/adr/005-bucketing-and-tests.md.
+analysis:
+  # Decile buckets on implied_price. Ten is the literature's convention and
+  # keeps every bucket populated here (the thinnest holds ~6,400 contracts),
+  # so bucket width is never the binding constraint on precision -- the
+  # clustering is.
+  n_buckets: 10
+
+  confidence: 0.95
+
+  # Every interval and p-value is clustered on `event_ticker`. A 250-golfer
+  # field is ONE outcome expressed as 250 contracts, and threshold ladders are
+  # monotonically bound by construction, so contracts are nowhere near
+  # independent (mean 3.35 per event). Design decision doc 004 decision 6: "any interval
+  # computed without this clustering is wrong and must not be reported."
+  cluster_on: "event_ticker"
+
+  # Reps for the block bootstrap that resamples whole events. 2,000 is enough
+  # for a 95% interval (the 2.5% tail is ~50 reps) without the run taking
+  # long enough to discourage re-running it.
+  bootstrap_reps: 2000
+
+  # Fixed so an identical processed table yields identical intervals forever.
+  bootstrap_seed: 20260901
+
+  # Benjamini-Hochberg false-discovery rate across the per-bucket tests.
+  # Correction handles testing MANY hypotheses; clustering handles correlated
+  # observations WITHIN one. They fix different errors and both are needed.
+  fdr_alpha: 0.05
+
+  # Segmentation (kalshi_calibration/analysis/segmentation.py) splits the corpus by category
+  # and by market lifetime, which multiplies the number of tests and divides
+  # the events available to each.
+  #
+  # Coarser buckets for thinner slices: quintiles rather than deciles. Chosen
+  # from the SEGMENT SIZES (Sports 29,471 events, Economics 186, Politics 16),
+  # never from segment results -- edges picked after seeing which split looks
+  # significant are not edges, they are a finding manufactured by hand.
+  segment_n_buckets: 5
+
+  # (Family-wide correction is the CORRECT family, not automatically a
+  # stricter one -- BH is step-up, so strong signal in one segment can lower
+  # another's q. See kalshi_calibration/analysis/segmentation.py.)
+  #
+  # A segment bucket below this many EVENTS is reported but never tested: it
+  # keeps its point estimate and interval, is flagged `underpowered`, and is
+  # left out of the Benjamini-Hochberg family entirely. Testing a cell with
+  # four events spends alpha on a question the data cannot answer, and makes
+  # every other test in the family pay for it.
+  min_events_per_bucket: 30
+
+# Backtest (kalshi_calibration/strategy/). See docs/adr/006-train-test-split.md and
+# docs/adr/007-strategy-and-sizing.md.
+strategy:
+  # Fraction of CONTRACTS (not calendar days) that fall in the estimation
+  # period. Volume ramps 3.5x across the window -- 7,561 contracts closed in
+  # December against 26,850 in May -- so splitting the calendar in half would
+  # leave the training set with a quarter of the data. Splitting on contract
+  # count uses only close dates and counts, never prices or outcomes, so it
+  # cannot leak the label.
+  train_fraction: 0.6
+
+  # Kalshi's taker fee, verified against the CFTC rule filing and two
+  # independent 2026 sources:
+  #
+  #     fee = ceil(0.07 * C * P * (1 - P))     no settlement or exercise fee
+  #
+  # Taker, not maker (which is a quarter of this), because the strategy crosses
+  # the spread: we hold no order book in the historical data, so a resting
+  # order's fill cannot be modelled and assuming one would be assuming the
+  # hard part away.
+  #
+  # The parabola peaks at P=0.50 -- 1.75c -- which is where it does the most
+  # damage, and the study's largest edge sits at 0.34, where it costs 1.58c
+  # against a 2.98c gross bias.
+  fee_coefficient: 0.07
+
+  # The filed formula puts C INSIDE the ceiling -- ceil(0.07*C*P*(1-P)) -- so
+  # the round-up is per order and is worth under a cent per contract at any
+  # realistic size. false charges the exact rate and lets that sub-cent
+  # remainder go.
+  #
+  # true charges the ceiling PER CONTRACT, a much more expensive claim: at
+  # P=0.03 the true rate is 0.21c and the ceiling is 1c, a 4.7x overcharge that
+  # wrongly rules the longshot bucket untradeable. Kept as a pessimistic bound
+  # to report alongside, not as the base case.
+  fee_ceiling_per_contract: false
+
+  # Positions are held to settlement, so the fee is paid ONCE on entry. There
+  # is no exit trade to pay for and Kalshi charges nothing at settlement.
+
+  # Trade a bucket only if its in-sample edge survives the fee by this much.
+  # Zero means "any positive net edge"; the fee itself is the real filter.
+  min_net_edge: 0.0
+
+  # Fraction of full Kelly. Full Kelly maximises long-run growth only when the
+  # edge is known exactly; ours is estimated, and overestimating it overbets
+  # superlinearly. Half-Kelly keeps about three quarters of the growth for
+  # roughly half the volatility, which is the standard practitioner trade.
+  kelly_fraction: 0.5
+
+  # Hard cap on any single position as a fraction of bankroll, applied after
+  # Kelly. Guards the case where an estimated edge on a near-0 or near-1 price
+  # produces an absurd Kelly number from a small denominator.
+  max_position_fraction: 0.02
+
+  # Adverse price paid per contract on entry, in dollars, on top of the fee.
+  #
+  # The backtest fills at the last traded price. A real taker crosses the
+  # spread, so the true entry is worse by roughly half the bid-ask. We CANNOT
+  # measure that: settled snapshots carry no usable book (54.9% quote 0/1, design decision doc
+  # 003), so there is no spread to read. Default 0.0 means the headline result
+  # is a NO-SPREAD upper bound, and `breakeven_slippage` reports how little
+  # adverse fill it takes to erase the edge. That number, not the ROI, is the
+  # honest summary of tradeability.
+  slippage_per_contract: 0.0
+
+  # Portfolio budget: the most that may be deployed on any one settlement day,
+  # as a multiple of bankroll. This is NOT a refinement -- without it the
+  # backtest is incoherent. Kelly sizes each bet as if it were the only one, and
+  # this strategy holds ~570 positions on a typical day, so the per-position cap
+  # alone asks for roughly 11x the bankroll daily. 1.0 means fully invested and
+  # never levered; a day whose desired positions exceed it is scaled down
+  # proportionally, preserving the relative Kelly weights within the day.
+  max_daily_deployment: 1.0
+
+# The replication on Kalshi's 15-minute crypto, metals and energy markets
+# (kalshi_calibration/replication/). `make replicate-data` fetches every settled market in the
+# window with its quotes at the end of each minute; `make replicate` measures it.
+replication:
+  data_dir: "data/replication"
+
+  # The first 15-minute market opened on Jul 18, 2026. `end` is exclusive and
+  # pinned, so a rerun measures the same markets; move it to extend the study.
+  start: "2026-07-18"
+  end: "2026-10-04"
+
+  # The edge per bet changed sign around this day; the regime and stop tests
+  # are reported on either side of it.
+  split: "2026-08-24"
+
+  groups:
+    - crypto
+    - metals
+    - energy
+
+  # Each market is priced at the end of minute 8 of its 15. Late enough that
+  # the market has traded, early enough to leave six minutes to sell in.
+  entry_minute: 8
+
+  # A "favourite" is the side whose ask is in this range at the entry minute.
+  favourite_low: 0.90
+  favourite_high: 0.999
+
+  stake: 10.0
+
+  # What a live order pays over the recorded ask, per contract: the average gap
+  # between real fills and the recorded quotes, measured during the study.
+  slippage: 0.004
+
+  # Kalshi may charge crypto markets a higher fee; the stress scenario doubles it.
+  stress_fee_multiplier: 2.0
+
+  # Stop rules: sell at the bid the first minute it is at or under the level.
+  stops:
+    - 0.90
+    - 0.80
+    - 0.50
+    - 0.30
+    - 0.10
+
+  # Markets settled before Kalshi's live/historical cutoff need one request
+  # each to /historical/markets/{ticker}/candlesticks, which starts answering
+  # 429 above about 6 a second (measured 2026-10-06: 0 of 40 refused at 5/s,
+  # 9 of 40 at 8/s). A full rebuild takes about 1.5 hours at 5/s; resumable.
+  rate_limit_per_second: 5
+  workers: 4

@@ -1,0 +1,12 @@
+# The nightly ledger backup at 03:31 local time, away from the bot's minute-8 entries (:08, :23, :38, :53).
+# Persistent: a run missed while the machine was off happens at the next boot.
+[Unit]
+Description=Kalshi bot: nightly ledger backup at 03:31
+
+[Timer]
+OnCalendar=*-*-* 03:31:00
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

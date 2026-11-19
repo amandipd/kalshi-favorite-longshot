@@ -1,0 +1,165 @@
+{
+ "fetched": "2026-10-25T00:30:00Z",
+ "series": [
+  {
+   "ticker": "KX10YRRATE15M",
+   "title": "10-year Treasury yield 15-minute",
+   "group": "rates",
+   "markets": 236,
+   "settled": 235,
+   "first": "2026-10-19T17:00:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KX2YRRATE15M",
+   "title": "2-year Treasury yield 15-minute",
+   "group": "rates",
+   "markets": 236,
+   "settled": 235,
+   "first": "2026-10-19T17:00:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KX30YRRATE15M",
+   "title": "30-year Treasury yield 15-minute",
+   "group": "rates",
+   "markets": 236,
+   "settled": 235,
+   "first": "2026-10-19T17:00:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KX5YRRATE15M",
+   "title": "5-year Treasury yield 15-minute",
+   "group": "rates",
+   "markets": 236,
+   "settled": 235,
+   "first": "2026-10-19T17:00:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXAUDUSD15M",
+   "title": "15-minute AUDUSD",
+   "group": "financials",
+   "markets": 1151,
+   "settled": 1124,
+   "first": "2026-10-07T21:30:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXBRENT15M",
+   "title": "Brent 15-minute",
+   "group": "commodities",
+   "markets": 239,
+   "settled": 215,
+   "first": "2026-10-21T20:15:00Z",
+   "last": "2026-10-24T03:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXCRYPTOCOMP15M",
+   "title": "Crypto Comparison 15 minute",
+   "group": "coin race",
+   "markets": 0,
+   "settled": 0,
+   "first": null,
+   "last": null,
+   "fee": 1
+  },
+  {
+   "ticker": "KXCRYPTOLEAD15M",
+   "title": "Coin Race 15 minutes",
+   "group": "coin race",
+   "markets": 30260,
+   "settled": 29646,
+   "first": "2026-08-20T16:00:00Z",
+   "last": "2026-10-25T00:15:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXDJIA15M",
+   "title": "Dow Jones 15-minute",
+   "group": "financials",
+   "markets": 0,
+   "settled": 0,
+   "first": null,
+   "last": null,
+   "fee": 1
+  },
+  {
+   "ticker": "KXEURUSD15M",
+   "title": "15-minute EURUSD",
+   "group": "fx",
+   "markets": 2090,
+   "settled": 2063,
+   "first": "2026-09-23T22:15:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXGBPUSD15M",
+   "title": "15-minute GBPUSD",
+   "group": "fx",
+   "markets": 2090,
+   "settled": 2063,
+   "first": "2026-09-23T22:15:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXINX15M",
+   "title": "S&P 500 15-minute",
+   "group": "stock index",
+   "markets": 0,
+   "settled": 0,
+   "first": null,
+   "last": null,
+   "fee": 1
+  },
+  {
+   "ticker": "KXNDQ15M",
+   "title": "Nasdaq 100 15-minute",
+   "group": "stock index",
+   "markets": 0,
+   "settled": 0,
+   "first": null,
+   "last": null,
+   "fee": 1
+  },
+  {
+   "ticker": "KXUSDCAD15M",
+   "title": "15-minute USDCAD",
+   "group": "financials",
+   "markets": 1151,
+   "settled": 1124,
+   "first": "2026-10-07T21:30:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXUSDJPY15M",
+   "title": "Fifteen-min USDJPY",
+   "group": "fx",
+   "markets": 2090,
+   "settled": 2063,
+   "first": "2026-09-23T22:15:00Z",
+   "last": "2026-10-23T20:45:00Z",
+   "fee": 1
+  },
+  {
+   "ticker": "KXUSDMXN15M",
+   "title": "15-minute USDMXN",
+   "group": "financials",
+   "markets": 0,
+   "settled": 0,
+   "first": null,
+   "last": null,
+   "fee": 1
+  }
+ ]
+}

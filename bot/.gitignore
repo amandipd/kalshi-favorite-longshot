@@ -1,0 +1,14 @@
+# secrets
+.env
+*.pem
+*.key
+keys/
+
+# the bot's state: databases, the halt file, logs; and the stall alarm's memory beside it
+state/
+stall_alert.json
+
+__pycache__/
+.pytest_cache/
+.hypothesis/
+.coverage

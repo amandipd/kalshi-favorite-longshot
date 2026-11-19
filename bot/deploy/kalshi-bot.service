@@ -1,0 +1,23 @@
+# The live bot, real money. Not enabled by default: enable it only once no other copy of the bot trades from the same
+# Kalshi account (two live bots place every bet twice). A halt survives restarts; only --resume clears it.
+# Placeholders: the repository in /opt/kalshi-bot, its virtualenv in /opt/kalshi-bot/venv, the user kalshi.
+[Unit]
+Description=Kalshi bot (live, prod)
+Wants=network-online.target
+After=network-online.target time-sync.target
+# a crash loop gives up after 3 starts in 10 minutes; the watchdog's alarm then fires
+StartLimitIntervalSec=600
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=kalshi
+WorkingDirectory=/opt/kalshi-bot/bot
+ExecStart=/opt/kalshi-bot/venv/bin/python -u bot.py --live --env prod --yes
+Restart=on-failure
+RestartSec=30
+StandardOutput=append:/opt/kalshi-bot/bot/state/live-prod.log
+StandardError=append:/opt/kalshi-bot/bot/state/live-prod.err.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,590 @@
+{
+ "generated": "2026-10-10T19:32:57+00:00",
+ "from": "2025-12-10",
+ "jul18": "2026-07-18",
+ "split": "2026-08-24",
+ "to": "2026-10-08",
+ "periods": {
+  "pre": {
+   "bets": 36445,
+   "lost": 0.056,
+   "total": -4047.62,
+   "perBet": -11.1
+  },
+  "before": {
+   "bets": 10893,
+   "lost": 0.0536,
+   "total": -642.4,
+   "perBet": -5.9
+  },
+  "after": {
+   "bets": 17096,
+   "lost": 0.0459,
+   "total": 478.97,
+   "perBet": 2.8
+  }
+ },
+ "forwardBets": 0,
+ "halts": [
+  {
+   "rule": "Today's halts",
+   "fromDec10": {
+    "end": 48.42,
+    "stopped": "Jan 09",
+    "why": "half the start"
+   },
+   "fromJul18": {
+    "end": 77.97,
+    "stopped": "Jul 21",
+    "why": "20% down in 24 hours"
+   },
+   "fromAug24": {
+    "end": 78.46,
+    "stopped": "Aug 25",
+    "why": "20% down in 24 hours"
+   }
+  },
+  {
+   "rule": "No halts",
+   "fromDec10": {
+    "end": 33.19,
+    "stopped": "Jan 13",
+    "why": "broke"
+   },
+   "fromJul18": {
+    "end": 35.86,
+    "stopped": "Jul 30",
+    "why": "broke"
+   },
+   "fromAug24": {
+    "end": 127.11,
+    "stopped": null,
+    "why": null
+   }
+  },
+  {
+   "rule": "24-hour rule loosened to 35%",
+   "fromDec10": {
+    "end": 48.42,
+    "stopped": "Jan 09",
+    "why": "half the start"
+   },
+   "fromJul18": {
+    "end": 49.7,
+    "stopped": "Jul 27",
+    "why": "half the start"
+   },
+   "fromAug24": {
+    "end": 127.11,
+    "stopped": null,
+    "why": null
+   }
+  },
+  {
+   "rule": "Half the start, 8 losses, edge monitor",
+   "fromDec10": {
+    "end": 64.02,
+    "stopped": "Dec 30",
+    "why": "edge monitor"
+   },
+   "fromJul18": {
+    "end": 57.94,
+    "stopped": "Jul 27",
+    "why": "edge monitor"
+   },
+   "fromAug24": {
+    "end": 127.11,
+    "stopped": null,
+    "why": null
+   }
+  },
+  {
+   "rule": "Spread filter and today's halts",
+   "fromDec10": {
+    "end": 97.98,
+    "stopped": "Mar 21",
+    "why": "20% down in 24 hours"
+   },
+   "fromJul18": {
+    "end": 114.49,
+    "stopped": "Jul 27",
+    "why": "20% down in 24 hours"
+   },
+   "fromAug24": {
+    "end": 117.9,
+    "stopped": "Sep 02",
+    "why": "20% down in 24 hours"
+   }
+  },
+  {
+   "rule": "Spread filter, half the start, 8 losses, edge monitor",
+   "fromDec10": {
+    "end": 58.57,
+    "stopped": "May 31",
+    "why": "edge monitor"
+   },
+   "fromJul18": {
+    "end": 545.99,
+    "stopped": null,
+    "why": null
+   },
+   "fromAug24": {
+    "end": 546.35,
+    "stopped": null,
+    "why": null
+   }
+  }
+ ],
+ "exits": {
+  "losers": 3409,
+  "bets": 64434,
+  "byMinute": [
+   {
+    "minute": 9,
+    "median": 0.88,
+    "still80": 0.7207,
+    "winnersUnder80": 0.0512
+   },
+   {
+    "minute": 10,
+    "median": 0.84,
+    "still80": 0.5852,
+    "winnersUnder80": 0.0591
+   },
+   {
+    "minute": 11,
+    "median": 0.75,
+    "still80": 0.4368,
+    "winnersUnder80": 0.0563
+   },
+   {
+    "minute": 12,
+    "median": 0.57,
+    "still80": 0.3189,
+    "winnersUnder80": 0.0517
+   },
+   {
+    "minute": 13,
+    "median": 0.34,
+    "still80": 0.2012,
+    "winnersUnder80": 0.0431
+   },
+   {
+    "minute": 14,
+    "median": 0.05,
+    "still80": 0.0771,
+    "winnersUnder80": 0.0324
+   }
+  ],
+  "under50": [
+   {
+    "minute": 9,
+    "losers": 256,
+    "rescued": 658.39,
+    "winners": 447,
+    "thrown": 3402.29,
+    "net": -2743.9
+   },
+   {
+    "minute": 10,
+    "losers": 503,
+    "rescued": 1363.6,
+    "winners": 561,
+    "thrown": 4273.57,
+    "net": -2909.97
+   },
+   {
+    "minute": 11,
+    "losers": 949,
+    "rescued": 2458.15,
+    "winners": 661,
+    "thrown": 4913.49,
+    "net": -2455.33
+   },
+   {
+    "minute": 12,
+    "losers": 1450,
+    "rescued": 3255.64,
+    "winners": 819,
+    "thrown": 6142.94,
+    "net": -2887.3
+   },
+   {
+    "minute": 13,
+    "losers": 2087,
+    "rescued": 3549.5,
+    "winners": 849,
+    "thrown": 6627.66,
+    "net": -3078.16
+   },
+   {
+    "minute": 14,
+    "losers": 2838,
+    "rescued": 2549.11,
+    "winners": 911,
+    "thrown": 7949.46,
+    "net": -5400.35
+   }
+  ],
+  "shapes": [
+   {
+    "shape": "early break",
+    "losers": 1432,
+    "winners": 4704
+   },
+   {
+    "shape": "late crash",
+    "losers": 725,
+    "winners": 453
+   },
+   {
+    "shape": "steady slide",
+    "losers": 477,
+    "winners": 20727
+   },
+   {
+    "shape": "whipsaw",
+    "losers": 24,
+    "winners": 675
+   },
+   {
+    "shape": "other",
+    "losers": 751,
+    "winners": 34466
+   }
+  ],
+  "bounce": [
+   {
+    "drop": [
+     0.05,
+     0.1
+    ],
+    "n": 8702,
+    "nextMedian": 0.03500000000000003,
+    "fellFurther": 0.3387,
+    "bid": 0.7875,
+    "won": 0.818
+   },
+   {
+    "drop": [
+     0.1,
+     0.2
+    ],
+    "n": 6064,
+    "nextMedian": 0.040000000000000036,
+    "fellFurther": 0.3856,
+    "bid": 0.6818,
+    "won": 0.723
+   },
+   {
+    "drop": [
+     0.2,
+     0.4
+    ],
+    "n": 3757,
+    "nextMedian": 0.024999999999999967,
+    "fellFurther": 0.449,
+    "bid": 0.5134,
+    "won": 0.5741
+   },
+   {
+    "drop": [
+     0.4,
+     1.0
+    ],
+    "n": 1845,
+    "nextMedian": -0.034999999999999976,
+    "fellFurther": 0.5756,
+    "bid": 0.2555,
+    "won": 0.3214
+   }
+  ],
+  "stops": [
+   {
+    "under": 0.9,
+    "pre": -12220.87,
+    "before": -1235.8,
+    "after": -2098.34,
+    "forward": 0.0
+   },
+   {
+    "under": 0.8,
+    "pre": -10641.63,
+    "before": -905.3,
+    "after": -1384.76,
+    "forward": 0.0
+   },
+   {
+    "under": 0.5,
+    "pre": -7839.43,
+    "before": -587.49,
+    "after": -831.49,
+    "forward": 0.0
+   },
+   {
+    "under": 0.3,
+    "pre": -6436.57,
+    "before": -274.95,
+    "after": -627.3,
+    "forward": 0.0
+   },
+   {
+    "under": 0.1,
+    "pre": -4513.74,
+    "before": -230.73,
+    "after": -275.72,
+    "forward": 0.0
+   }
+  ],
+  "stopAtMid": {
+   "pre": -2384.89,
+   "before": -105.23,
+   "after": -471.78
+  },
+  "takeProfit": [
+   {
+    "at": 0.97,
+    "pre": -4645.71,
+    "before": -1102.47,
+    "after": -1536.17,
+    "forward": 0.0
+   },
+   {
+    "at": 0.98,
+    "pre": -3309.02,
+    "before": -895.93,
+    "after": -1111.61,
+    "forward": 0.0
+   },
+   {
+    "at": 0.99,
+    "pre": -2143.86,
+    "before": -576.67,
+    "after": -585.6,
+    "forward": 0.0
+   }
+  ],
+  "hindsight": 29228.0,
+  "contagion": {
+   "pre": -2306.19,
+   "before": -295.79,
+   "after": -542.02
+  }
+ },
+ "signs": {
+  "signs": {
+   "spread": "The favorite's ask was 2\u00a2 or more above its bid at minute 8",
+   "late": "It was 50\u00a2 or under at minute 6 or 7, or rose 10\u00a2 or more in minute 8",
+   "slow": "It was still under 70\u00a2 at minute 5, three minutes before the bet"
+  },
+  "rows": [
+   {
+    "skip": [
+     "spread"
+    ],
+    "pre": {
+     "bets": 17762,
+     "lost": 0.0398,
+     "total": 213.98,
+     "perBet": 1.2,
+     "skipped": 0.5126
+    },
+    "before": {
+     "bets": 7970,
+     "lost": 0.044,
+     "total": 234.13,
+     "perBet": 2.9,
+     "skipped": 0.2683
+    },
+    "after": {
+     "bets": 14686,
+     "lost": 0.0412,
+     "total": 828.29,
+     "perBet": 5.6,
+     "skipped": 0.141
+    },
+    "forward": {
+     "bets": 0,
+     "lost": 0.0,
+     "total": 0,
+     "perBet": null,
+     "skipped": 1.0
+    }
+   },
+   {
+    "skip": [
+     "late"
+    ],
+    "pre": {
+     "bets": 31449,
+     "lost": 0.0519,
+     "total": -2769.65,
+     "perBet": -8.8,
+     "skipped": 0.1371
+    },
+    "before": {
+     "bets": 9491,
+     "lost": 0.0486,
+     "total": -224.37,
+     "perBet": -2.4,
+     "skipped": 0.1287
+    },
+    "after": {
+     "bets": 15214,
+     "lost": 0.0421,
+     "total": 735.13,
+     "perBet": 4.8,
+     "skipped": 0.1101
+    },
+    "forward": {
+     "bets": 0,
+     "lost": 0.0,
+     "total": 0,
+     "perBet": null,
+     "skipped": 1.0
+    }
+   },
+   {
+    "skip": [
+     "slow"
+    ],
+    "pre": {
+     "bets": 27876,
+     "lost": 0.0492,
+     "total": -2094.02,
+     "perBet": -7.5,
+     "skipped": 0.2351
+    },
+    "before": {
+     "bets": 8679,
+     "lost": 0.0486,
+     "total": -303.96,
+     "perBet": -3.5,
+     "skipped": 0.2032
+    },
+    "after": {
+     "bets": 13859,
+     "lost": 0.0396,
+     "total": 847.32,
+     "perBet": 6.1,
+     "skipped": 0.1893
+    },
+    "forward": {
+     "bets": 0,
+     "lost": 0.0,
+     "total": 0,
+     "perBet": null,
+     "skipped": 1.0
+    }
+   },
+   {
+    "skip": [
+     "spread",
+     "late"
+    ],
+    "pre": {
+     "bets": 15670,
+     "lost": 0.0373,
+     "total": 269.63,
+     "perBet": 1.7,
+     "skipped": 0.57
+    },
+    "before": {
+     "bets": 7011,
+     "lost": 0.0398,
+     "total": 383.85,
+     "perBet": 5.5,
+     "skipped": 0.3564
+    },
+    "after": {
+     "bets": 13197,
+     "lost": 0.0383,
+     "total": 896.86,
+     "perBet": 6.8,
+     "skipped": 0.2281
+    },
+    "forward": {
+     "bets": 0,
+     "lost": 0.0,
+     "total": 0,
+     "perBet": null,
+     "skipped": 1.0
+    }
+   },
+   {
+    "skip": [
+     "spread",
+     "late",
+     "slow"
+    ],
+    "pre": {
+     "bets": 13498,
+     "lost": 0.0353,
+     "total": 202.71,
+     "perBet": 1.5,
+     "skipped": 0.6296
+    },
+    "before": {
+     "bets": 6073,
+     "lost": 0.0398,
+     "total": 195.41,
+     "perBet": 3.2,
+     "skipped": 0.4425
+    },
+    "after": {
+     "bets": 11402,
+     "lost": 0.0352,
+     "total": 884.91,
+     "perBet": 7.8,
+     "skipped": 0.3331
+    },
+    "forward": {
+     "bets": 0,
+     "lost": 0.0,
+     "total": 0,
+     "perBet": null,
+     "skipped": 1.0
+    }
+   }
+  ],
+  "base": {
+   "pre": {
+    "bets": 36445,
+    "lost": 0.056,
+    "total": -4047.62,
+    "perBet": -11.1
+   },
+   "before": {
+    "bets": 10893,
+    "lost": 0.0536,
+    "total": -642.4,
+    "perBet": -5.9
+   },
+   "after": {
+    "bets": 17096,
+    "lost": 0.0459,
+    "total": 478.97,
+    "perBet": 2.8
+   },
+   "forward": {
+    "bets": 0,
+    "lost": 0.0,
+    "total": 0,
+    "perBet": null
+   }
+  }
+ },
+ "clusters": {
+  "windows": {
+   "1": 1854,
+   "2": 349,
+   "3": 115,
+   "4": 61,
+   "5": 30,
+   "6": 12,
+   "7": 5,
+   "11": 1
+  },
+  "shareIn3Plus": 0.2514
+ }
+}

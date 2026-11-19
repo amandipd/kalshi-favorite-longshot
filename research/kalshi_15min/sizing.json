@@ -1,0 +1,1302 @@
+[
+ {
+  "pct": null,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 428.09199999999487,
+  "loss": 0.7025,
+  "dd50": 0.89,
+  "broke": 0.5275,
+  "ddmed": 1.0,
+  "label": "flat $10",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.5534064665126441,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.01,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 135.33200000000124,
+  "p50": 175.14600000000058,
+  "p90": 244.81999999999994,
+  "loss": 0.88,
+  "dd50": 0.0625,
+  "broke": 0.005,
+  "ddmed": 0.33369876666251364,
+  "label": "1%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.052282284716029706,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.015,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 101.81300000000064,
+  "p50": 165.2360000000021,
+  "p90": 267.2350000000019,
+  "loss": 0.8375,
+  "dd50": 0.37,
+  "broke": 0.0075,
+  "ddmed": 0.44560738420965407,
+  "label": "1.5%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07206961184692136,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.02,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 75.4310000000011,
+  "p50": 140.98000000000187,
+  "p90": 283.3210000000004,
+  "loss": 0.845,
+  "dd50": 0.6175,
+  "broke": 0.0325,
+  "ddmed": 0.5500451267651815,
+  "label": "2%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.10590831980445098,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 104.81299999999969,
+  "p90": 317.04599999999937,
+  "loss": 0.835,
+  "dd50": 0.8775,
+  "broke": 0.1025,
+  "ddmed": 0.720454486708443,
+  "label": "3%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.0888650963597441,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 61.58799999999971,
+  "p90": 308.8539999999991,
+  "loss": 0.8625,
+  "dd50": 0.9825,
+  "broke": 0.245,
+  "ddmed": 0.8506243374503838,
+  "label": "1/24",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.10460173720199341,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 19.599000000000398,
+  "p90": 242.18100000000052,
+  "loss": 0.9,
+  "dd50": 0.9975,
+  "broke": 0.49,
+  "ddmed": 0.9748631341059366,
+  "label": "6%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11498176739855692,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.08,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 116.99300000000132,
+  "loss": 0.945,
+  "dd50": 1.0,
+  "broke": 0.7025,
+  "ddmed": 1.0,
+  "label": "8%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.15908083047772625,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.1,
+  "scenario": "backtest",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 25.74499999999997,
+  "loss": 0.9625,
+  "dd50": 1.0,
+  "broke": 0.8425,
+  "ddmed": 1.0,
+  "label": "10%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.19517359862559427,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "backtest",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 39.15199999999946,
+  "p50": 103.83800000000032,
+  "p90": 308.5630000000001,
+  "loss": 0.85,
+  "dd50": 0.865,
+  "broke": 0.085,
+  "ddmed": 0.7142701447143025,
+  "label": "3%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.0888650963597441,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "backtest",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 65.44800000000048,
+  "p90": 276.0800000000006,
+  "loss": 0.88,
+  "dd50": 0.9575,
+  "broke": 0.19,
+  "ddmed": 0.8269513228814153,
+  "label": "1/24, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.10460173720199341,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "backtest",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 32.699000000000524,
+  "p90": 211.4760000000009,
+  "loss": 0.92,
+  "dd50": 0.995,
+  "broke": 0.305,
+  "ddmed": 0.9177744729642264,
+  "label": "6%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11498176739855692,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "backtest",
+  "wcap": 0.3,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 24.76700000000036,
+  "p90": 246.19800000000075,
+  "loss": 0.8925,
+  "dd50": 0.9975,
+  "broke": 0.425,
+  "ddmed": 0.9431106091841959,
+  "label": "6%, window<=30%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11498176739855692,
+   "broke": true
+  }
+ },
+ {
+  "pct": null,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 146.31700000000058,
+  "loss": 0.9425,
+  "dd50": 0.975,
+  "broke": 0.8375,
+  "ddmed": 1.0,
+  "label": "flat $10",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.6042305334150828,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.01,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 110.01000000000005,
+  "p50": 145.70900000000054,
+  "p90": 195.26000000000005,
+  "loss": 0.985,
+  "dd50": 0.2425,
+  "broke": 0.0675,
+  "ddmed": 0.42767995434906636,
+  "label": "1%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.033360284036980076,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.015,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 76.03200000000079,
+  "p50": 114.51700000000051,
+  "p90": 185.53800000000138,
+  "loss": 0.9775,
+  "dd50": 0.6525,
+  "broke": 0.0725,
+  "ddmed": 0.5645854512483703,
+  "label": "1.5%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.049701476903737656,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.02,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 88.30300000000094,
+  "p90": 173.8639999999999,
+  "loss": 0.9725,
+  "dd50": 0.8425,
+  "broke": 0.13,
+  "ddmed": 0.6808210730332097,
+  "label": "2%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.06592733705265852,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 50.5990000000008,
+  "p90": 144.0769999999998,
+  "loss": 0.9725,
+  "dd50": 0.9725,
+  "broke": 0.33,
+  "ddmed": 0.8333183629043349,
+  "label": "3%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07611082070047091,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 101.3749999999997,
+  "loss": 0.98,
+  "dd50": 0.9975,
+  "broke": 0.5475,
+  "ddmed": 1.0,
+  "label": "1/24",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08039084575397427,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 44.1019999999997,
+  "loss": 0.99,
+  "dd50": 1.0,
+  "broke": 0.765,
+  "ddmed": 1.0,
+  "label": "6%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11703562501123921,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.08,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 0.9925,
+  "dd50": 1.0,
+  "broke": 0.9325,
+  "ddmed": 1.0,
+  "label": "8%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.15788912579957312,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.1,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 0.9975,
+  "dd50": 1.0,
+  "broke": 0.9675,
+  "ddmed": 1.0,
+  "label": "10%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.19659147387491382,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "realistic",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 52.4929999999994,
+  "p90": 148.89500000000004,
+  "loss": 0.965,
+  "dd50": 0.9625,
+  "broke": 0.3,
+  "ddmed": 0.823808763278067,
+  "label": "3%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07611082070047091,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "realistic",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 29.500999999999248,
+  "p90": 113.94299999999917,
+  "loss": 0.97,
+  "dd50": 0.99,
+  "broke": 0.445,
+  "ddmed": 0.9104869643188725,
+  "label": "1/24, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08039084575397427,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "realistic",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 66.698,
+  "loss": 0.9925,
+  "dd50": 1.0,
+  "broke": 0.5925,
+  "ddmed": 1.0,
+  "label": "6%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11703562501123921,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "realistic",
+  "wcap": 0.3,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 61.027000000000214,
+  "loss": 0.9825,
+  "dd50": 1.0,
+  "broke": 0.715,
+  "ddmed": 1.0,
+  "label": "6%, window<=30%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11703562501123921,
+   "broke": true
+  }
+ },
+ {
+  "pct": null,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 0.9925,
+  "dd50": 0.9975,
+  "broke": 0.955,
+  "ddmed": 1.0,
+  "label": "flat $10",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.5079773546063009,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.01,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 129.54000000000073,
+  "p90": 166.19200000000197,
+  "loss": 0.9975,
+  "dd50": 0.4525,
+  "broke": 0.16,
+  "ddmed": 0.48895886511287046,
+  "label": "1%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.03729008238276166,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.015,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 93.40700000000066,
+  "p90": 144.56700000000035,
+  "loss": 0.9975,
+  "dd50": 0.8525,
+  "broke": 0.1875,
+  "ddmed": 0.6385939798799158,
+  "label": "1.5%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.05181679634234297,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.02,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 65.47600000000001,
+  "p90": 118.75800000000005,
+  "loss": 0.995,
+  "dd50": 0.95,
+  "broke": 0.3025,
+  "ddmed": 0.7532898092420653,
+  "label": "2%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.04990745184067891,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 78.80000000000094,
+  "loss": 0.9975,
+  "dd50": 0.995,
+  "broke": 0.5575,
+  "ddmed": 1.0,
+  "label": "3%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07150521900301948,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 44.87700000000029,
+  "loss": 0.9975,
+  "dd50": 1.0,
+  "broke": 0.7725,
+  "ddmed": 1.0,
+  "label": "1/24",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08006222740783957,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 0.9975,
+  "dd50": 1.0,
+  "broke": 0.94,
+  "ddmed": 1.0,
+  "label": "6%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11854462161924029,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.08,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.98,
+  "ddmed": 1.0,
+  "label": "8%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.15949931250296365,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.1,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.9925,
+  "ddmed": 1.0,
+  "label": "10%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.1979568544238683,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "stress",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 85.62500000000023,
+  "loss": 0.9975,
+  "dd50": 0.995,
+  "broke": 0.5475,
+  "ddmed": 1.0,
+  "label": "3%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07150521900301948,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "stress",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 57.320000000000476,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.6875,
+  "ddmed": 1.0,
+  "label": "1/24, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08006222740783957,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "stress",
+  "wcap": 0.2,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 26.792000000000503,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.79,
+  "ddmed": 1.0,
+  "label": "6%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11854462161924029,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "stress",
+  "wcap": 0.3,
+  "horizon": 30,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 22.14000000000154,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.88,
+  "ddmed": 1.0,
+  "label": "6%, window<=30%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11854462161924029,
+   "broke": true
+  }
+ },
+ {
+  "pct": null,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 0.995,
+  "dd50": 1.0,
+  "broke": 0.99,
+  "ddmed": 1.0,
+  "label": "flat $10",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.6042305334150828,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.01,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 0.9925,
+  "broke": 0.985,
+  "ddmed": 1.0,
+  "label": "1%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.033360284036980076,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.015,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.97,
+  "ddmed": 1.0,
+  "label": "1.5%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.049701476903737656,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.02,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.975,
+  "ddmed": 1.0,
+  "label": "2%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.06592733705265852,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.99,
+  "ddmed": 1.0,
+  "label": "3%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07611082070047091,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.995,
+  "ddmed": 1.0,
+  "label": "1/24",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08039084575397427,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "6%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11703562501123921,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.08,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "8%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.15788912579957312,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.1,
+  "scenario": "realistic",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "10%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.19659147387491382,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "realistic",
+  "wcap": 0.2,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.985,
+  "ddmed": 1.0,
+  "label": "3%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07611082070047091,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "realistic",
+  "wcap": 0.2,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.99,
+  "ddmed": 1.0,
+  "label": "1/24, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08039084575397427,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "realistic",
+  "wcap": 0.2,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "6%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11703562501123921,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "realistic",
+  "wcap": 0.3,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "6%, window<=30%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11703562501123921,
+   "broke": true
+  }
+ },
+ {
+  "pct": null,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "flat $10",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.5079773546063009,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.01,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "1%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.03729008238276166,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.015,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 0.9975,
+  "ddmed": 1.0,
+  "label": "1.5%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.05181679634234297,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.02,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "2%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.04990745184067891,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "3%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07150521900301948,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "1/24",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08006222740783957,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "6%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11854462161924029,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.08,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "8%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.15949931250296365,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.1,
+  "scenario": "stress",
+  "wcap": null,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "10%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.1979568544238683,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.03,
+  "scenario": "stress",
+  "wcap": 0.2,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "3%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.07150521900301948,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.041666666666666664,
+  "scenario": "stress",
+  "wcap": 0.2,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "1/24, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.08006222740783957,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "stress",
+  "wcap": 0.2,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "6%, window<=20%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11854462161924029,
+   "broke": true
+  }
+ },
+ {
+  "pct": 0.06,
+  "scenario": "stress",
+  "wcap": 0.3,
+  "horizon": 90,
+  "p10": 0.0,
+  "p50": 0.0,
+  "p90": 0.0,
+  "loss": 1.0,
+  "dd50": 1.0,
+  "broke": 1.0,
+  "ddmed": 1.0,
+  "label": "6%, window<=30%",
+  "actual": {
+   "final": 0.0,
+   "maxDrop": 1.0,
+   "worstWindow": -0.11854462161924029,
+   "broke": true
+  }
+ }
+]

@@ -1,0 +1,714 @@
+{
+ "offset": 60,
+ "counts": {
+  "markets": 22367,
+  "missing": 317,
+  "unresolved": 0
+ },
+ "first": 1792686600,
+ "last": 1794371400,
+ "main": {
+  "bets": 2254,
+  "c_per_1": 0.192,
+  "lo": -0.405,
+  "hi": 0.788,
+  "pnl": 43.19,
+  "lost": 43,
+  "implied": 52.1,
+  "edge_per_contract_c": 0.187,
+  "loo_coin": [
+   "eth",
+   0.059
+  ],
+  "loo_day": [
+   "2026-10-28",
+   0.114
+  ],
+  "bets_a_day": 115.6,
+  "no_quote_at_entry": 286
+ },
+ "verdict": "UNCLEAR",
+ "fee_tiers": {
+  "0.0695": {
+   "bets": 2254,
+   "c_per_1": 0.228,
+   "lo": -0.369,
+   "hi": 0.825,
+   "pnl": 51.37,
+   "lost": 43,
+   "implied": 52.1,
+   "edge_per_contract_c": 0.223
+  },
+  "0.075": {
+   "bets": 2254,
+   "c_per_1": 0.221,
+   "lo": -0.376,
+   "hi": 0.818,
+   "pnl": 49.87,
+   "lost": 43,
+   "implied": 52.1,
+   "edge_per_contract_c": 0.216
+  },
+  "0.085": {
+   "bets": 2254,
+   "c_per_1": 0.192,
+   "lo": -0.405,
+   "hi": 0.788,
+   "pnl": 43.19,
+   "lost": 43,
+   "implied": 52.1,
+   "edge_per_contract_c": 0.187
+  },
+  "0.095": {
+   "bets": 2254,
+   "c_per_1": 0.169,
+   "lo": -0.428,
+   "hi": 0.766,
+   "pnl": 38.09,
+   "lost": 43,
+   "implied": 52.1,
+   "edge_per_contract_c": 0.165
+  }
+ },
+ "one_tick_worse": {
+  "bets": 2254,
+  "c_per_1": -0.223,
+  "lo": -0.816,
+  "hi": 0.37,
+  "pnl": -50.17,
+  "lost": 43,
+  "implied": 52.1,
+  "edge_per_contract_c": -0.218
+ },
+ "calibration": [
+  {
+   "band": "92-93c",
+   "bets": 124,
+   "won_share": 0.9274,
+   "avg_price": 0.9246
+  },
+  {
+   "band": "94-95c",
+   "bets": 219,
+   "won_share": 0.9178,
+   "avg_price": 0.9468
+  },
+  {
+   "band": "96-97c",
+   "bets": 388,
+   "won_share": 0.9716,
+   "avg_price": 0.9657
+  },
+  {
+   "band": "98-99c",
+   "bets": 1523,
+   "won_share": 0.9967,
+   "avg_price": 0.9883
+  }
+ ],
+ "by_coin": {
+  "btc": {
+   "bets": 1024,
+   "c_per_1": -0.335,
+   "lo": -1.332,
+   "hi": 0.662,
+   "pnl": -34.26,
+   "lost": 26,
+   "implied": 25.2,
+   "edge_per_contract_c": -0.326
+  },
+  "eth": {
+   "bets": 401,
+   "c_per_1": 0.804,
+   "lo": -0.325,
+   "hi": 1.932,
+   "pnl": 32.21,
+   "lost": 5,
+   "implied": 8.9,
+   "edge_per_contract_c": 0.785
+  },
+  "sol": {
+   "bets": 424,
+   "c_per_1": 0.435,
+   "lo": -0.727,
+   "hi": 1.598,
+   "pnl": 18.45,
+   "lost": 6,
+   "implied": 8.6,
+   "edge_per_contract_c": 0.426
+  },
+  "xrp": {
+   "bets": 405,
+   "c_per_1": 0.662,
+   "lo": -0.561,
+   "hi": 1.884,
+   "pnl": 26.79,
+   "lost": 6,
+   "implied": 9.4,
+   "edge_per_contract_c": 0.646
+  }
+ },
+ "by_side": {
+  "yes": {
+   "bets": 1059,
+   "c_per_1": 0.351,
+   "lo": -0.474,
+   "hi": 1.177,
+   "pnl": 37.18,
+   "lost": 19,
+   "implied": 24.8,
+   "edge_per_contract_c": 0.343
+  },
+  "no": {
+   "bets": 1195,
+   "c_per_1": 0.05,
+   "lo": -0.806,
+   "hi": 0.906,
+   "pnl": 6.01,
+   "lost": 24,
+   "implied": 27.2,
+   "edge_per_contract_c": 0.049
+  }
+ },
+ "by_half": {
+  "oct22_31": {
+   "bets": 1027,
+   "c_per_1": 0.304,
+   "lo": -0.612,
+   "hi": 1.22,
+   "pnl": 31.23,
+   "lost": 22,
+   "implied": 27.6,
+   "edge_per_contract_c": 0.296
+  },
+  "nov1_on": {
+   "bets": 1227,
+   "c_per_1": 0.098,
+   "lo": -0.687,
+   "hi": 0.882,
+   "pnl": 11.96,
+   "lost": 21,
+   "implied": 24.5,
+   "edge_per_contract_c": 0.096
+  }
+ },
+ "plain": {
+  "bets": 11024,
+  "c_per_1": -3.042,
+  "lo": -3.586,
+  "hi": -2.501,
+  "pnl": -3352.45,
+  "lost": 630,
+  "implied": 337.6,
+  "edge_per_contract_c": -2.948
+ },
+ "plain_calibration": [
+  {
+   "band": "92-93c",
+   "bets": 1182,
+   "won_share": 0.8926,
+   "avg_price": 0.925
+  },
+  {
+   "band": "94-95c",
+   "bets": 1612,
+   "won_share": 0.8902,
+   "avg_price": 0.946
+  },
+  {
+   "band": "96-97c",
+   "bets": 2643,
+   "won_share": 0.9179,
+   "avg_price": 0.966
+  },
+  {
+   "band": "98-99c",
+   "bets": 5587,
+   "won_share": 0.9805,
+   "avg_price": 0.9871
+  }
+ ],
+ "variants": {
+  "minute 2": {
+   "bets": 593,
+   "c_per_1": -0.876,
+   "lo": -2.675,
+   "hi": 0.923,
+   "pnl": -51.94,
+   "lost": 28,
+   "implied": 25.2,
+   "edge_per_contract_c": -0.839
+  },
+  "minute 4": {
+   "bets": 7634,
+   "c_per_1": 1.153,
+   "lo": 1.009,
+   "hi": 1.298,
+   "pnl": 880.21,
+   "lost": 25,
+   "implied": 121.7,
+   "edge_per_contract_c": 1.135
+  },
+  "90c floor": {
+   "bets": 2356,
+   "c_per_1": 0.368,
+   "lo": -0.238,
+   "hi": 0.973,
+   "pnl": 86.69,
+   "lost": 48,
+   "implied": 61.7,
+   "edge_per_contract_c": 0.358
+  },
+  "late sign at M-1 only": {
+   "bets": 2372,
+   "c_per_1": 0.066,
+   "lo": -0.537,
+   "hi": 0.668,
+   "pnl": 15.65,
+   "lost": 49,
+   "implied": 55.8,
+   "edge_per_contract_c": 0.064
+  }
+ },
+ "grid_train": [
+  {
+   "M": 2,
+   "signs": "as Kalshi",
+   "floor": 0.9,
+   "train": {
+    "bets": 338,
+    "c_per_1": -2.491,
+    "lo": -5.629,
+    "hi": 0.648,
+    "pnl": -84.14,
+    "lost": 24,
+    "implied": 17.6,
+    "edge_per_contract_c": -2.36
+   }
+  },
+  {
+   "M": 2,
+   "signs": "as Kalshi",
+   "floor": 0.92,
+   "train": {
+    "bets": 291,
+    "c_per_1": -1.415,
+    "lo": -4.177,
+    "hi": 1.347,
+    "pnl": -41.16,
+    "lost": 16,
+    "implied": 13.1,
+    "edge_per_contract_c": -1.351
+   }
+  },
+  {
+   "M": 2,
+   "signs": "as Kalshi",
+   "floor": 0.95,
+   "train": {
+    "bets": 229,
+    "c_per_1": -1.773,
+    "lo": -4.778,
+    "hi": 1.232,
+    "pnl": -40.58,
+    "lost": 12,
+    "implied": 8.8,
+    "edge_per_contract_c": -1.705
+   }
+  },
+  {
+   "M": 2,
+   "signs": "late at M-1 only",
+   "floor": 0.9,
+   "train": {
+    "bets": 338,
+    "c_per_1": -2.491,
+    "lo": -5.629,
+    "hi": 0.648,
+    "pnl": -84.14,
+    "lost": 24,
+    "implied": 17.6,
+    "edge_per_contract_c": -2.36
+   }
+  },
+  {
+   "M": 2,
+   "signs": "late at M-1 only",
+   "floor": 0.92,
+   "train": {
+    "bets": 291,
+    "c_per_1": -1.415,
+    "lo": -4.177,
+    "hi": 1.347,
+    "pnl": -41.16,
+    "lost": 16,
+    "implied": 13.1,
+    "edge_per_contract_c": -1.351
+   }
+  },
+  {
+   "M": 2,
+   "signs": "late at M-1 only",
+   "floor": 0.95,
+   "train": {
+    "bets": 229,
+    "c_per_1": -1.773,
+    "lo": -4.778,
+    "hi": 1.232,
+    "pnl": -40.58,
+    "lost": 12,
+    "implied": 8.8,
+    "edge_per_contract_c": -1.705
+   }
+  },
+  {
+   "M": 2,
+   "signs": "no signs",
+   "floor": 0.9,
+   "train": {
+    "bets": 3367,
+    "c_per_1": -7.404,
+    "lo": -8.813,
+    "hi": -5.996,
+    "pnl": -2491.58,
+    "lost": 401,
+    "implied": 180.6,
+    "edge_per_contract_c": -7.002
+   }
+  },
+  {
+   "M": 2,
+   "signs": "no signs",
+   "floor": 0.92,
+   "train": {
+    "bets": 2828,
+    "c_per_1": -6.954,
+    "lo": -8.395,
+    "hi": -5.513,
+    "pnl": -1965.32,
+    "lost": 306,
+    "implied": 129.2,
+    "edge_per_contract_c": -6.633
+   }
+  },
+  {
+   "M": 2,
+   "signs": "no signs",
+   "floor": 0.95,
+   "train": {
+    "bets": 1898,
+    "c_per_1": -7.258,
+    "lo": -8.864,
+    "hi": -5.653,
+    "pnl": -1376.78,
+    "lost": 192,
+    "implied": 65.2,
+    "edge_per_contract_c": -7.007
+   }
+  },
+  {
+   "M": 3,
+   "signs": "as Kalshi",
+   "floor": 0.9,
+   "train": {
+    "bets": 1084,
+    "c_per_1": 0.496,
+    "lo": -0.435,
+    "hi": 1.426,
+    "pnl": 53.73,
+    "lost": 25,
+    "implied": 33.0,
+    "edge_per_contract_c": 0.48
+   }
+  },
+  {
+   "M": 3,
+   "signs": "as Kalshi",
+   "floor": 0.92,
+   "train": {
+    "bets": 1027,
+    "c_per_1": 0.304,
+    "lo": -0.612,
+    "hi": 1.22,
+    "pnl": 31.23,
+    "lost": 22,
+    "implied": 27.6,
+    "edge_per_contract_c": 0.296
+   }
+  },
+  {
+   "M": 3,
+   "signs": "as Kalshi",
+   "floor": 0.95,
+   "train": {
+    "bets": 926,
+    "c_per_1": 0.398,
+    "lo": -0.433,
+    "hi": 1.229,
+    "pnl": 36.89,
+    "lost": 15,
+    "implied": 20.5,
+    "edge_per_contract_c": 0.39
+   }
+  },
+  {
+   "M": 3,
+   "signs": "late at M-1 only",
+   "floor": 0.9,
+   "train": {
+    "bets": 1164,
+    "c_per_1": 0.387,
+    "lo": -0.544,
+    "hi": 1.317,
+    "pnl": 45.05,
+    "lost": 29,
+    "implied": 36.4,
+    "edge_per_contract_c": 0.375
+   }
+  },
+  {
+   "M": 3,
+   "signs": "late at M-1 only",
+   "floor": 0.92,
+   "train": {
+    "bets": 1097,
+    "c_per_1": 0.116,
+    "lo": -0.812,
+    "hi": 1.044,
+    "pnl": 12.73,
+    "lost": 26,
+    "implied": 30.0,
+    "edge_per_contract_c": 0.113
+   }
+  },
+  {
+   "M": 3,
+   "signs": "late at M-1 only",
+   "floor": 0.95,
+   "train": {
+    "bets": 986,
+    "c_per_1": 0.114,
+    "lo": -0.759,
+    "hi": 0.987,
+    "pnl": 11.25,
+    "lost": 19,
+    "implied": 22.2,
+    "edge_per_contract_c": 0.112
+   }
+  },
+  {
+   "M": 3,
+   "signs": "no signs",
+   "floor": 0.9,
+   "train": {
+    "bets": 5900,
+    "c_per_1": -4.349,
+    "lo": -5.198,
+    "hi": -3.5,
+    "pnl": -2564.45,
+    "lost": 449,
+    "implied": 223.9,
+    "edge_per_contract_c": -4.18
+   }
+  },
+  {
+   "M": 3,
+   "signs": "no signs",
+   "floor": 0.92,
+   "train": {
+    "bets": 5358,
+    "c_per_1": -4.181,
+    "lo": -5.023,
+    "hi": -3.342,
+    "pnl": -2239.34,
+    "lost": 372,
+    "implied": 172.2,
+    "edge_per_contract_c": -4.045
+   }
+  },
+  {
+   "M": 3,
+   "signs": "no signs",
+   "floor": 0.95,
+   "train": {
+    "bets": 4453,
+    "c_per_1": -3.944,
+    "lo": -4.767,
+    "hi": -3.122,
+    "pnl": -1755.29,
+    "lost": 269,
+    "implied": 109.2,
+    "edge_per_contract_c": -3.846
+   }
+  },
+  {
+   "M": 4,
+   "signs": "as Kalshi",
+   "floor": 0.9,
+   "train": {
+    "bets": 3524,
+    "c_per_1": 1.499,
+    "lo": 1.257,
+    "hi": 1.741,
+    "pnl": 528.04,
+    "lost": 15,
+    "implied": 72.1,
+    "edge_per_contract_c": 1.468
+   }
+  },
+  {
+   "M": 4,
+   "signs": "as Kalshi",
+   "floor": 0.92,
+   "train": {
+    "bets": 3458,
+    "c_per_1": 1.375,
+    "lo": 1.138,
+    "hi": 1.613,
+    "pnl": 475.52,
+    "lost": 14,
+    "implied": 65.8,
+    "edge_per_contract_c": 1.349
+   }
+  },
+  {
+   "M": 4,
+   "signs": "as Kalshi",
+   "floor": 0.95,
+   "train": {
+    "bets": 3257,
+    "c_per_1": 1.072,
+    "lo": 0.832,
+    "hi": 1.313,
+    "pnl": 349.08,
+    "lost": 13,
+    "implied": 52.0,
+    "edge_per_contract_c": 1.055
+   }
+  },
+  {
+   "M": 4,
+   "signs": "late at M-1 only",
+   "floor": 0.9,
+   "train": {
+    "bets": 3717,
+    "c_per_1": 1.45,
+    "lo": 1.202,
+    "hi": 1.698,
+    "pnl": 538.68,
+    "lost": 18,
+    "implied": 76.4,
+    "edge_per_contract_c": 1.419
+   }
+  },
+  {
+   "M": 4,
+   "signs": "late at M-1 only",
+   "floor": 0.92,
+   "train": {
+    "bets": 3646,
+    "c_per_1": 1.32,
+    "lo": 1.076,
+    "hi": 1.564,
+    "pnl": 481.12,
+    "lost": 17,
+    "implied": 69.7,
+    "edge_per_contract_c": 1.294
+   }
+  },
+  {
+   "M": 4,
+   "signs": "late at M-1 only",
+   "floor": 0.95,
+   "train": {
+    "bets": 3428,
+    "c_per_1": 1.032,
+    "lo": 0.79,
+    "hi": 1.275,
+    "pnl": 353.84,
+    "lost": 15,
+    "implied": 54.7,
+    "edge_per_contract_c": 1.016
+   }
+  },
+  {
+   "M": 4,
+   "signs": "no signs",
+   "floor": 0.9,
+   "train": {
+    "bets": 8379,
+    "c_per_1": -2.09,
+    "lo": -2.596,
+    "hi": -1.585,
+    "pnl": -1750.45,
+    "lost": 354,
+    "implied": 202.7,
+    "edge_per_contract_c": -2.038
+   }
+  },
+  {
+   "M": 4,
+   "signs": "no signs",
+   "floor": 0.92,
+   "train": {
+    "bets": 8085,
+    "c_per_1": -2.026,
+    "lo": -2.522,
+    "hi": -1.531,
+    "pnl": -1637.24,
+    "lost": 318,
+    "implied": 174.8,
+    "edge_per_contract_c": -1.981
+   }
+  },
+  {
+   "M": 4,
+   "signs": "no signs",
+   "floor": 0.95,
+   "train": {
+    "bets": 7480,
+    "c_per_1": -2.095,
+    "lo": -2.584,
+    "hi": -1.608,
+    "pnl": -1566.74,
+    "lost": 273,
+    "implied": 133.1,
+    "edge_per_contract_c": -2.058
+   }
+  }
+ ],
+ "grid_pick": {
+  "M": 4,
+  "signs": "as Kalshi",
+  "floor": 0.9,
+  "train": {
+   "bets": 3524,
+   "c_per_1": 1.499,
+   "lo": 1.257,
+   "hi": 1.741,
+   "pnl": 528.04,
+   "lost": 15,
+   "implied": 72.1,
+   "edge_per_contract_c": 1.468
+  },
+  "test": {
+   "bets": 4220,
+   "c_per_1": 0.954,
+   "lo": 0.755,
+   "hi": 1.153,
+   "pnl": 402.55,
+   "lost": 15,
+   "implied": 60.0,
+   "edge_per_contract_c": 0.94,
+   "loo_coin": [
+    "xrp",
+    0.879
+   ],
+   "loo_day": [
+    "2026-11-10",
+    0.905
+   ]
+  },
+  "verdict": "PASS"
+ }
+}

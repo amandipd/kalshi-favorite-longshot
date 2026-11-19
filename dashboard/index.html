@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalshi Calibration Findings</title>
+<meta name="description" content="The key statistical findings of a study of the favorite-longshot bias in Kalshi prediction markets.">
+<style>
+:root{
+  --bg:#f9f9f7; --card:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781; --line:#e1e0d9; --axis:#c3c2b7;
+  --over:#e34948; --under:#2a78d6; --ns:#c3c2b7; --neutral:#f0efec; --s2:#eb6834; --accent:#2a78d6;
+  --tip-bg:#1d1d1b; --tip-ink:#f9f9f7; --warn-bg:#fdf3e1; --warn-ink:#7a4a00;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d0d0d; --card:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781; --line:#2c2c2a; --axis:#383835;
+    --over:#e66767; --under:#3987e5; --ns:#55544f; --neutral:#383835; --s2:#d95926; --accent:#3987e5;
+    --tip-bg:#f2f1ed; --tip-ink:#111110; --warn-bg:#33270f; --warn-ink:#f1c779;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d0d0d; --card:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781; --line:#2c2c2a; --axis:#383835;
+  --over:#e66767; --under:#3987e5; --ns:#55544f; --neutral:#383835; --s2:#d95926; --accent:#3987e5;
+  --tip-bg:#f2f1ed; --tip-ink:#111110; --warn-bg:#33270f; --warn-ink:#f1c779;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header{padding:28px 0 4px}
+.top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-size:clamp(22px,4vw,30px);line-height:1.2;margin:6px 0 8px;letter-spacing:-.01em}
+.scope{color:var(--ink2);margin:0;font-size:14px;max-width:80ch}
+.theme{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer}
+.answer{margin:16px 0 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--card);border-radius:0 8px 8px 0;color:var(--ink2);max-width:90ch}
+.answer strong{color:var(--ink)}
+.notice{margin:16px 0 0;padding:12px 14px;border-radius:8px;background:var(--warn-bg);color:var(--warn-ink);font-size:14px}
+.notice code{font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(156px,1fr));gap:10px;margin:16px 0}
+.kpi{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi:hover,.kpi:focus-visible{border-color:var(--axis)}
+.kpi .v{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.01em;line-height:1.2}
+.kpi .l{font-size:13px;margin-top:4px}
+.kpi .c{font-size:12px;color:var(--muted);margin-top:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:0 0 16px;min-width:0;scroll-margin-top:12px}
+.head{display:flex;gap:12px;align-items:flex-start}
+.num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--card);font-size:13px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+h2{font-size:18px;margin:0;line-height:1.3}
+h3{font-size:14px;margin:0 0 4px}
+.sub{margin:4px 0 0;color:var(--ink2);font-size:14px;max-width:78ch}
+.lead{margin:14px 0 0;font-size:14px;color:var(--ink)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:24px;margin-top:22px}
+.grid2>*{min-width:0}
+.chart{margin-top:10px;width:100%;min-width:0}
+.chart svg{display:block}
+svg text{fill:var(--ink2);font-size:11px;font-variant-numeric:tabular-nums}
+svg .title{fill:var(--muted);font-size:11px}
+svg .grid{stroke:var(--line);stroke-width:1}
+svg .zero{stroke:var(--axis);stroke-width:1.25}
+svg .whisk{stroke:var(--ink2);stroke-width:1.25}
+svg .star{fill:var(--ink);font-size:11px;font-weight:700}
+svg .hit{fill:transparent}
+svg .hl{fill:var(--line);opacity:0}
+svg .on .hl{opacity:.55}
+svg .cross{stroke:var(--axis);stroke-width:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink2);margin-top:12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.legend i.ln{width:18px;height:0;border-radius:0;border-top:2px solid;vertical-align:3px}
+.legend i.dot{border-radius:50%;border:1.5px solid}
+.legend i.ramp{width:120px;height:8px;border-radius:4px;vertical-align:0}
+details{margin-top:14px}
+summary{cursor:pointer;color:var(--ink2);font-size:13px}
+.scroll{overflow-x:auto;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px}
+td.em{font-weight:650}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;padding:2px;gap:2px;margin-top:14px}
+.seg button{border:0;background:transparent;color:var(--ink2);font:inherit;font-size:13px;padding:4px 10px;border-radius:6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.heat{display:grid;gap:3px;margin-top:4px;font-size:13px;min-width:300px}
+.heat .h{color:var(--muted);font-size:12px;text-align:center;padding:2px 0}
+.heat .r{display:flex;flex-direction:column;justify-content:center;padding-right:8px;line-height:1.25}
+.heat .r small{color:var(--muted);font-size:11.5px}
+.heat .c{border-radius:6px;text-align:center;padding:10px 2px;font-variant-numeric:tabular-nums;font-weight:650;border:1px solid transparent}
+.heat .c.ns{font-weight:400}
+.heat .c.thin{border:1px dashed var(--axis);color:var(--muted);font-weight:400;font-size:12px}
+.hbars{display:grid;grid-template-columns:minmax(96px,42%) minmax(0,1fr) auto;gap:10px 12px;align-items:center;font-size:13px;margin-top:10px}
+.hb-l{line-height:1.3}
+.hb-l small{display:block;color:var(--muted);font-size:11.5px}
+.hb-t{position:relative;height:18px}
+.hb-z{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--axis)}
+.hb-b{position:absolute;top:3px;height:12px;min-width:1px}
+.hb-v{font-variant-numeric:tabular-nums;font-weight:650;text-align:right}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px;margin-top:10px;font-variant-numeric:tabular-nums}
+.facts dt{color:var(--ink2)}
+.facts dd{margin:0}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:10px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:12px}
+.tile .when{font-size:12px;color:var(--muted)}
+.tile .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
+.tile .stat{font-size:26px;font-weight:650;font-variant-numeric:tabular-nums;line-height:1.25}
+.note{font-size:12.5px;color:var(--muted);margin:10px 0 0;max-width:78ch}
+.big{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
+#tip{position:fixed;z-index:10;pointer-events:none;background:var(--tip-bg);color:var(--tip-ink);border-radius:8px;padding:8px 10px;font-size:12.5px;line-height:1.45;max-width:290px;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+#tip b{display:block;margin-bottom:3px}
+#tip .row{display:flex;justify-content:space-between;gap:16px}
+#tip .row span:first-child{opacity:.72}
+footer{color:var(--muted);font-size:12.5px;padding:4px 0 36px}
+footer p{margin:0 0 6px;max-width:90ch}
+@media (max-width:520px){
+  .card{padding:16px}
+  .kpi .v{font-size:21px}
+  .hbars{grid-template-columns:minmax(0,1fr) auto}
+  .hb-l{grid-column:1 / -1;margin-bottom:-6px}
+  .heat .h{font-size:10.5px}
+  .heat .c{font-size:12px;padding:9px 1px}
+}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="top-row">
+    <div class="eyebrow">Key statistical findings</div>
+    <button class="theme" id="theme" type="button" aria-label="Change colour theme">Theme: Auto</button>
+  </div>
+  <h1>The favorite-longshot bias in Kalshi prediction markets</h1>
+  <p class="scope" id="scope">Loading…</p>
+  <div class="notice" id="missing" hidden></div>
+  <p class="answer" id="answer" hidden><strong>The answer.</strong> Kalshi's prices are close to honest probabilities, with a small
+    favorite-longshot bias that survives every statistical check: long shots win a little less often than their price
+    says, favorites a little more. The bias beats fees out of sample, but by less than a cent a contract, and with realistic
+    fills the growth-optimal (Kelly) bet is zero.</p>
+</header>
+
+<main class="wrap">
+  <nav class="kpis" id="kpis" aria-label="Headline numbers"></nav>
+
+  <section class="card" id="s1" hidden>
+    <div class="head"><span class="num">1</span><div>
+      <h2>Long shots are overpriced and favorites underpriced</h2>
+      <p class="sub">Each bar is a 10¢ price band: how often its contracts actually won, minus the price they traded at one
+        hour before close. Below zero, the market charged more than the contract turned out to be worth.</p>
+    </div></div>
+    <div class="legend">
+      <span><i style="background:var(--over)"></i>Overpriced</span>
+      <span><i style="background:var(--under)"></i>Underpriced</span>
+      <span><i style="background:var(--ns)"></i>Not significant after Benjamini–Hochberg</span>
+      <span>Whiskers: 95% interval, clustered by event · * q &lt; 0.05 · ** q &lt; 0.01 · *** q &lt; 0.001</span>
+    </div>
+    <div class="chart" id="c1"></div>
+    <p class="lead" id="shape1"></p>
+    <details><summary>Show the table</summary><div class="scroll" id="t1"></div></details>
+    <div class="grid2">
+      <div>
+        <h3>How good are the prices overall?</h3>
+        <p class="sub">The Brier score (mean squared error of the price as a forecast) split into three parts.</p>
+        <div class="hbars" id="murphy"></div>
+        <p class="note" id="murphyNote"></p>
+      </div>
+      <div>
+        <h3>The same answer without price bands</h3>
+        <p class="sub">A logistic fit of the outcome on the price's log-odds. Honest prices give a slope of exactly 1.</p>
+        <dl class="facts" id="logit"></dl>
+        <p class="note" id="logitNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="s2" hidden>
+    <div class="head"><span class="num">2</span><div>
+      <h2>The bias is strongest in short-lived markets</h2>
+      <p class="sub">The gap between how often contracts won and their price, in cents, by 20¢ price band. One
+        Benjamini–Hochberg correction covers every cell.</p>
+    </div></div>
+    <div class="seg" role="group" aria-label="Split by">
+      <button type="button" data-view="lifetime" aria-pressed="true">By market lifetime</button>
+      <button type="button" data-view="category" aria-pressed="false">By category</button>
+    </div>
+    <div class="scroll"><div id="c2"></div></div>
+    <div class="legend">
+      <span><i class="ramp" id="ramp"></i><span id="rampLabel"></span></span>
+      <span>Faded: not significant</span>
+      <span>Dashed: too few events to test</span>
+    </div>
+    <p class="lead" id="lead2"></p>
+  </section>
+
+  <section class="card" id="s3" hidden>
+    <div class="head"><span class="num">3</span><div>
+      <h2>The bias is only measurable near the close</h2>
+      <p class="sub" id="sub3"></p>
+    </div></div>
+    <div class="legend" id="legend3"></div>
+    <div class="chart" id="c3"></div>
+    <div class="grid2">
+      <div>
+        <h3>Why the six-hour curve looks flat</h3>
+        <p class="sub">Fit the outcome on both prices' log-odds at once. If the earlier price knew something the later one
+          didn't, its weight would survive.</p>
+        <div class="scroll" id="t3"></div>
+      </div>
+      <div>
+        <h3>Weight on the six-hour price</h3>
+        <div class="big" id="collapse"></div>
+        <p class="note">Noise in a forecast flattens its calibration curve. A six-hour price that adds almost nothing to the
+          one-hour price is a noisier reading of the same forecast, not a market with a different bias.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="s4" hidden>
+    <div class="head"><span class="num">4</span><div>
+      <h2>It beats fees out of sample, by under a cent a contract</h2>
+      <p class="sub" id="sub4"></p>
+    </div></div>
+    <div class="legend" id="legend4"></div>
+    <div class="chart" id="c4"></div>
+    <div class="grid2">
+      <div>
+        <h3>Strategy against its control</h3>
+        <div class="scroll" id="t4"></div>
+      </div>
+      <div>
+        <h3>Does it depend on where the data was split?</h3>
+        <p class="sub">The same test with the train/trade boundary moved.</p>
+        <div class="scroll" id="t4b"></div>
+        <p class="note" id="note4"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="s5" hidden>
+    <div class="head"><span class="num">5</span><div>
+      <h2>It replicates on 15-minute markets, but the Kelly bet is zero</h2>
+      <p class="sub" id="sub5"></p>
+    </div></div>
+    <div class="legend">
+      <span><i style="background:var(--over)"></i>Overpriced</span>
+      <span><i style="background:var(--under)"></i>Underpriced</span>
+      <span><i style="background:var(--ns)"></i>95% interval includes the price</span>
+      <span>Whiskers: 95% Wilson interval</span>
+    </div>
+    <div class="chart" id="c5"></div>
+    <p class="lead" id="shape5"></p>
+    <details><summary>Show the table</summary><div class="scroll" id="t5"></div></details>
+    <div class="grid2">
+      <div>
+        <h3>Kelly bet for 90¢+ favorites</h3>
+        <p class="sub">The growth-optimal share of bankroll for one bet, f* = (q − c) / (1 − c): q is how often the favorite
+          won, c its all-in cost a contract.</p>
+        <div class="hbars" id="kelly"></div>
+        <p class="note">Below zero, the growth-optimal bet is nothing. Recorded prices are the ask at minute 8; a live order
+          fills about 0.4¢ a contract worse, and Kalshi's fee is charged on the price paid.</p>
+      </div>
+      <div>
+        <h3>The edge changed over time</h3>
+        <p class="sub">Profit per $10 bet on 90¢+ favorites, with live-like fills.</p>
+        <div class="pair" id="regime"></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <h3>Selling early always lost to holding</h3>
+        <p class="sub">Change in profit from selling a $10 bet when its price fell under each level, compared with holding it
+          to settlement.</p>
+        <div class="seg" role="group" aria-label="Period" id="stopSeg"></div>
+        <div class="hbars" id="stops"></div>
+      </div>
+      <div>
+        <h3>Why: most dips recover</h3>
+        <p class="sub" id="exitText"></p>
+        <div class="pair" id="exitTiles"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</main>
+<div id="tip" role="tooltip" hidden></div>
+
+<script>
+(() => {
+"use strict";
+const $ = (sel, root = document) => root.querySelector(sel);
+const MINUS = "−";
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const SUP = {"-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵",
+             "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹"};
+
+// ------------------------------------------------------------------ formatting
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const sign = v => (v > 0 ? "+" : v < 0 ? MINUS : "");
+const signed = (v, d) => (Number(Math.abs(v).toFixed(d)) === 0 ? "" : sign(v)) + Math.abs(v).toFixed(d);
+const cents = (v, d = 2) => signed(v * 100, d) + "¢";          // v is in dollars (probability units)
+const pct = (v, d = 1) => (v * 100).toFixed(d) + "%";
+const spct = (v, d = 1) => signed(v * 100, d) + "%";
+const int = v => Math.round(v).toLocaleString("en-US");
+const money = v => (Math.round(v) < 0 ? MINUS : "") + "$" + Math.abs(Math.round(v)).toLocaleString("en-US");
+const smoney = v => sign(Math.round(v)) + "$" + Math.abs(Math.round(v)).toLocaleString("en-US");   // a change, so signed
+const times = v => (v >= 0.01 ? v.toFixed(2) : v.toPrecision(1)) + "×";
+function sci(p) {
+  if (p >= 0.001) return p.toFixed(p >= 0.1 ? 2 : 3);
+  const [m, e] = p.toExponential(1).split("e");
+  return m + "×10" + String(Number(e)).split("").map(c => SUP[c]).join("");
+}
+const parts = iso => iso.slice(0, 10).split("-").map(Number);
+const dayShort = iso => { const [, m, d] = parts(iso); return `${MONTHS[m - 1]} ${d}`; };
+const day = iso => { const [y, m, d] = parts(iso); return `${MONTHS[m - 1]} ${d}, ${y}`; };
+const dayBefore = iso => { const [y, m, d] = parts(iso); return new Date(Date.UTC(y, m - 1, d - 1)).toISOString(); };
+const band = (lo, hi) => `${Math.round(lo * 100)}–${Math.round(hi * 100)}¢`;
+const stars = (q, sig) => (!sig ? "" : q < 0.001 ? "***" : q < 0.01 ? "**" : "*");
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const toneColor = t => css(t === "over" ? "--over" : t === "under" ? "--under" : "--ns");
+
+// ------------------------------------------------------------------ tooltip
+const tip = $("#tip");
+const tipHTML = (title, rows) => `<b>${esc(title)}</b>` +
+  rows.map(([k, v]) => `<div class="row"><span>${esc(k)}</span><span>${esc(v)}</span></div>`).join("");
+function showTip(html, ev) {
+  tip.innerHTML = html;
+  tip.hidden = false;
+  const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + pad, y = ev.clientY + pad;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - pad;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - pad;
+  tip.style.left = Math.max(8, x) + "px";
+  tip.style.top = Math.max(8, y) + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+addEventListener("scroll", hideTip, {passive: true});
+function hover(node, html, onEnter, onLeave) {
+  for (const type of ["pointermove", "pointerdown"]) {
+    node.addEventListener(type, ev => { showTip(typeof html === "function" ? html(ev) : html, ev); if (onEnter) onEnter(ev); });
+  }
+  node.addEventListener("pointerleave", () => { hideTip(); if (onLeave) onLeave(); });
+}
+
+// ------------------------------------------------------------------ drawing
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, parent) {
+  const node = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) node.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(node);
+  return node;
+}
+function text(parent, x, y, str, attrs = {}) {
+  const t = svgEl("text", {x, y, ...attrs}, parent);
+  t.textContent = str;
+  return t;
+}
+function ticks(lo, hi, n = 5) {
+  const raw = (hi - lo) / n, mag = 10 ** Math.floor(Math.log10(raw)), err = raw / mag;
+  const step = (err >= 7.5 ? 10 : err >= 3.5 ? 5 : err >= 1.5 ? 2 : 1) * mag;
+  const out = [];
+  for (let v = Math.floor(lo / step) * step; v <= hi + step * 1e-9; v += step) out.push(Number(v.toFixed(10)));
+  if (out[out.length - 1] < hi) out.push(Number((out[out.length - 1] + step).toFixed(10)));
+  return out;
+}
+const tickCents = t => sign(t) + Number(Math.abs(t).toFixed(2)) + "¢";
+
+// Every chart is redrawn when its box changes width or the theme changes.
+const charts = [];
+const resize = new ResizeObserver(entries => {
+  for (const entry of entries) {
+    const c = charts.find(c => c.box === entry.target);
+    if (c && Math.abs(c.width - entry.contentRect.width) > 1) { c.width = entry.contentRect.width; c.draw(c.box); }
+  }
+});
+function mount(box, draw) {
+  const c = {box, draw, width: box.clientWidth};
+  charts.push(c);
+  draw(box);
+  resize.observe(box);
+  return c;
+}
+const redrawAll = () => { hideTip(); charts.forEach(c => c.draw(c.box)); };
+
+/** A bar's outline from the zero line (y0) to its value (y1), in pixels: square at zero, 4px round at the value. */
+function barPath(cx, w, y0, y1) {
+  if (Math.abs(y1 - y0) < 1) y1 = y0 + (y1 <= y0 ? -1 : 1);
+  const a = cx - w / 2, b = cx + w / 2, up = y1 < y0 ? 1 : -1, r = Math.min(4, w / 2, Math.abs(y0 - y1));
+  return `M${a},${y0}V${y1 + up * r}Q${a},${y1} ${a + r},${y1}H${b - r}Q${b},${y1} ${b},${y1 + up * r}V${y0}Z`;
+}
+
+/** Bars of won minus price by price band, with interval whiskers. rows: {label, short, v, lo, hi (cents), tone, star, tip} */
+function bandChart(box, rows, opts) {
+  box.textContent = "";
+  const W = box.clientWidth || 640, H = W < 520 ? 250 : 290;
+  const m = {l: 46, r: 8, t: 16, b: 44};
+  const bw = (W - m.l - m.r) / rows.length, narrow = bw < 48;
+  const lo = Math.min(0, ...rows.map(r => r.lo)), hi = Math.max(0, ...rows.map(r => r.hi)), pad = (hi - lo) * 0.08;
+  const T = ticks(lo - (lo < 0 ? pad : 0), hi + (hi > 0 ? pad : 0), 5), y0 = T[0], y1 = T[T.length - 1];
+  const y = v => m.t + (y1 - v) / (y1 - y0) * (H - m.t - m.b);
+  const x = i => m.l + bw * i + bw / 2;
+  const svg = svgEl("svg", {width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": opts.label}, box);
+  for (const t of T) {
+    svgEl("line", {x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? "zero" : "grid"}, svg);
+    text(svg, m.l - 6, y(t) + 4, tickCents(t), {"text-anchor": "end"});
+  }
+  rows.forEach((r, i) => {
+    const g = svgEl("g", {}, svg);
+    svgEl("rect", {class: "hl", x: x(i) - bw / 2, width: bw, y: m.t, height: H - m.t - m.b}, g);
+    svgEl("path", {d: barPath(x(i), Math.min(24, bw * 0.5), y(0), y(r.v)), fill: toneColor(r.tone)}, g);
+    for (const v of [r.lo, r.hi]) svgEl("line", {class: "whisk", x1: x(i) - 4, x2: x(i) + 4, y1: y(v), y2: y(v)}, g);
+    svgEl("line", {class: "whisk", x1: x(i), x2: x(i), y1: y(r.hi), y2: y(r.lo)}, g);
+    if (r.star) text(g, x(i), r.v < 0 ? y(r.lo) + 13 : y(r.hi) - 5, r.star, {class: "star", "text-anchor": "middle"});
+    text(svg, x(i), H - m.b + 16, narrow ? r.short : r.label, {"text-anchor": "middle"});
+    const hit = svgEl("rect", {class: "hit", x: x(i) - bw / 2, width: bw, y: m.t, height: H - m.t - m.b}, g);
+    hover(hit, r.tip, () => g.classList.add("on"), () => g.classList.remove("on"));
+  });
+  text(svg, m.l + (W - m.l - m.r) / 2, H - 6, opts.xTitle + (narrow ? " (lower edge, ¢)" : ""),
+       {class: "title", "text-anchor": "middle"});
+}
+
+/** Two series of points by band, dodged, filled when significant. */
+function horizonChart(box, series, label) {
+  box.textContent = "";
+  const W = box.clientWidth || 640, H = W < 520 ? 250 : 290;
+  const m = {l: 46, r: 8, t: 16, b: 44};
+  const n = series[0].rows.length, bw = (W - m.l - m.r) / n, narrow = bw < 48;
+  const all = series.flatMap(s => s.rows);
+  const T = ticks(Math.min(0, ...all.map(r => r.lo)), Math.max(0, ...all.map(r => r.hi)), 5), y0 = T[0], y1 = T[T.length - 1];
+  const y = v => m.t + (y1 - v) / (y1 - y0) * (H - m.t - m.b);
+  const x = (i, k) => m.l + bw * i + bw / 2 + (k === 0 ? -1 : 1) * Math.min(7, bw * 0.14);
+  const svg = svgEl("svg", {width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": label}, box);
+  for (const t of T) {
+    svgEl("line", {x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? "zero" : "grid"}, svg);
+    text(svg, m.l - 6, y(t) + 4, tickCents(t), {"text-anchor": "end"});
+  }
+  const bands = [];
+  for (let i = 0; i < n; i++) {
+    const g = svgEl("g", {}, svg);
+    svgEl("rect", {class: "hl", x: m.l + bw * i, width: bw, y: m.t, height: H - m.t - m.b}, g);
+    bands.push(g);
+  }
+  series.forEach((s, k) => {
+    const color = css(s.color);
+    svgEl("path", {d: s.rows.map((r, i) => `${i ? "L" : "M"}${x(i, k).toFixed(1)},${y(r.v).toFixed(1)}`).join(""),
+                   fill: "none", stroke: color, "stroke-width": 2, "stroke-dasharray": s.dash || "none", "stroke-linejoin": "round", opacity: 0.85}, svg);
+    s.rows.forEach((r, i) => {
+      svgEl("line", {x1: x(i, k), x2: x(i, k), y1: y(r.hi), y2: y(r.lo), stroke: color, "stroke-width": 1.25}, svg);
+      svgEl("circle", r.sig ? {cx: x(i, k), cy: y(r.v), r: 5, fill: color, stroke: css("--card"), "stroke-width": 2}
+                            : {cx: x(i, k), cy: y(r.v), r: 4, fill: css("--card"), stroke: color, "stroke-width": 2}, svg);
+    });
+  });
+  series[0].rows.forEach((r, i) => {
+    text(svg, m.l + bw * i + bw / 2, H - m.b + 16, narrow ? r.short : r.label, {"text-anchor": "middle"});
+    const hit = svgEl("rect", {class: "hit", x: m.l + bw * i, width: bw, y: m.t, height: H - m.t - m.b}, svg);
+    hover(hit, tipHTML(r.label, series.map(s => [s.name, `${cents(s.rows[i].v / 100)}  (q ${sci(s.rows[i].q)})`])),
+          () => bands[i].classList.add("on"), () => bands[i].classList.remove("on"));
+  });
+  text(svg, m.l + (W - m.l - m.r) / 2, H - 6, "Price band" + (narrow ? " (lower edge, ¢)" : ""), {class: "title", "text-anchor": "middle"});
+}
+
+/** Bankroll curves over settlement days, with a hover crosshair. */
+function equityChart(box, series, label) {
+  box.textContent = "";
+  const W = box.clientWidth || 640, H = W < 520 ? 240 : 300;
+  const m = {l: 44, r: 62, t: 14, b: 30};
+  const ts = d => { const [yy, mm, dd] = parts(d); return Date.UTC(yy, mm - 1, dd); };
+  const lines = series.map(s => ({...s, pts: s.points.map(([d, v]) => [ts(d), v, d])}));
+  const all = lines.flatMap(s => s.pts);
+  const x0 = Math.min(...all.map(p => p[0])), x1 = Math.max(...all.map(p => p[0]));
+  const T = ticks(0, Math.max(1, ...all.map(p => p[1])) * 1.05, 4), top = T[T.length - 1];
+  const x = t => m.l + (t - x0) / (x1 - x0 || 1) * (W - m.l - m.r);
+  const y = v => m.t + (top - v) / top * (H - m.t - m.b);
+  const svg = svgEl("svg", {width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": label}, box);
+  for (const t of T) {
+    svgEl("line", {x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? "zero" : "grid"}, svg);
+    text(svg, m.l - 6, y(t) + 4, `${Number(t.toFixed(2))}×`, {"text-anchor": "end"});
+  }
+  svgEl("line", {x1: m.l, x2: W - m.r, y1: y(1), y2: y(1), class: "zero"}, svg);
+  const nx = W < 520 ? 3 : 5;
+  for (let i = 0; i < nx; i++) {
+    const t = x0 + (x1 - x0) * i / (nx - 1);
+    text(svg, x(t), H - m.b + 18, dayShort(new Date(t).toISOString()), {"text-anchor": i === 0 ? "start" : i === nx - 1 ? "end" : "middle"});
+  }
+  const ends = [];
+  for (const s of lines) {
+    const color = css(s.color);
+    svgEl("path", {d: s.pts.map((p, i) => `${i ? "L" : "M"}${x(p[0]).toFixed(1)},${y(p[1]).toFixed(1)}`).join(""),
+                   fill: "none", stroke: color, "stroke-width": 2, "stroke-dasharray": s.dash || "none", "stroke-linejoin": "round"}, svg);
+    const last = s.pts[s.pts.length - 1];
+    svgEl("circle", {cx: x(last[0]), cy: y(last[1]), r: 4.5, fill: color, stroke: css("--card"), "stroke-width": 2}, svg);
+    ends.push({x: x(last[0]) + 9, y: y(last[1]) + 4, str: times(last[1])});
+  }
+  if (ends.length === 2 && Math.abs(ends[0].y - ends[1].y) < 13) ends[1].y = ends[0].y + (ends[1].y >= ends[0].y ? 13 : -13);
+  for (const e of ends) text(svg, e.x, e.y, e.str, {fill: css("--ink"), "font-weight": 650});
+  const cross = svgEl("line", {class: "cross", y1: m.t, y2: H - m.b, x1: -10, x2: -10}, svg);
+  const dots = lines.map(s => svgEl("circle", {r: 4.5, cx: -10, cy: -10, fill: css(s.color), stroke: css("--card"), "stroke-width": 2}, svg));
+  const asOf = (pts, t) => { let best = pts[0]; for (const p of pts) if (p[0] <= t) best = p; return best; };
+  const hit = svgEl("rect", {class: "hit", x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b}, svg);
+  hover(hit, ev => {
+    const px = ev.clientX - svg.getBoundingClientRect().left;
+    const t = x0 + (px - m.l) / (W - m.l - m.r) * (x1 - x0);
+    const near = lines[0].pts.reduce((a, p) => (Math.abs(p[0] - t) < Math.abs(a[0] - t) ? p : a));
+    cross.setAttribute("x1", x(near[0])); cross.setAttribute("x2", x(near[0]));
+    const vals = lines.map((s, k) => { const p = asOf(s.pts, near[0]); dots[k].setAttribute("cx", x(p[0])); dots[k].setAttribute("cy", y(p[1])); return p[1]; });
+    return tipHTML(day(near[2]), lines.map((s, k) => [s.name, times(vals[k])]));
+  }, null, () => { cross.setAttribute("x1", -10); cross.setAttribute("x2", -10); dots.forEach(d => { d.setAttribute("cx", -10); }); });
+}
+
+/** Horizontal bars on a shared zero, as HTML. items: {label, sub, v, tone|color, tip} */
+function hbars(box, items, fmt) {
+  const lo = Math.min(0, ...items.map(i => i.v)), hi = Math.max(0, ...items.map(i => i.v));
+  const span = hi - lo || 1, zero = (0 - lo) / span * 100;
+  box.innerHTML = "";
+  for (const it of items) {
+    const v = (it.v - lo) / span * 100;
+    const row = document.createElement("div");
+    row.className = "hb-l";
+    row.innerHTML = `${esc(it.label)}${it.sub ? `<small>${esc(it.sub)}</small>` : ""}`;
+    const track = document.createElement("div");
+    track.className = "hb-t";
+    track.innerHTML = `<div class="hb-z" style="left:${zero}%"></div>` +
+      `<div class="hb-b" style="left:${Math.min(zero, v)}%;width:${Math.abs(v - zero)}%;background:${it.color || toneColor(it.tone)};` +
+      `border-radius:${it.v < 0 ? "4px 0 0 4px" : "0 4px 4px 0"}"></div>`;
+    const value = document.createElement("div");
+    value.className = "hb-v";
+    value.textContent = fmt(it.v);
+    box.append(row, track, value);
+    if (it.tip) hover(track, it.tip);
+  }
+}
+
+/** Segment x price band cells, coloured on a diverging scale capped at `cap` cents. */
+function mix(a, b, t) {
+  const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const [x, y] = [p(a), p(b)];
+  return `rgb(${x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(",")})`;
+}
+const CAP = 8;
+function heatmap(box, rows, view) {
+  const segs = [...new Set(rows.map(r => r.segment))];
+  const bands = [...new Map(rows.map(r => [r.bucket, r])).values()].sort((a, b) => a.bucket - b.bucket);
+  const over = css("--over"), under = css("--under"), neutral = css("--neutral");
+  const grid = document.createElement("div");
+  grid.className = "heat";
+  grid.style.gridTemplateColumns = `minmax(76px,auto) repeat(${bands.length}, minmax(40px,1fr))`;
+  grid.innerHTML = `<div></div>` + bands.map(b => `<div class="h">${band(b.bucket_low, b.bucket_high)}</div>`).join("");
+  segs.forEach((seg, si) => {
+    const mine = rows.filter(r => r.segment === seg);
+    const label = document.createElement("div");
+    label.className = "r";
+    label.innerHTML = `<span>${esc(segName(seg, si, segs.length, view))}</span><small>${int(mine.reduce((a, r) => a + r.n, 0))} contracts</small>`;
+    grid.appendChild(label);
+    for (const b of bands) {
+      const r = mine.find(r => r.bucket === b.bucket);
+      const cell = document.createElement("div");
+      cell.className = "c";
+      if (!r) { grid.appendChild(cell); continue; }
+      const c = r.bias * 100, t = Math.min(1, Math.abs(c) / CAP) * (r.significant ? 1 : 0.3);
+      if (r.underpowered) {
+        cell.classList.add("thin");
+        cell.textContent = "thin";
+      } else {
+        cell.classList.toggle("ns", !r.significant);
+        cell.style.background = mix(neutral, c < 0 ? over : under, t);
+        cell.style.color = t > 0.6 ? "#fff" : r.significant ? css("--ink") : css("--ink2");
+        cell.textContent = signed(c, 1);
+      }
+      hover(cell, tipHTML(`${segName(seg, si, segs.length, view)} · ${band(r.bucket_low, r.bucket_high)}`, [
+        ["Contracts", `${int(r.n)} in ${int(r.n_events)} events`],
+        ["Priced", pct(r.mean_price)], ["Won", pct(r.realized_freq)], ["Gap", cents(r.bias)],
+        ["95% CI", `${cents(r.ci_low - r.mean_price)} to ${cents(r.ci_high - r.mean_price)}`],
+        ["q (BH)", r.underpowered ? "not tested: too few events" : sci(r.q_value) + (r.significant ? "" : ", not significant")],
+      ]));
+      grid.appendChild(cell);
+    }
+  });
+  box.replaceChildren(grid);
+  $("#ramp").style.background = `linear-gradient(90deg, ${over}, ${neutral}, ${under})`;
+  $("#rampLabel").textContent = `${MINUS}${CAP}¢ to +${CAP}¢`;
+}
+function segName(seg, i, n, view) {
+  if (view !== "lifetime") return seg;
+  const m = /([\d.]+)-([\d.]+)h/.exec(seg);
+  if (!m) return seg;
+  const [lo, hi] = [Number(m[1]), Number(m[2])];
+  return i === 0 ? `Under ${hi} h` : i === n - 1 ? `Over ${lo} h` : `${lo}–${hi} h`;
+}
+
+function table(box, head, rows) {
+  box.innerHTML = `<table><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>` +
+    rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("") + "</tbody></table>";
+}
+
+// ------------------------------------------------------------------ sections
+function kpis(S, R) {
+  const items = [];
+  if (S) {
+    const b = S.brier, L = S.logistic, bt = S.backtest;
+    const sig = S.calibration.filter(r => r.significant).length;
+    items.push(
+      ["#s1", b.reliability.toFixed(5), "Calibration error", `${pct(b.reliability / b.brier)} of the Brier score`],
+      ["#s1", L.slope.toFixed(3), "Logistic slope (1 = honest)", `95% CI ${L.slope_ci[0].toFixed(3)}–${L.slope_ci[1].toFixed(3)}`],
+      ["#s1", `${sig} of ${S.calibration.length}`, "Price bands biased", "after Benjamini–Hochberg"],
+      ["#s4", spct(bt.strategy.roi, 2), "Out-of-sample return", `after fees; control ${spct(bt.control.roi)}`],
+      ["#s4", (bt.strategy.breakeven_slippage * 100).toFixed(2) + "¢", "Breakeven slippage", "a contract; erases all profit"],
+    );
+  }
+  if (R) {
+    const k = Object.fromEntries(R.kelly.map(r => [r.scenario, r]));
+    items.push(["#s5", spct(k.live.kelly), "Kelly bet, live-like fills", `${spct(k.recorded.kelly)} at recorded prices`]);
+  }
+  $("#kpis").innerHTML = items.map(([href, v, l, c]) =>
+    `<a class="kpi" href="${href}"><div class="v">${esc(v)}</div><div class="l">${esc(l)}</div><div class="c">${esc(c)}</div></a>`).join("");
+}
+
+function biasRow(r) {
+  const lo = r.ci_low - r.mean_price, hi = r.ci_high - r.mean_price;
+  return {
+    label: band(r.bucket_low, r.bucket_high), short: String(Math.round(r.bucket_low * 100)),
+    v: r.bias * 100, lo: lo * 100, hi: hi * 100, q: r.q_value, sig: r.significant,
+    tone: !r.significant ? "ns" : r.bias < 0 ? "over" : "under", star: stars(r.q_value, r.significant),
+    tip: tipHTML(band(r.bucket_low, r.bucket_high), [
+      ["Contracts", `${int(r.n)} in ${int(r.n_events)} events`], ["Priced", pct(r.mean_price)], ["Won", pct(r.realized_freq)],
+      ["Gap", cents(r.bias)], ["95% CI", `${cents(lo)} to ${cents(hi)}`], ["Design effect", r.design_effect.toFixed(2)],
+      ["q (BH)", sci(r.q_value)],
+    ]),
+  };
+}
+
+function sectionBias(S) {
+  const rows = S.calibration.map(biasRow);
+  mount($("#c1"), box => bandChart(box, rows, {label: "Won minus price by 10-cent price band", xTitle: "Price one hour before close"}));
+  const worst = S.calibration.reduce((a, r) => (Math.abs(r.bias) > Math.abs(a.bias) ? r : a));
+  const sh = S.shape, deff = Math.max(...S.calibration.map(r => r.design_effect));
+  $("#shape1").textContent = `Below 50¢, ${sh.below_overpriced} of ${sh.below} bands are overpriced; above 50¢, ` +
+    `${sh.above_underpriced} of ${sh.above} are underpriced. The largest gap is ${cents(worst.bias)} at ` +
+    `${band(worst.bucket_low, worst.bucket_high)}, ${pct(Math.abs(worst.bias) / worst.mean_price)} of the price. ` +
+    `Contracts in one event move together, which widens the intervals by up to ${deff.toFixed(2)}× (the design effect).`;
+  table($("#t1"), ["Band", "Contracts", "Events", "Priced", "Won", "Gap", "95% CI (clustered)", "Design effect", "q (BH)"],
+    S.calibration.map(r => [band(r.bucket_low, r.bucket_high), int(r.n), int(r.n_events), pct(r.mean_price), pct(r.realized_freq),
+      cents(r.bias), `${cents(r.ci_low - r.mean_price)} to ${cents(r.ci_high - r.mean_price)}`, r.design_effect.toFixed(2),
+      sci(r.q_value) + stars(r.q_value, r.significant)]));
+
+  const b = S.brier, fmt4 = v => (v < 0.001 ? v.toFixed(5) : v.toFixed(4));
+  mount($("#murphy"), box => hbars(box, [
+    {label: "Uncertainty", sub: `the questions' own randomness (base rate ${pct(b.base_rate)})`, v: b.uncertainty, color: css("--ns")},
+    {label: "− Resolution", sub: "the market's skill at telling them apart", v: b.resolution, color: css("--under")},
+    {label: "+ Reliability", sub: "miscalibration", v: b.reliability, color: css("--over")},
+    {label: "= Brier score", sub: "lower is better", v: b.brier, color: css("--ink2")},
+  ], fmt4));
+  $("#murphyNote").textContent = `Miscalibration is ${pct(b.reliability / b.brier)} of the score: the bar too small to see. ` +
+    `(The identity is exact on banded prices; the ${Math.abs(b.binning_residual).toFixed(4)} left over is price variation within bands.)`;
+
+  const L = S.logistic, ci = (c, f) => `[${f(c[0])}, ${f(c[1])}]`, plain = v => v.toFixed(3), sgn = v => signed(v, 3);
+  $("#logit").innerHTML = [
+    ["Slope", `${plain(L.slope)} ${ci(L.slope_ci, plain)}, p = ${sci(L.slope_p)} against 1`],
+    ["Intercept", `${sgn(L.intercept)} ${ci(L.intercept_ci, sgn)}, p = ${sci(L.intercept_p)} against 0`],
+    ["Joint test", `χ²(${L.joint_df}) = ${L.joint_chi2.toFixed(1)}, p = ${sci(L.joint_p)}`],
+    ["Sample", `${int(L.n)} contracts in ${int(L.n_clusters)} events`],
+  ].map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+  $("#logitNote").textContent = "A slope above 1 means the true odds are more extreme than the price: long shots win less often " +
+    "than priced and favorites more often. That is the favorite-longshot bias, found with no bins at all. Standard errors are clustered by event.";
+}
+
+function sectionSegments(S) {
+  let view = "lifetime";
+  const box = $("#c2");
+  mount(box, b => heatmap(b, S.segments[view], view));
+  for (const btn of document.querySelectorAll("#s2 .seg button")) {
+    btn.addEventListener("click", () => {
+      view = btn.dataset.view;
+      document.querySelectorAll("#s2 .seg button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+      heatmap(box, S.segments[view], view);
+    });
+  }
+  const life = S.segments.lifetime, first = life.filter(r => r.segment === life[0].segment && !r.underpowered);
+  const peak = first.reduce((a, r) => (Math.abs(r.bias) > Math.abs(a.bias) ? r : a));
+  const econ = S.segments.category.filter(r => r.segment === "Economics" && r.significant);
+  const econPeak = econ.length ? econ.reduce((a, r) => (Math.abs(r.bias) > Math.abs(a.bias) ? r : a)) : null;
+  const size = r => (Math.abs(r.bias) * 100).toFixed(1) + "¢";
+  $("#lead2").textContent = `Markets open for under ${segName(life[0].segment, 0, 4, "lifetime").replace("Under ", "")} are off by up to ` +
+    `${size(peak)}.` + (econPeak ? ` Outside sports the gap looks larger (Economics: ${size(econPeak)} at ` +
+    `${band(econPeak.bucket_low, econPeak.bucket_high)}), but on only ${int(econPeak.n_events)} events, so that is a lead, not a result.` : "");
+}
+
+function sectionHorizon(S) {
+  const H = S.horizon;
+  if (!H) return false;
+  const conv = rows => rows.map(r => ({...biasRow(r)}));
+  const series = [
+    {name: `${H.late_hours} hour before close`, rows: conv(H.late), color: "--ink", dash: null},
+    {name: `${H.early_hours} hours before close`, rows: conv(H.early), color: "--s2", dash: "5 4"},
+  ];
+  $("#sub3").textContent = `The same ${int(H.late.reduce((a, r) => a + r.n, 0))} contracts, priced ${H.late_hours} hour and ` +
+    `${H.early_hours} hours before close. Points: won minus price; whiskers: 95% interval, clustered by event.`;
+  $("#legend3").innerHTML = series.map(s => `<span><i class="ln" style="border-color:var(${s.color});border-top-style:${s.dash ? "dashed" : "solid"}"></i>${esc(s.name)}</span>`).join("") +
+    `<span><i class="dot" style="background:var(--ink2);border-color:var(--ink2)"></i>Filled: significant after BH</span>` +
+    `<span><i class="dot" style="border-color:var(--ink2)"></i>Hollow: not significant</span>`;
+  mount($("#c3"), box => horizonChart(box, series, "Won minus price by band at two pricing horizons"));
+  const g = H.regression;
+  if (g) {
+    const f = c => `${c.coef.toFixed(3)} ± ${(1.96 * c.se).toFixed(3)}`;
+    table($("#t3"), ["Model", `${H.late_hours}-hour price`, `${H.early_hours}-hour price`], [
+      [`${H.early_hours}-hour price alone`, "—", f(g.early_alone)],
+      [`${H.late_hours}-hour price alone`, f(g.late_alone), "—"],
+      ["Both together", f(g.both.late), f(g.both.early)],
+    ]);
+    $("#collapse").textContent = `${g.early_alone.coef.toFixed(3)} → ${g.both.early.coef.toFixed(3)}`;
+  }
+  return true;
+}
+
+function sectionBacktest(S) {
+  const bt = S.backtest, st = bt.strategy, ct = bt.control;
+  $("#sub4").textContent = `Each band's bias was estimated on the ${int(bt.train)} contracts settled before ${day(bt.split)}, ` +
+    `then traded on the ${int(bt.test)} after it, with Kalshi's taker fee and ${bt.kelly_fraction === 0.5 ? "half" : bt.kelly_fraction + "×"}-Kelly sizing. ` +
+    `The control makes the opposite bets on the same contracts: if the bias is real, it has to lose.`;
+  const series = [
+    {name: "Bias strategy", points: bt.equity.strategy, color: "--under", dash: null},
+    {name: "Control: the opposite bets", points: bt.equity.control, color: "--over", dash: "6 4"},
+  ];
+  $("#legend4").innerHTML = series.map(s => `<span><i class="ln" style="border-color:var(${s.color});border-top-style:${s.dash ? "dashed" : "solid"}"></i>${esc(s.name)}</span>`).join("") +
+    `<span>Bankroll, starting at 1×, by settlement day</span>`;
+  mount($("#c4"), box => equityChart(box, series, "Bankroll over the out-of-sample period, strategy and control"));
+  const feeShare = st.gross_pnl > 0 ? pct(st.fees_paid / st.gross_pnl, 0) : "—";
+  table($("#t4"), ["", "Strategy", "Control"], [
+    ["Return on money deployed", spct(st.roi, 2), spct(ct.roi, 2)],
+    ["Bankroll at the end", times(st.final_equity), times(ct.final_equity)],
+    ["Worst drop", spct(st.max_drawdown), spct(ct.max_drawdown)],
+    ["Bets", int(st.trades), int(ct.trades)],
+    ["Won", pct(st.hit_rate), pct(ct.hit_rate)],
+    ["Fees as share of gross profit", feeShare, "—"],
+    ["Breakeven slippage", (st.breakeven_slippage * 100).toFixed(2) + "¢", "—"],
+  ]);
+  if (bt.train_fraction) {
+    table($("#t4b"), ["Trained on", "Strategy", "Control"],
+      bt.train_fraction.map(r => [`first ${pct(r.threshold, 0)}`, spct(r.roi, 2), spct(r.control_roi, 1)]));
+    const allPos = bt.train_fraction.every(r => r.roi > 0 && r.control_roi < 0);
+    $("#note4").textContent = (allPos ? "Positive at every split, with the control negative at every split. " : "") +
+      `Breakeven slippage is ${(st.breakeven_slippage * 100).toFixed(2)}¢: a fill that much worse per contract erases the ` +
+      "whole profit, and a realistic bid-ask spread is about that wide. The backtest fills at the last trade.";
+  }
+}
+
+function sectionReplication(R) {
+  const w = R.window, s = R.settings;
+  const rows = R.calibration.map(r => {
+    const out = r.lo > r.price || r.hi < r.price;
+    return {
+      label: band(r.low, r.high), short: String(Math.round(r.low * 100)), v: r.gap * 100,
+      lo: (r.lo - r.price) * 100, hi: (r.hi - r.price) * 100, tone: !out ? "ns" : r.gap < 0 ? "over" : "under", star: "",
+      tip: tipHTML(band(r.low, r.high), [["Markets", int(r.n)], ["Priced", pct(r.price)], ["Won", pct(r.actual)],
+        ["Gap", cents(r.gap)], ["95% CI (Wilson)", `${cents(r.lo - r.price)} to ${cents(r.hi - r.price)}`]]),
+    };
+  });
+  $("#sub5").textContent = `${int(R.markets)} crypto, metals and energy markets that settle every 15 minutes, ` +
+    `${dayShort(w.start)} – ${day(w.end)}, each priced at minute ${s.entry_minute}.`;
+  mount($("#c5"), box => bandChart(box, rows, {label: "Won minus price by band, 15-minute markets",
+                                               xTitle: `Price at minute ${s.entry_minute}`}));
+  const below = R.calibration.filter(r => r.high <= 0.5), above = R.calibration.filter(r => r.low >= 0.5);
+  const top = R.calibration[R.calibration.length - 1];
+  $("#shape5").textContent = `The same shape on a timescale about 250× shorter: below 50¢, ${below.filter(r => r.gap < 0).length} of ` +
+    `${below.length} bands overpriced; above, ${above.filter(r => r.gap > 0).length} of ${above.length} underpriced. ` +
+    `Contracts at ${band(top.low, top.high)} won ${pct(top.actual)} of the time against ${pct(top.price)} priced.`;
+  table($("#t5"), ["Band", "Markets", "Priced", "Won", "Gap", "95% CI (Wilson)"],
+    R.calibration.map(r => [band(r.low, r.high), int(r.n), pct(r.price), pct(r.actual), cents(r.gap),
+      `${cents(r.lo - r.price)} to ${cents(r.hi - r.price)}`]));
+
+  const SUBS = {recorded: "as traded", live: "live-like fills", stress: "stress test"};
+  mount($("#kelly"), box => hbars(box, R.kelly.map(k => ({
+    label: k.label, sub: `won ${pct(k.win, 2)} · cost ${pct(k.cost, 2)}`,
+    v: k.kelly, tone: k.kelly < 0 ? "over" : "under",
+    tip: tipHTML(k.label, [["Scenario", SUBS[k.scenario] || k.scenario], ["q, won", pct(k.win, 2)],
+      ["c, all-in cost", pct(k.cost, 2)], ["f*", spct(k.kelly, 1)]]),
+  })), v => spct(v)));
+
+  const periods = [["before", `${dayShort(w.start)} – ${dayShort(dayBefore(w.split))}`],
+                   ["after", `${dayShort(w.split)} – ${dayShort(w.end)}`]];
+  $("#regime").innerHTML = periods.map(([k, label]) => {
+    const p = R.regime[k];
+    return `<div class="tile"><div class="when"><i class="sw" style="background:var(${p.per_bet_cents < 0 ? "--over" : "--under"})"></i>${esc(label)}</div>` +
+      `<div class="stat">${esc(signed(p.per_bet_cents, 1))}¢</div>` +
+      `<div class="note" style="margin:2px 0 0">a $${s.stake} bet · ${int(p.bets)} bets, ${pct(p.lost)} lost</div></div>`;
+  }).join("");
+
+  let period = "after";
+  const seg = $("#stopSeg");
+  seg.innerHTML = periods.map(([k, label]) => `<button type="button" data-k="${k}" aria-pressed="${k === period}">${esc(label)}</button>`).join("");
+  const drawStops = box => hbars(box, R.stops.map(row => {
+    const x = row[period];
+    return {label: `Sell at ≤ ${Math.round(row.level * 100)}¢`, sub: `${int(x.sold)} sold, ${int(x.sold_won)} would have won`,
+            v: x.delta, tone: x.delta < 0 ? "over" : "under",
+            tip: tipHTML(`Sell at ≤ ${Math.round(row.level * 100)}¢`, [["Bets sold", int(x.sold)], ["Would have won", int(x.sold_won)],
+              ["Saved on losers", money(x.saved)], ["Gave up on winners", money(x.gave_up)], ["Net", smoney(x.delta)]])};
+  }), smoney);
+  const stopsChart = mount($("#stops"), drawStops);
+  for (const btn of seg.querySelectorAll("button")) {
+    btn.addEventListener("click", () => {
+      period = btn.dataset.k;
+      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+      stopsChart.draw(stopsChart.box);
+    });
+  }
+
+  const first = R.stops[0], x = first.after;
+  $("#exitText").textContent = `From ${dayShort(w.split)}, ${int(x.sold)} of ${int(R.regime.after.bets)} favorites dipped to ` +
+    `${Math.round(first.level * 100)}¢ or under after minute ${s.entry_minute}, and ${int(x.sold_won)} of them ` +
+    `(${pct(x.sold_won / x.sold, 0)}) went on to win. Selling every one of them saved ${money(x.saved)} on the losers ` +
+    `and gave up ${money(x.gave_up)} on the winners.`;
+  $("#exitTiles").innerHTML = [
+    ["Would have won", pct(x.sold_won / x.sold, 0), "--under"],
+    ["Net cost of selling", smoney(x.delta), "--over"],
+  ].map(([k, v, c]) => `<div class="tile"><div class="when"><i class="sw" style="background:var(${c})"></i>${esc(k)}</div>` +
+    `<div class="stat">${esc(v)}</div></div>`).join("");
+}
+
+function render(data) {
+  const S = data.study, R = data.replication;
+  const missing = Object.entries(data.missing || {});
+  if (missing.length) {
+    $("#missing").innerHTML = missing.map(([k, cmd]) =>
+      `${k === "study" ? "The main study" : "The 15-minute replication"} has not been built yet. Run <code>${esc(cmd)}</code>.`).join("<br>");
+    $("#missing").hidden = false;
+  }
+  const scope = [];
+  if (S) scope.push(`${int(S.data.contracts)} settled contracts across ${int(S.data.events)} events, ` +
+    `${dayShort(S.data.first_close)}, ${parts(S.data.first_close)[0]} – ${day(S.data.last_close)}, each priced ` +
+    `${S.data.horizon_hours} hour before close.`);
+  if (R) scope.push(`Replicated on ${int(R.markets)} fifteen-minute markets, ${dayShort(R.window.start)} – ${day(R.window.end)}.`);
+  $("#scope").textContent = scope.join(" ") || "No results have been built yet.";
+  $("#answer").hidden = !(S && R);
+  kpis(S, R);
+  // Show each section before drawing into it: a chart measures its box, and a hidden box is zero wide.
+  for (const [id, show] of [["#s1", S], ["#s2", S], ["#s3", S && S.horizon], ["#s4", S], ["#s5", R]]) $(id).hidden = !show;
+  if (S) {
+    sectionBias(S);
+    sectionSegments(S);
+    if (S.horizon) sectionHorizon(S);
+    sectionBacktest(S);
+  }
+  if (R) sectionReplication(R);
+  const made = [S && `reports/summary.json (${day(S.generated)})`, R && `reports/replication.json (${day(R.generated)})`].filter(Boolean);
+  $("#foot").innerHTML = (S ? `<p>Methods: event-clustered standard errors with a ${int(S.settings.bootstrap_reps)}-replication cluster ` +
+    `block bootstrap; Benjamini–Hochberg false-discovery-rate correction at ${pct(S.settings.fdr_alpha, 0)}; logistic ` +
+    `recalibration with a joint Wald test; a chronological train/test split with a falsification control; Kelly sizing for binary contracts.</p>` : "") +
+    `<p>Every number on this page is read from ${esc(made.join(" and ")) || "nothing yet"}.</p>`;
+}
+
+// ------------------------------------------------------------------ theme
+const THEMES = ["auto", "light", "dark"];
+let theme = "auto";
+try { theme = localStorage.getItem("findings-theme") || "auto"; } catch (e) { /* storage blocked */ }
+function applyTheme() {
+  if (theme === "auto") delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = theme;
+  $("#theme").textContent = "Theme: " + theme[0].toUpperCase() + theme.slice(1);
+}
+applyTheme();
+$("#theme").addEventListener("click", () => {
+  theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+  try { localStorage.setItem("findings-theme", theme); } catch (e) { /* storage blocked */ }
+  applyTheme();
+  redrawAll();
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (theme === "auto") redrawAll(); });
+
+fetch("/api/findings", {cache: "no-store"})
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(render)
+  .catch(() => {
+    $("#scope").textContent = "";
+    $("#missing").textContent = "Couldn't reach the findings server. Start it with: python dashboard/server.py";
+    $("#missing").hidden = false;
+  });
+})();
+</script>
+</body>
+</html>

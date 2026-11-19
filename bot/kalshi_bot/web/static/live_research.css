@@ -1,0 +1,139 @@
+/*
+ * The Live Research tab (live_research.js), in the dashboard's one fold style (dashboard.html's .fold, as the Live
+ * tab's): each experiment is a hairline panel whose header line holds its name, its verdict's chip and
+ * how far along it is; open, its verdict and figures, then its panels as quiet rows on the card's hairlines (no box in a
+ * box). Tabular figures, one accent, sentence-case labels, explanations held to a readable measure, and gains and losses
+ * that always carry a sign or a word as well as a colour. Light and dark come from the page's tokens, so nothing here
+ * picks a colour of its own. Every rule is scoped to #liveresearch or an .lr- class, so it can't reach the account pages.
+ *
+ * Sizes, spaces and radii keep to the page's scales: type 11 / 12.5 / 13.5 / 15 / 20 / 26 px at 400
+ * or 600, spaces 4 / 8 / 12 / 16 / 24 / 32 px, radii 6 / 10 / 999 px. Everything in a card starts 16px in from its
+ * edge (the fold header, the prose, a table's first column) and a table's last column ends 16px from the other.
+ */
+#liveresearch { display: grid; gap: 32px; min-width: 0; font-variant-numeric: tabular-nums; }
+#liveresearch h2, #liveresearch h3, #liveresearch p, #liveresearch figure { margin: 0; }
+/* a run of folded cards (and the folded Terms after them) reads as one list: 8px apart, where open ones sit 32px apart */
+#liveresearch > .lr-card:has(> .fold[data-open="false"]) + .lr-card:has(> .fold[data-open="false"]),
+#liveresearch > .lr-card:has(> .fold[data-open="false"]) + .fold[data-open="false"] { margin-top: -24px; }
+
+/* ------------------------------------------------------------ the tab's header: its name, the ledger it reads, Open all */
+.lr-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px 16px; flex-wrap: wrap; padding: 4px 0 0; }
+.lr-title { display: grid; gap: 4px; min-width: 0; }
+.lr-title h2 { font: 600 26px/1.1 var(--cond); }
+.lr-title p { max-width: 72ch; font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+.lr-tools { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; }
+.lr-stamp { font: 12.5px var(--mono); color: var(--muted); }
+
+/* ------------------------------------------------------------ an experiment's card: one fold */
+.lr-card { min-width: 0; }
+.lr-exp > .fold-h > .fold-m { display: inline-flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px 12px; }
+.lr-prog { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.lr-top { display: grid; gap: 16px; min-width: 0; padding: 16px 16px 24px; }   /* the verdict, then its figures */
+.lr-verdict { max-width: 72ch; font-size: 15px; line-height: 1.45; font-weight: 600; color: var(--ink); }
+.lr-chip { display: inline-flex; align-items: center; padding: 2px 8px; border: 1px solid var(--line-strong); border-radius: 999px;
+  font: 600 12.5px/1.3 var(--sans); color: var(--ink-2); white-space: nowrap; }
+.lr-chip.up { color: var(--up-ink); border-color: var(--up-line); background: var(--up-wash); }
+.lr-chip.down { color: var(--down-ink); border-color: var(--down-line); background: var(--down-wash); }
+.lr-chip.warn { color: var(--warn-ink); border-color: var(--warn-line); background: var(--warn-wash); }
+
+/* its figures: an open strip, no box around it */
+.lr-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px 24px; }
+.lr-kpi { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.lr-k { font: 400 12.5px/1.3 var(--sans); color: var(--muted); }
+.lr-v { font: 600 20px/1.15 var(--cond); }
+.lr-s { font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+.lr-bar { display: block; height: 4px; margin: 4px 0; border-radius: 999px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+.lr-bar i { display: block; height: 100%; border-radius: 999px; background: var(--ink-2); }   /* how far along: a neutral bar, not a gain */
+
+/* its "How it's measured" and its panels: rows on the card's hairlines, their content under their title */
+.lr-exp .fold { border: 0; border-top: 1px solid var(--line); border-radius: 0; background: none; }
+.lr-exp .fold .fold-h { min-height: 44px; }
+.lr-exp .fold .fold-t { font-size: 13.5px; }   /* a step under the card's own title */
+.lr-exp .fold .fold-body { border-top: 0; }
+.lr-n { margin-left: 8px; font: 400 12.5px var(--sans); color: var(--muted); }
+.lr-pb { display: grid; gap: 12px; min-width: 0; padding: 0 16px 16px; }
+.lr-pb > .lr-tw { margin: 0 -16px; }   /* a table reaches the card's edges, so its first column lines up with the prose */
+.lr-flush { min-width: 0; padding-bottom: 8px; }
+.lr-lede { max-width: 72ch; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.lr-lede b { color: var(--ink); font-weight: 600; }
+.lr-lede code, .lr-note code { overflow-wrap: anywhere; }
+.lr-note { max-width: 72ch; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.lr-note b { color: var(--ink-2); font-weight: 600; }
+/* .lr-caveat (what the measure can't show) is a plain note: no wash, no stripe; its lead-in carries the warning */
+.lr-caveat b { color: var(--warn-ink); }
+.lr-muted { color: var(--muted); }
+.lr-wait { padding: 24px 16px; text-align: center; font-size: 13.5px; color: var(--muted); }
+.lr-alert { border-radius: 10px; padding: 12px 16px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); background: var(--down-wash); border: 1px solid var(--down-line); }
+.lr-alert b { color: var(--down-ink); }
+.lr-alert.warn { background: var(--warn-wash); border-color: var(--warn-line); }
+.lr-alert.warn b { color: var(--warn-ink); }
+
+/* ------------------------------------------------------------ tables: they scroll inside their row, never the page */
+.lr-tw { overflow-x: auto; min-width: 0; }
+.lr-t { width: 100%; max-width: 760px; border-collapse: collapse; font-size: 13.5px; line-height: 20px; }   /* a figure stays near its label */
+.lr-t th { letter-spacing: 0; text-transform: none; }   /* the page sets table heads in capitals; here they read as plain labels */
+.lr-t thead th { padding: 8px 12px; border-bottom: 1px solid var(--line); font: 600 12.5px/1.3 var(--sans); color: var(--muted);
+  text-align: left; white-space: nowrap; vertical-align: bottom; }
+.lr-t thead th.lr-num { text-align: right; }
+.lr-t thead .lr-sub { font-weight: 400; }
+.lr-t td, .lr-t tbody th { padding: 8px 12px; border-top: 0; border-bottom: 1px solid var(--line); vertical-align: top; }   /* the page rules borders on top */
+.lr-t tr > :first-child { padding-left: 16px; }   /* the card's edge */
+.lr-t tr > :last-child { padding-right: 16px; }
+.lr-t tbody th { min-width: 150px; text-align: left; font: 400 13.5px/20px var(--sans); color: var(--ink-2); }
+.lr-t tbody tr:last-child > * { border-bottom: 0; }
+.lr-t tbody tr:hover > * { background: var(--hover); }
+.lr-t .lr-num { text-align: right; white-space: nowrap; }
+.lr-t td.lr-num b { font-weight: 600; color: var(--ink); }
+.lr-t td.up, .lr-t td .up { color: var(--up-ink); }
+.lr-t td.down, .lr-t td .down { color: var(--down-ink); }
+.lr-t td.part { color: var(--warn-ink); }
+.lr-t td.lr-muted, .lr-t td.lr-muted b { color: var(--muted); }   /* an empty cell's dash recedes */
+.lr-sub { display: block; margin-top: 2px; font: 12.5px/1.35 var(--sans); color: var(--muted); white-space: normal; }
+.lr-t .lr-num .lr-sub { white-space: nowrap; }   /* a figure's sub-line stays on one line; the row's gloss wraps instead */
+.lr-t tr.lr-key > * { background: var(--surface-2); }
+.lr-t tr.lr-key > th { color: var(--ink); font-weight: 600; }
+.lr-orders { min-width: 860px; max-width: none; }
+.lr-when { white-space: nowrap; }
+.lr-tk { font: 11px var(--mono); white-space: nowrap; }
+.lr-side { display: inline-block; min-width: 32px; padding: 1px 8px; border-radius: 999px; font: 600 11px/16px var(--sans); letter-spacing: 0.06em;
+  text-transform: uppercase; text-align: center; color: var(--ink-2); background: var(--surface-2); }
+.lr-side.yes { color: var(--up-ink); background: var(--up-wash); }
+.lr-side.no { color: var(--down-ink); background: var(--down-wash); }
+
+/* ------------------------------------------------------------ ¢ per $10 with its 95% range, against zero */
+.lr-plot { display: grid; gap: 8px; padding-top: 4px; max-width: 720px; }
+.lr-prow { display: grid; grid-template-columns: 52px minmax(0, 1fr) 64px; gap: 12px; align-items: center; font-size: 12.5px; }
+.lr-plab { font-weight: 600; color: var(--ink-2); }
+.lr-pval { text-align: right; font: 600 12.5px var(--sans); color: var(--ink); }
+.lr-track { position: relative; height: 18px; border-radius: 6px; background: var(--surface-2); }
+.lr-zero { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--line-strong); }
+.lr-whisk { position: absolute; top: 50%; height: 2px; margin-top: -1px; border-radius: 999px; background: var(--ink-2); }
+.lr-whisk::before, .lr-whisk::after { content: ""; position: absolute; top: -4px; width: 2px; height: 10px; border-radius: 999px; background: inherit; }
+.lr-whisk::before { left: -1px; }
+.lr-whisk::after { right: -1px; }
+.lr-dot { position: absolute; top: 50%; width: 10px; height: 10px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px var(--surface-2); }
+.lr-whisk.up, .lr-dot.up { background: var(--up); }
+.lr-whisk.down, .lr-dot.down { background: var(--down); }
+.lr-axis { font: 11px var(--mono); color: var(--muted); }
+.lr-ticks { display: flex; justify-content: space-between; }
+.lr-plot figcaption { margin-top: 2px; }
+
+/* ------------------------------------------------------------ terms */
+.lr-dl { display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 1fr); max-width: 1040px; margin: 0; padding: 0 16px 8px; }
+.lr-dl dt, .lr-dl dd { padding: 12px 0; border-top: 1px solid var(--line); }
+.lr-dl dt:first-of-type, .lr-dl dd:first-of-type { border-top: 0; }
+.lr-dl dt { padding-right: 16px; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.lr-dl dd { margin: 0; max-width: 72ch; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+
+/* ------------------------------------------------------------ a phone: one narrow column, the meta under each title */
+@media (max-width: 560px) {
+  .lr-exp > .fold-h > .fold-m { justify-content: flex-start; }
+  .lr-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .lr-t tbody th { min-width: 120px; }
+  .lr-t:not(.lr-orders) .lr-num .lr-sub { white-space: normal; }   /* narrow figures leave the row's label room to read */
+  /* a wide table scrolls sideways under its first column, which stays in view on the panel's own colour */
+  .lr-t tr > :first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); }
+  .lr-t tbody tr.lr-key > th { background: var(--surface-2); }
+  .lr-dl { grid-template-columns: minmax(0, 1fr); }
+  .lr-dl dd { border-top: 0; padding-top: 0; }
+}

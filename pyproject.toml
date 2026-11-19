@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kalshi-calibration"
+version = "0.1.0"
+description = "Calibration and the favourite-longshot bias in Kalshi prediction-market prices"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "amandipd" }]
+dependencies = [
+    "httpx",
+    "tenacity",
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "pydantic>=2",
+    "pyyaml",
+    "scipy",
+    "statsmodels",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "hypothesis",
+    "coverage",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["kalshi_calibration"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+# Test files are test_*.py only. pytest's default also collects *_test.py, which would import research scripts such
+# as research/kalshi_15min/band_weight_test.py as test files whenever that whole folder is collected.
+python_files = ["test_*.py"]
+
+# `make coverage`: line and branch coverage of the study and the 15-minute research (the bot's run passes its own
+# --source). The research tests run several scripts in their own process; patch = subprocess measures those too.
+[tool.coverage.run]
+branch = true
+parallel = true
+patch = ["subprocess"]
+source = ["kalshi_calibration", "dashboard", "research/kalshi_15min"]
+omit = ["*/tests/*", "*/.hypothesis/*"]
+
+[tool.coverage.report]
+# A module's `main()` call under this guard runs only when it is started as a script; the tests call main() itself.
+exclude_also = ['if __name__ == .__main__.:']
+show_missing = true
+skip_covered = true

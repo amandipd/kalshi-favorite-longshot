@@ -1,0 +1,185 @@
+10432 markets, 2026-09-01 to 2026-10-25; 37335 checkpoint bets, 6078895 last-minute favourite buys
+
+=== bets: one per market at each checkpoint (seconds before the close) ===
+
+-- 90s left --
+ 50-80c n=  1487 win= 65.30% price= 66.41c edge= -2.62c/contract  -3.94c/$1 t= -2.13
+ 80-90c n=   791 win= 83.57% price= 84.73c edge= -2.06c/contract  -2.43c/$1 t= -1.52
+ 90-95c n=   834 win= 91.25% price= 92.42c edge= -1.66c/contract  -1.80c/$1 t= -1.65
+ 95-98c n=  1038 win= 95.86% price= 96.74c edge= -1.11c/contract  -1.14c/$1 t= -1.79
+ 98-99c n=   871 win= 98.62% price= 98.52c edge= +0.00c/contract  +0.00c/$1 t= +0.01
+   99c+ n=  4726 win= 99.66% price= 99.69c edge= -0.05c/contract  -0.05c/$1 t= -0.56
+
+-- 60s left --
+ 50-80c n=   957 win= 66.67% price= 66.17c edge= -1.02c/contract  -1.54c/$1 t= -0.67
+ 80-90c n=   522 win= 85.63% price= 84.82c edge= -0.08c/contract  -0.10c/$1 t= -0.05
+ 90-95c n=   551 win= 94.74% price= 92.36c edge= +1.88c/contract  +2.04c/$1 t= +1.99
+ 95-98c n=   733 win= 96.04% price= 96.76c edge= -0.93c/contract  -0.96c/$1 t= -1.25
+ 98-99c n=   643 win= 97.82% price= 98.50c edge= -0.79c/contract  -0.80c/$1 t= -1.37
+   99c+ n=  4798 win= 99.67% price= 99.74c edge= -0.10c/contract  -0.10c/$1 t= -1.08
+
+-- 45s left --
+ 50-80c n=   585 win= 65.30% price= 66.06c edge= -2.29c/contract  -3.46c/$1 t= -1.19
+ 80-90c n=   363 win= 90.91% price= 84.78c edge= +5.23c/contract  +6.17c/$1 t= +3.47
+ 90-95c n=   373 win= 94.10% price= 92.50c edge= +1.12c/contract  +1.21c/$1 t= +0.92
+ 95-98c n=   469 win= 98.08% price= 96.79c edge= +1.07c/contract  +1.11c/$1 t= +1.70
+ 98-99c n=   451 win= 98.45% price= 98.51c edge= -0.17c/contract  -0.17c/$1 t= -0.29
+   99c+ n=  4523 win= 99.76% price= 99.78c edge= -0.04c/contract  -0.04c/$1 t= -0.53
+
+-- 30s left --
+ 50-80c n=   322 win= 62.42% price= 65.07c edge= -4.19c/contract  -6.45c/$1 t= -1.61
+ 80-90c n=   183 win= 85.79% price= 85.03c edge= -0.12c/contract  -0.14c/$1 t= -0.05
+ 90-95c n=   198 win= 93.43% price= 92.41c edge= +0.53c/contract  +0.57c/$1 t= +0.30
+ 95-98c n=   293 win= 97.95% price= 96.77c edge= +0.96c/contract  +0.99c/$1 t= +1.16
+ 98-99c n=   275 win= 98.18% price= 98.50c edge= -0.42c/contract  -0.42c/$1 t= -0.52
+   99c+ n=  3315 win= 99.88% price= 99.79c edge= +0.07c/contract  +0.07c/$1 t= +1.20
+
+-- 20s left --
+ 50-80c n=   209 win= 65.55% price= 65.76c edge= -1.74c/contract  -2.64c/$1 t= -0.55
+ 80-90c n=    99 win= 91.92% price= 84.74c edge= +6.28c/contract  +7.41c/$1 t= +2.35
+ 90-95c n=    85 win= 97.65% price= 92.68c edge= +4.49c/contract  +4.85c/$1 t= +2.76
+ 95-98c n=   153 win= 98.04% price= 96.83c edge= +0.99c/contract  +1.03c/$1 t= +0.89
+ 98-99c n=   185 win=100.00% price= 98.54c edge= +1.36c/contract  +1.38c/$1 t=+66.89
+   99c+ n=  2898 win= 99.83% price= 99.81c edge= +0.00c/contract  +0.00c/$1 t= +0.04
+
+-- 10s left --
+ 50-80c n=    64 win= 68.75% price= 66.95c edge= +0.30c/contract  +0.44c/$1 t= +0.05
+ 80-90c n=    33 win= 90.91% price= 84.52c edge= +5.48c/contract  +6.49c/$1 t= +1.10
+ 90-95c n=    43 win= 95.35% price= 93.01c edge= +1.89c/contract  +2.03c/$1 t= +0.59
+ 95-98c n=    73 win= 98.63% price= 96.65c edge= +1.75c/contract  +1.81c/$1 t= +1.30
+ 98-99c n=    86 win=100.00% price= 98.54c edge= +1.36c/contract  +1.38c/$1 t=+39.87
+   99c+ n=  2171 win=100.00% price= 99.83c edge= +0.15c/contract  +0.15c/$1 t=+44.71
+
+-- 5s left --
+ 50-80c n=   22  too few
+ 80-90c n=   13  too few
+ 90-95c n=   18  too few
+ 95-98c n=    34 win= 97.06% price= 96.74c edge= +0.09c/contract  +0.10c/$1 t= +0.03
+ 98-99c n=    48 win=100.00% price= 98.60c edge= +1.30c/contract  +1.32c/$1 t=+33.30
+   99c+ n=  1800 win=100.00% price= 99.86c edge= +0.13c/contract  +0.13c/$1 t=+44.32
+
+=== buys: every favourite buy in the last minute, by contracts ===
+
+-- 60-30s left --
+ 50-80c n=802530 win= 66.98% price= 65.98c edge= -0.52c/contract  -0.79c/$1 t= -0.43 $32,364,623
+ 80-90c n=464578 win= 87.31% price= 84.88c edge= +1.54c/contract  +1.81c/$1 t= +1.46 $24,453,169
+ 90-95c n=578489 win= 92.65% price= 92.42c edge= -0.26c/contract  -0.28c/$1 t= -0.28 $30,078,682
+ 95-98c n=646393 win= 96.93% price= 96.68c edge= +0.02c/contract  +0.02c/$1 t= +0.05 $37,120,938
+ 98-99c n=547484 win= 97.86% price= 98.53c edge= -0.78c/contract  -0.79c/$1 t= -1.71 $40,841,753
+   99c+ n=1296819 win= 99.60% price= 99.78c edge= -0.19c/contract  -0.19c/$1 t= -1.41 $385,161,222
+
+-- 30-10s left --
+ 50-80c n=204888 win= 65.23% price= 65.15c edge= -1.46c/contract  -2.24c/$1 t= -0.58 $ 9,608,584
+ 80-90c n=107500 win= 87.63% price= 84.96c edge= +1.78c/contract  +2.10c/$1 t= +0.97 $ 6,364,987
+ 90-95c n=147755 win= 95.57% price= 92.48c edge= +2.61c/contract  +2.82c/$1 t= +3.30 $ 8,949,481
+ 95-98c n=190973 win= 98.12% price= 96.75c edge= +1.15c/contract  +1.19c/$1 t= +2.31 $12,771,612
+ 98-99c n=221372 win= 98.94% price= 98.56c edge= +0.28c/contract  +0.29c/$1 t= +0.81 $18,473,807
+   99c+ n=626024 win= 99.78% price= 99.74c edge= +0.02c/contract  +0.02c/$1 t= +0.20 $139,917,746
+
+-- 10-0s left --
+ 50-80c n= 14778 win= 68.85% price= 65.96c edge= +1.38c/contract  +2.09c/$1 t= +0.24 $ 1,026,202
+ 80-90c n= 10894 win= 93.04% price= 84.97c edge= +7.18c/contract  +8.45c/$1 t= +2.84 $ 1,013,478
+ 90-95c n= 16970 win= 96.79% price= 92.58c edge= +3.73c/contract  +4.03c/$1 t= +2.81 $ 1,600,655
+ 95-98c n= 26169 win= 98.49% price= 96.70c edge= +1.57c/contract  +1.62c/$1 t= +1.85 $ 2,478,597
+ 98-99c n= 31926 win= 99.30% price= 98.58c edge= +0.62c/contract  +0.63c/$1 t= +1.04 $ 3,300,223
+   99c+ n=143353 win=100.00% price= 99.72c edge= +0.26c/contract  +0.26c/$1 t=+37.84 $30,878,730
+
+=== checks on the cells where the bet is far from luck either way (|t| > 2) ===
+
+bets 90s 50-80c: n=  1487 win= 65.30% price= 66.41c edge= -2.62c/contract  -3.94c/$1 t= -2.13
+                     older half n=   781 win= 65.43% price= 65.90c edge= -2.00c/contract  -3.03c/$1 t= -1.19
+                     newer half n=   706 win= 65.16% price= 66.96c edge= -3.31c/contract  -4.94c/$1 t= -1.82
+                            BTC n=   809 win= 61.93% price= 66.15c edge= -5.75c/contract  -8.68c/$1 t= -3.41
+                            ETH n=   678 win= 69.32% price= 66.71c edge= +1.11c/contract  +1.66c/$1 t= +0.64
+    without best day 2026-09-30 n=  1452 win= 64.74% price= 66.40c edge= -3.17c/contract  -4.78c/$1 t= -2.54
+
+bets 45s 80-90c: n=   363 win= 90.91% price= 84.78c edge= +5.23c/contract  +6.17c/$1 t= +3.47
+                     older half n=   191 win= 90.05% price= 84.81c edge= +4.35c/contract  +5.13c/$1 t= +2.04
+                     newer half n=   172 win= 91.86% price= 84.76c edge= +6.21c/contract  +7.32c/$1 t= +2.92
+                            BTC n=   187 win= 91.44% price= 84.72c edge= +5.82c/contract  +6.87c/$1 t= +2.81
+                            ETH n=   176 win= 90.34% price= 84.85c edge= +4.60c/contract  +5.42c/$1 t= +2.08
+    without best day 2026-09-08 n=   352 win= 90.62% price= 84.76c edge= +4.97c/contract  +5.86c/$1 t= +3.20
+
+bets 20s 80-90c: n=    99 win= 91.92% price= 84.74c edge= +6.28c/contract  +7.41c/$1 t= +2.35
+                     older half n=    49 win= 95.92% price= 84.67c edge=+10.34c/contract +12.21c/$1 t= +3.74
+                     newer half n=    50 win= 88.00% price= 84.80c edge= +2.30c/contract  +2.72c/$1 t= +0.51
+                            BTC n=    51 win= 94.12% price= 84.82c edge= +8.40c/contract  +9.90c/$1 t= +2.60
+                            ETH n=    48 win= 89.58% price= 84.65c edge= +4.03c/contract  +4.76c/$1 t= +0.94
+    without best day 2026-09-08 n=    92 win= 91.30% price= 84.79c edge= +5.61c/contract  +6.62c/$1 t= +1.96
+
+bets 20s 90-95c: n=    85 win= 97.65% price= 92.68c edge= +4.49c/contract  +4.85c/$1 t= +2.76
+                     older half n=    40 win= 95.00% price= 92.85c edge= +1.68c/contract  +1.81c/$1 t= +0.50
+                     newer half n=    45 win=100.00% price= 92.53c edge= +6.99c/contract  +7.55c/$1 t=+31.93
+                            BTC n=    49 win=100.00% price= 92.77c edge= +6.76c/contract  +7.29c/$1 t=+35.15
+                            ETH n=    36 win= 94.44% price= 92.56c edge= +1.40c/contract  +1.51c/$1 t= +0.37
+    without best day 2026-10-13 n=    80 win= 97.50% price= 92.67c edge= +4.36c/contract  +4.70c/$1 t= +2.53
+
+bets 20s 98-99c: n=   185 win=100.00% price= 98.54c edge= +1.36c/contract  +1.38c/$1 t=+66.89
+                     older half n=    88 win=100.00% price= 98.52c edge= +1.38c/contract  +1.40c/$1 t=+42.79
+                     newer half n=    97 win=100.00% price= 98.55c edge= +1.35c/contract  +1.37c/$1 t=+52.70
+                            BTC n=   117 win=100.00% price= 98.54c edge= +1.36c/contract  +1.38c/$1 t=+54.39
+                            ETH n=    68 win=100.00% price= 98.54c edge= +1.36c/contract  +1.38c/$1 t=+39.93
+    without best day 2026-09-12 n=   175 win=100.00% price= 98.54c edge= +1.36c/contract  +1.38c/$1 t=+64.93
+
+bets 10s 98-99c: n=    86 win=100.00% price= 98.54c edge= +1.36c/contract  +1.38c/$1 t=+39.87
+                     older half n=    51 win=100.00% price= 98.47c edge= +1.42c/contract  +1.44c/$1 t=+29.02
+                     newer half n=    35 win=100.00% price= 98.64c edge= +1.26c/contract  +1.28c/$1 t=+33.84
+                            BTC n=    53 win=100.00% price= 98.55c edge= +1.35c/contract  +1.37c/$1 t=+35.07
+                            ETH n=    33 win=100.00% price= 98.53c edge= +1.37c/contract  +1.39c/$1 t=+22.67
+    without best day 2026-09-12 n=    76 win=100.00% price= 98.56c edge= +1.35c/contract  +1.36c/$1 t=+38.28
+
+bets 10s 99c+: n=  2171 win=100.00% price= 99.83c edge= +0.15c/contract  +0.15c/$1 t=+44.71
+                     older half n=  1162 win=100.00% price= 99.84c edge= +0.15c/contract  +0.15c/$1 t=+32.17
+                     newer half n=  1009 win=100.00% price= 99.83c edge= +0.16c/contract  +0.16c/$1 t=+31.06
+                            BTC n=  1226 win=100.00% price= 99.82c edge= +0.17c/contract  +0.17c/$1 t=+33.48
+                            ETH n=   945 win=100.00% price= 99.85c edge= +0.14c/contract  +0.14c/$1 t=+30.35
+    without best day 2026-09-12 n=  2085 win=100.00% price= 99.84c edge= +0.15c/contract  +0.15c/$1 t=+44.38
+
+bets 5s 98-99c: n=    48 win=100.00% price= 98.60c edge= +1.30c/contract  +1.32c/$1 t=+33.30
+                     older half n=   27  too few
+                     newer half n=   21  too few
+                            BTC n=   23  too few
+                            ETH n=   25  too few
+    without best day 2026-09-16 n=    45 win=100.00% price= 98.62c edge= +1.29c/contract  +1.30c/$1 t=+31.77
+
+bets 5s 99c+: n=  1800 win=100.00% price= 99.86c edge= +0.13c/contract  +0.13c/$1 t=+44.32
+                     older half n=   955 win=100.00% price= 99.86c edge= +0.13c/contract  +0.13c/$1 t=+33.39
+                     newer half n=   845 win=100.00% price= 99.85c edge= +0.14c/contract  +0.14c/$1 t=+29.42
+                            BTC n=  1029 win=100.00% price= 99.85c edge= +0.14c/contract  +0.14c/$1 t=+33.70
+                            ETH n=   771 win=100.00% price= 99.86c edge= +0.13c/contract  +0.13c/$1 t=+29.78
+    without best day 2026-09-12 n=  1719 win=100.00% price= 99.86c edge= +0.13c/contract  +0.13c/$1 t=+43.15
+
+buys 30-10s 90-95c: n=147755 win= 95.57% price= 92.48c edge= +2.61c/contract  +2.82c/$1 t= +3.30 $ 8,949,481
+                     older half n= 63817 win= 94.62% price= 92.47c edge= +1.66c/contract  +1.79c/$1 t= +1.26 $ 4,052,157
+                     newer half n= 83938 win= 96.37% price= 92.49c edge= +3.39c/contract  +3.67c/$1 t= +3.62 $ 4,897,324
+                            BTC n=128254 win= 95.57% price= 92.48c edge= +2.61c/contract  +2.83c/$1 t= +3.06 $ 8,211,919
+                            ETH n= 19501 win= 95.56% price= 92.54c edge= +2.54c/contract  +2.75c/$1 t= +2.14 $   737,562
+    without best day 2026-09-18 n=144515 win= 95.42% price= 92.48c edge= +2.46c/contract  +2.66c/$1 t= +3.01 $ 8,656,703
+
+buys 30-10s 95-98c: n=190973 win= 98.12% price= 96.75c edge= +1.15c/contract  +1.19c/$1 t= +2.31 $12,771,612
+                     older half n= 85246 win= 98.34% price= 96.74c edge= +1.38c/contract  +1.43c/$1 t= +2.21 $ 5,970,950
+                     newer half n=105727 win= 97.92% price= 96.75c edge= +0.95c/contract  +0.98c/$1 t= +1.26 $ 6,800,662
+                            BTC n=164664 win= 98.15% price= 96.75c edge= +1.18c/contract  +1.22c/$1 t= +2.24 $11,926,884
+                            ETH n= 26309 win= 97.66% price= 96.77c edge= +0.67c/contract  +0.69c/$1 t= +0.71 $   844,728
+    without best day 2026-09-05 n=183863 win= 98.04% price= 96.74c edge= +1.07c/contract  +1.11c/$1 t= +2.07 $12,252,180
+
+buys 10-0s 80-90c: n= 10894 win= 93.04% price= 84.97c edge= +7.18c/contract  +8.45c/$1 t= +2.84 $ 1,013,478
+                     older half n=  4738 win= 94.64% price= 85.04c edge= +8.71c/contract +10.24c/$1 t= +2.51 $   566,202
+                     newer half n=  6156 win= 91.01% price= 84.87c edge= +5.25c/contract  +6.19c/$1 t= +1.49 $   447,276
+                            BTC n=  9185 win= 93.98% price= 84.97c edge= +8.12c/contract  +9.56c/$1 t= +2.92 $   887,125
+                            ETH n=  1709 win= 86.43% price= 84.94c edge= +0.59c/contract  +0.70c/$1 t= +0.14 $   126,353
+    without best day 2026-09-22 n= 10083 win= 92.06% price= 85.03c edge= +6.15c/contract  +7.24c/$1 t= +2.22 $   890,147
+
+buys 10-0s 90-95c: n= 16970 win= 96.79% price= 92.58c edge= +3.73c/contract  +4.03c/$1 t= +2.81 $ 1,600,655
+                     older half n=  9512 win= 96.90% price= 92.70c edge= +3.73c/contract  +4.02c/$1 t= +1.98 $   957,849
+                     newer half n=  7458 win= 96.62% price= 92.40c edge= +3.73c/contract  +4.04c/$1 t= +2.14 $   642,806
+                            BTC n= 14033 win= 97.36% price= 92.56c edge= +4.32c/contract  +4.67c/$1 t= +3.10 $ 1,462,581
+                            ETH n=  2937 win= 90.67% price= 92.80c edge= -2.59c/contract  -2.79c/$1 t= -0.77 $   138,074
+    without best day 2026-09-15 n= 15822 win= 96.52% price= 92.61c edge= +3.43c/contract  +3.70c/$1 t= +2.42 $ 1,479,346
+
+buys 10-0s 99c+: n=143353 win=100.00% price= 99.72c edge= +0.26c/contract  +0.26c/$1 t=+37.84 $30,878,730
+                     older half n= 66688 win=100.00% price= 99.69c edge= +0.29c/contract  +0.29c/$1 t=+25.67 $13,218,022
+                     newer half n= 76665 win=100.00% price= 99.74c edge= +0.24c/contract  +0.24c/$1 t=+27.15 $17,660,708
+                            BTC n=127705 win=100.00% price= 99.72c edge= +0.26c/contract  +0.26c/$1 t=+36.54 $29,803,789
+                            ETH n= 15648 win=100.00% price= 99.71c edge= +0.27c/contract  +0.27c/$1 t=+23.48 $ 1,074,941
+    without best day 2026-09-12 n=136537 win=100.00% price= 99.72c edge= +0.26c/contract  +0.26c/$1 t=+39.11 $29,183,738

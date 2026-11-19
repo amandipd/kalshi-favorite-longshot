@@ -1,0 +1,157 @@
+/*
+ * The Tape page's detail panels (tape_panels.js): the left panel's Live markets, Orders, Fill rate, By market and Rules
+ * tabs. A dark trading-terminal look: dense tables, mono tabular figures, small sentence-case column headers
+ * in --muted, hairline row dividers, green and red only for gains, losses and the buying range. Only tape.html's tokens.
+ * Every class starts "tp-"; the board's flash classes (fl-up, fl-down, fl-flip, named by SPEC_TAPE.md) are only styled
+ * under .tp-br. Each panel's root (.tp) is a size container, so its columns thin out by the panel's own width, not the
+ * screen's, and a wide table scrolls sideways in its own box (.tp-wrap), never the page.
+ */
+.tp { container: tp / inline-size; padding-bottom: 12px; font-size: var(--fs-12); line-height: 1.45; color: var(--ink-2); }
+.tp p { margin: 0; }
+.tp b { font-weight: 500; color: var(--ink); }
+
+/* ------------------------------------------------------------------ headings, notes, summary lines, empty states */
+.tp-sh { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 0; padding: 14px 16px 6px; font-size: var(--fs-14); font-weight: 500; color: var(--ink); }
+.tp-gh { margin: 0; padding: 12px 16px 6px; font-size: var(--fs-12); font-weight: 500; color: var(--ink); }
+.tp-n { font: 400 var(--fs-12) var(--mono); color: var(--muted); }              /* a count beside a heading */
+.tp-hn { font-size: var(--fs-12); font-weight: 400; color: var(--muted); }      /* a word beside a heading */
+.tp-note { max-width: 92ch; padding: 0 16px 10px; color: var(--muted); }
+.tp-board > .tp-note { padding-top: 10px; padding-bottom: 0; }
+.tp-meta { display: grid; gap: 2px; padding: 10px 16px; color: var(--ink-2); }
+.tp-meta > span { display: block; }
+.tp-empty { max-width: 72ch; padding: 16px; color: var(--muted); }
+.tp-empty p:first-child { color: var(--ink-2); }
+.tp-empty p + p { margin-top: 4px; }
+.tp-nw { white-space: nowrap; }
+.tp-sec { min-width: 0; }
+.tp-orders .tp-sec { margin-top: 8px; border-top: 1px solid var(--line-soft); }
+
+/* ------------------------------------------------------------------ tables */
+.tp-wrap { overflow-x: auto; overscroll-behavior-x: contain; }
+.tp-t { width: 100%; border-collapse: collapse; font-size: var(--fs-12); }
+.tp-t th { padding: 6px 12px; font-weight: 400; color: var(--muted); text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line-soft); }
+.tp-t td { height: 28px; padding: 4px 12px; line-height: 16px; text-align: right; vertical-align: middle; white-space: nowrap;
+  font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.tp-t tbody tr + tr td { border-top: 1px solid var(--line-soft); }
+.tp-t th.tp-l, .tp-t td.tp-l { text-align: left; font-family: var(--sans); }
+.tp-t th:first-child, .tp-t td:first-child { padding-left: 16px; }
+.tp-t th:last-child, .tp-t td:last-child { padding-right: 16px; }
+.tp-t tbody tr:hover td { background-color: var(--raised); }
+.tp-t td.up { color: var(--win); }
+.tp-t td.down { color: var(--loss); }
+.tp-t td.muted { color: var(--muted); }
+.tp-t th[title] { cursor: help; }
+.tp-s { display: block; font-size: var(--fs-10); line-height: 14px; color: var(--muted); }   /* a second, quieter line in a cell */
+.tp-s.up { color: var(--win); }
+.tp-s.down { color: var(--loss); }
+.tp-os { display: none; }                         /* words only a narrow panel shows, for a column it hides (.tp-hs) */
+.tp-mk { color: var(--ink); font-weight: 500; text-decoration: none; }
+.tp-mk:hover { text-decoration: underline; text-underline-offset: 2px; }
+.tp-side { display: inline-block; min-width: 24px; padding: 0 5px; border-radius: var(--r-panel); background: rgba(var(--slate), 0.2);
+  font: 500 var(--fs-10)/16px var(--sans); color: var(--ink-2); text-align: center; }
+.tp-px { font-family: var(--mono); color: var(--ink); }
+.tp-t td.tp-part, .tp-t td.tp-none { color: var(--warn); }   /* an order that filled in part, or not at all */
+
+/* ------------------------------------------------------------------ live markets */
+.tp-bgs { columns: 2 600px; column-gap: 0; column-rule: 1px solid var(--line-soft); }   /* two columns once each fits a whole table */
+.tp-bg { break-inside: avoid; }
+.tp-bt th, .tp-bt td { padding-left: 10px; padding-right: 10px; }
+.tp-bt td { height: 30px; }
+.tp-fav { display: inline-flex; align-items: center; gap: 6px; }
+.tp-in { padding: 0 5px; border-radius: var(--r-panel); background: var(--win-wash); color: var(--win); font: 500 var(--fs-10)/16px var(--sans); }
+.tp-br.tp-inr td:first-child { background-image: linear-gradient(var(--win), var(--win)); background-size: 2px 100%; background-repeat: no-repeat; }
+.tp-tick { font-style: normal; font-size: var(--fs-10); line-height: 1; }
+.tp-tick.tp-flip { color: var(--warn); }
+.tp-t .tp-tr { width: 1%; }                       /* the trend column hugs its line */
+.tp-spark { display: block; margin-left: auto; width: 84px; height: 20px; overflow: visible; }
+.tp-spark path { fill: none; stroke: var(--ink-2); stroke-width: 1.25; stroke-linejoin: round; stroke-linecap: round; }
+.tp-spark circle { fill: var(--ink); }
+/* a favourite that moved since the last read: its row lights briefly (green up, red down, amber when it switched sides) */
+@keyframes tp-fl-up { from { background-color: var(--win-wash); } }
+@keyframes tp-fl-down { from { background-color: var(--loss-wash); } }
+@keyframes tp-fl-flip { from { background-color: var(--warn-wash); } }
+.tp-br.fl-up td { animation: tp-fl-up 0.8s ease-out; }
+.tp-br.fl-down td { animation: tp-fl-down 0.8s ease-out; }
+.tp-br.fl-flip td { animation: tp-fl-flip 0.8s ease-out; }
+
+/* ------------------------------------------------------------------ orders: fills by order size */
+.tp-szt, .tp-pt { width: auto; min-width: min(100%, 560px); }   /* a short table doesn't stretch its few columns apart */
+.tp-bar { display: inline-block; vertical-align: middle; width: 56px; height: 4px; margin-right: 8px; border-radius: 1px; background: rgba(var(--slate), 0.18); overflow: hidden; }
+.tp-bar i { display: block; height: 100%; background: var(--violet-ink); }
+.tp-szp { display: inline-block; min-width: 4ch; }
+
+/* ------------------------------------------------------------------ fill rate */
+.tp-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: 12px 40px; padding: 14px 16px 2px; }
+.tp-tile { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 2px 10px; }
+.tp-tl, .tp-ts { grid-column: 1 / -1; color: var(--muted); }
+.tp-tl { color: var(--ink-2); }
+.tp .tp-tv { font: 400 var(--fs-28)/1.15 var(--mono); color: var(--ink); }
+.tp-td { font-weight: 500; white-space: nowrap; }
+.tp-fr { display: block; width: 100%; height: auto; margin-top: 4px; font: var(--fs-10) var(--mono); }
+.tp-fr text { fill: var(--muted); }
+.tp-fr .tp-fr-grid { stroke: var(--line-soft); stroke-width: 1; }
+.tp-fr .tp-fr-after { fill: rgba(var(--slate), 0.07); }                         /* since fast entry */
+.tp-fr .tp-fr-off { fill: url(#tp-fr-hatch); }    /* time the bot wasn't trading: a painted fill, so its title shows on hover */
+.tp-fr .tp-fr-hatch { stroke: var(--line); stroke-width: 1; }
+.tp-fr .tp-fr-off-t { fill: var(--muted); font-family: var(--sans); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; }
+.tp-fr .tp-fr-ln { fill: none; stroke: var(--violet-ink); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+.tp-fr .tp-fr-avg { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 3; pointer-events: none; }
+.tp-fr .tp-fr-avg-t { fill: var(--ink-2); paint-order: stroke; stroke: var(--panel); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.tp-fr .tp-fr-mark { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 1 3; stroke-linecap: round; }
+.tp-fr .tp-fr-mark-t { fill: var(--ink-2); font-family: var(--sans); }
+.tp-fr .tp-fr-hit { fill: transparent; }
+.tp-fr .tp-fr-pt:hover .tp-fr-hit { fill: rgba(var(--slate), 0.12); }
+
+/* ------------------------------------------------------------------ by market, by price band */
+.tp-cols { display: grid; grid-template-columns: minmax(0, 1fr); }
+.tp-cols > .tp-sec + .tp-sec { margin-top: 8px; border-top: 1px solid var(--line-soft); }
+.tp-markets .tp-wrap + .tp-note { padding-top: 8px; }
+
+/* ------------------------------------------------------------------ rules */
+.tp-method { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px 32px; padding: 14px 16px 16px; }   /* 1, 2 or 4 across: never 3 + 1 */
+.tp-rg h3 { margin: 0 0 6px; font-size: var(--fs-12); font-weight: 500; color: var(--ink); }
+.tp-rg ul { display: grid; gap: 4px; max-width: 72ch; margin: 0; padding-left: 14px; line-height: 1.5; }
+.tp-rg li::marker { color: var(--muted); }
+.tp-rg code { white-space: nowrap; }              /* a command never breaks at its "--" */
+.tp-secs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); border-top: 1px solid var(--line-soft); }
+.tp-stops { margin: 0; padding: 0; list-style: none; }
+.tp-stops li, .tp-kv { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 6px 16px; border-top: 1px solid var(--line-soft); }
+.tp-stops li > span:first-child { color: var(--ink-2); }
+.tp-st { flex: none; color: var(--ink-2); }
+.tp-st.tp-off { color: var(--muted); }
+.tp-k { color: var(--muted); white-space: nowrap; }
+.tp-v { text-align: right; color: var(--ink-2); }
+.tp-v .num { color: var(--ink); }
+
+/* ------------------------------------------------------------------ a narrow panel (a phone): fewer columns, the first one pinned */
+@container tp (max-width: 560px) {
+  .tp-hs { display: none; }
+  .tp-os { display: inline; }
+  .tp-t th, .tp-t td { padding-left: 8px; padding-right: 8px; }
+  .tp-t th:first-child, .tp-t td:first-child { position: sticky; left: 0; z-index: 1; padding-left: 16px; background-color: var(--panel); }
+  .tp-t th:last-child, .tp-t td:last-child { padding-right: 16px; }
+  .tp-tiles { gap: 12px 24px; }
+  .tp .tp-tv { font-size: var(--fs-20); }
+  .tp-stops li, .tp-kv { gap: 12px; }
+}
+@container tp (min-width: 600px) {
+  .tp-method { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* every asset class's table on the same columns, so they line up one under another */
+  .tp-bt { table-layout: fixed; }
+  .tp-bt th:nth-child(1) { width: 16%; }
+  .tp-bt th:nth-child(2) { width: 28%; }
+  .tp-bt th:nth-child(3), .tp-bt th:nth-child(4), .tp-bt th:nth-child(5) { width: 9%; }
+  .tp-bt th:nth-child(6) { width: 15%; }
+  .tp-bt th:nth-child(7) { width: 14%; }
+  .tp-bt td { overflow: hidden; text-overflow: ellipsis; }
+  .tp-bt .tp-spark { width: 100%; max-width: 84px; }
+}
+@container tp (min-width: 1200px) { .tp-method { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* a wide panel: by market and by price band side by side */
+@container tp (min-width: 1040px) {
+  .tp-cols { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .tp-cols > .tp-sec + .tp-sec { margin-top: 0; border-top: 0; border-left: 1px solid var(--line-soft); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tp-br.fl-up td, .tp-br.fl-down td, .tp-br.fl-flip td { animation: none; }
+}

@@ -1,0 +1,16 @@
+# Runs kalshi-stall-alert.service every 10 minutes, on the ten-minute marks (:00 :10 :20 :30 :40 :50), which
+# keeps it clear of the bot's minute-8 entries (:08 :23 :38 :53) and the minute after each, as the nightly
+# backup does. OnCalendar rather than OnUnitActiveSec so it stays on those marks instead of drifting onto them.
+#
+# Not Persistent: a check missed while the machine was off needs no catching up, and a burst of them at boot
+# would only report a bot that has not started yet. The stall threshold is 8 windows (2 hours), so the worst
+# case is a 2h10m wait before the alert; --windows on the service changes it.
+[Unit]
+Description=Kalshi bot: stall check every 10 minutes
+
+[Timer]
+OnCalendar=*-*-* *:00/10:00
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target

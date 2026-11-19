@@ -1,0 +1,81 @@
+/*
+ * The exchange skin: a second look for the Live tab, switched from the navbar (Oct 30, 2026).
+ *
+ * Made to look like a market exchange's screen, and settled as a skin rather than a
+ * replacement, so with the switch off the page is exactly what it was. It is a restyle and nothing else: the
+ * board already carried bid, ask and spread, and already flashed a row when a price moved. This makes the rows
+ * dense, sets every figure in the page's mono face so the columns line up digit under digit, squares the
+ * corners, and turns those flashes from a hint into the loudest thing on screen.
+ *
+ * Three rules it keeps to, and test_exchange_skin.py holds it to them:
+ *   1. every selector sits behind [data-skin="exchange"], so nothing here applies with the skin off;
+ *   2. nothing reaches #liveresearch, #latency or #backtest -- those tabs keep the reading look they have;
+ *   3. no colour of its own, and no size, space or radius off the page's scales. Dense is
+ *      var(--sp-1) and a square corner is 0; neither needs a new number.
+ *
+ * It is deliberately not held to test_look.py's rules. Those encode the clean look's aesthetic -- room to
+ * breathe, colour only where it means something, one weight for figures. This is the other aesthetic, where
+ * density is the point and every figure is coloured by which way it last moved.
+ */
+
+/* ------------------------------------------------------------ the frame: squared off, tighter, flatter */
+[data-skin="exchange"] .wrap { gap: var(--sp-3); }
+[data-skin="exchange"] .card,
+[data-skin="exchange"] .fold { border-radius: 0; }
+[data-skin="exchange"] .top { border-bottom: 1px solid var(--line-strong); }
+[data-skin="exchange"] .brand { font-family: var(--mono); letter-spacing: 0; }
+[data-skin="exchange"] .nav-b { border-radius: 0; font-family: var(--mono); font-size: var(--fs-2); }
+
+/* every figure on the page in the mono face, so digits line up in a column and a change of width never
+   shifts the one below it */
+[data-skin="exchange"] .hv,
+[data-skin="exchange"] .nb-v,
+[data-skin="exchange"] .nb-p,
+[data-skin="exchange"] .bd-px,
+[data-skin="exchange"] .bd-t td,
+[data-skin="exchange"] #orders td,
+[data-skin="exchange"] #positions td { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+[data-skin="exchange"] .hv { font-size: var(--fs-6); }
+
+/* ------------------------------------------------------------ the board: the part that reads like a terminal */
+[data-skin="exchange"] .bd-t { font-size: var(--fs-2); }
+[data-skin="exchange"] .bd-t th { padding: var(--sp-1) var(--sp-2); font-family: var(--mono);
+  font-size: var(--fs-1); color: var(--muted); }
+[data-skin="exchange"] .bd-t td { padding: 1px var(--sp-2); line-height: 20px; }
+[data-skin="exchange"] .bd-t th:first-child,
+[data-skin="exchange"] .bd-t td:first-child { padding-left: var(--sp-3); }
+[data-skin="exchange"] .bd-t th:last-child,
+[data-skin="exchange"] .bd-t td:last-child { padding-right: var(--sp-3); }
+/* banded rows, the way a depth table is read across */
+[data-skin="exchange"] .bd-r:nth-child(even) td { background: var(--surface-2); }
+[data-skin="exchange"] .bd-r:hover td { background: var(--hover); }
+[data-skin="exchange"] .bd-mk { font-family: var(--mono); font-weight: 600; }
+[data-skin="exchange"] .bd-px { font-size: var(--fs-3); }
+/* the side badge squared off and quiet: on a board this dense the price is what you are reading, not the tag */
+[data-skin="exchange"] .bd-t .pill { border-radius: 0; font-size: var(--fs-1); padding: 0 var(--sp-1); }
+[data-skin="exchange"] .bd-in { border-radius: 0; font-size: var(--fs-1); }
+/* the bot's buying range: a full-height edge rather than a short one, so a glance down the board finds it */
+[data-skin="exchange"] .bd-r.in td:first-child { box-shadow: inset 3px 0 0 var(--brand-ink); }
+[data-skin="exchange"] .bd-gh { font-family: var(--mono); font-size: var(--fs-2); }
+
+/* the flashes the board already had, made the loudest thing on screen: a whole-row wash and a bar down the
+   leading edge, rather than a tint that fades. This is the one place the skin shouts, and it shouts about the
+   only thing that is actually changing */
+[data-skin="exchange"] .bd-r.fl-up td { background: var(--up-wash); box-shadow: inset 0 0 0 1px var(--up-line); }
+[data-skin="exchange"] .bd-r.fl-down td { background: var(--down-wash); box-shadow: inset 0 0 0 1px var(--down-line); }
+[data-skin="exchange"] .bd-r.fl-flip td { background: var(--warn-wash); box-shadow: inset 0 0 0 1px var(--warn-line); }
+[data-skin="exchange"] .bd-tick { font-size: var(--fs-2); }
+[data-skin="exchange"] .bd-tick.up { color: var(--up-ink); }
+[data-skin="exchange"] .bd-tick.down { color: var(--down-ink); }
+
+/* ------------------------------------------------------------ the other Live blocks, same treatment */
+[data-skin="exchange"] #orders table,
+[data-skin="exchange"] #positions table { font-size: var(--fs-2); }
+[data-skin="exchange"] #orders td,
+[data-skin="exchange"] #positions td { padding: 1px var(--sp-2); }
+[data-skin="exchange"] #orders th,
+[data-skin="exchange"] #positions th { padding: var(--sp-1) var(--sp-2); font-size: var(--fs-1); }
+[data-skin="exchange"] .chip,
+[data-skin="exchange"] .pill,
+[data-skin="exchange"] .icon-btn,
+[data-skin="exchange"] .halt-btn { border-radius: 0; }

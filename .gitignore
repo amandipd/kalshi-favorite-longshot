@@ -1,0 +1,51 @@
+# Secrets, wherever they are
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+keys/
+
+# Runtime state and local databases (the bot's ledger and halt switch lived in bot/state/)
+**/state/
+*.db
+*.sqlite
+*.sqlite3
+
+# Downloaded data: everything under data/ except its manifest and README
+data/*
+!data/manifest/
+!data/README.md
+
+# Large generated outputs
+data/**/*.csv
+data/**/*.jsonl
+data/**/*.parquet
+research/**/*.csv
+research/**/*.jsonl
+research/**/*.parquet
+reports/backtest_ledger.csv
+
+# Python, test and coverage caches
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Logs
+*.log
+
+# Local editor and tool settings
+.vscode/
+.idea/
+
+# Local scratch files
+PROPOSAL.MD
+date_range_exploration.json

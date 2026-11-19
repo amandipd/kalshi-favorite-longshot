@@ -1,0 +1,39 @@
+{
+ "timing": {
+  "0": {
+   "points": 36,
+   "first_seen_after_stamp_s": 7.6,
+   "last_change_after_stamp_s": 67.6,
+   "last_change_p90_s": 68.2
+  },
+  "60": {
+   "points": 36,
+   "first_seen_after_stamp_s": 7.7,
+   "last_change_after_stamp_s": 67.6,
+   "last_change_p90_s": 68.1
+  },
+  "120": {
+   "points": 40,
+   "first_seen_after_stamp_s": 7.8,
+   "last_change_after_stamp_s": 67.4,
+   "last_change_p90_s": 68.0
+  },
+  "180": {
+   "points": 36,
+   "first_seen_after_stamp_s": 7.6,
+   "last_change_after_stamp_s": 58.1,
+   "last_change_p90_s": 67.9
+  },
+  "240": {
+   "points": 36,
+   "first_seen_after_stamp_s": 7.6,
+   "last_change_after_stamp_s": 8.0,
+   "last_change_p90_s": 37.6
+  }
+ },
+ "depth_summary": {
+  "books": 0,
+  "favourite_92_99": 0
+ },
+ "depth": []
+}

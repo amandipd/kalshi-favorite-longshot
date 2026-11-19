@@ -1,0 +1,15 @@
+# A copy of the ledger to /opt/kalshi-bot/backups/live-prod-YYYY-MM-DD.db, through SQLite's online backup (safe while
+# the bot writes; the ledger is opened read only), then backups older than 14 days are deleted. No ledger yet: it
+# skips quietly. Run by kalshi-backup.timer; by hand: sudo systemctl start kalshi-backup
+# Placeholders as in kalshi-bot.service; the backups folder must exist and belong to the service's user.
+[Unit]
+Description=Kalshi bot: nightly ledger backup (14 days kept)
+
+[Service]
+Type=oneshot
+User=kalshi
+WorkingDirectory=/opt/kalshi-bot/bot
+# $$ and %% are systemd's escapes for $ and %: bash runs date +%F, e.g. live-prod-2026-10-15.db
+ExecStart=/bin/bash -c 'if [ ! -f state/live-prod.db ]; then echo "no ledger yet: nothing to back up"; exit 0; fi; exec /usr/bin/sqlite3 -readonly -cmd ".timeout 5000" state/live-prod.db ".backup /opt/kalshi-bot/backups/live-prod-$$(date +%%F).db"'
+# -mtime +13: 14 days old or more, so the newest 14 daily copies stay
+ExecStart=/usr/bin/find /opt/kalshi-bot/backups -maxdepth 1 -type f -name 'live-prod-*.db' -mtime +13 -print -delete

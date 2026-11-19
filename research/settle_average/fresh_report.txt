@@ -1,0 +1,35 @@
+49181 markets, 2025-12-10 to 2026-08-31; 127560 checkpoint bets
+
+=== the rule: favourites 80-98c, 45/30/20/10 s left ===
+n= 10240 win= 91.37% price= 92.38c edge= -1.49c/contract  -1.61c/$1 t= -4.49
+VERDICT: fail
+                     older half n=  4797 win= 89.39% price= 92.47c edge= -3.55c/contract  -3.84c/$1 t= -6.85
+                     newer half n=  5443 win= 93.11% price= 92.30c edge= +0.33c/contract  +0.36c/$1 t= +0.80
+                            BTC n=  5696 win= 92.19% price= 92.45c edge= -0.73c/contract  -0.79c/$1 t= -1.73
+                            ETH n=  4544 win= 90.34% price= 92.29c edge= -2.43c/contract  -2.63c/$1 t= -4.76
+    without best day 2026-07-09 n= 10189 win= 91.32% price= 92.38c edge= -1.53c/contract  -1.66c/$1 t= -4.61
+
+=== reported only: the same band at 90 s, before the averaging ===
+n= 10267 win= 92.26% price= 91.79c edge= -0.05c/contract  -0.05c/$1 t= -0.17
+                     older half n=  4548 win= 92.74% price= 91.40c edge= +0.81c/contract  +0.89c/$1 t= +2.07
+                     newer half n=  5719 win= 91.87% price= 92.11c edge= -0.73c/contract  -0.79c/$1 t= -1.95
+                            BTC n=  5483 win= 92.16% price= 91.86c edge= -0.21c/contract  -0.22c/$1 t= -0.58
+                            ETH n=  4784 win= 92.37% price= 91.72c edge= +0.14c/contract  +0.15c/$1 t= +0.36
+    without best day 2026-03-02 n= 10222 win= 92.22% price= 91.81c edge= -0.09c/contract  -0.10c/$1 t= -0.33
+
+=== reported only: the rule by month ===
+2025-12 n=   273 win= 87.55% price= 92.51c edge= -5.44c/contract  -5.88c/$1 t= -2.37
+2026-01 n=  1201 win= 86.18% price= 92.70c edge= -6.98c/contract  -7.53c/$1 t= -6.30
+2026-02 n=  1256 win= 88.14% price= 92.12c edge= -4.48c/contract  -4.86c/$1 t= -4.09
+2026-03 n=  1158 win= 92.31% price= 92.15c edge= -0.32c/contract  -0.35c/$1 t= -0.35
+2026-04 n=  1424 win= 92.06% price= 92.84c edge= -1.23c/contract  -1.32c/$1 t= -1.41
+2026-05 n=  1382 win= 93.42% price= 92.51c edge= +0.44c/contract  +0.47c/$1 t= +0.49
+2026-06 n=  1113 win= 93.44% price= 92.00c edge= +0.95c/contract  +1.03c/$1 t= +1.05
+2026-07 n=  1134 win= 94.18% price= 92.17c edge= +1.52c/contract  +1.65c/$1 t= +1.95
+2026-08 n=  1299 win= 92.07% price= 92.36c edge= -0.76c/contract  -0.83c/$1 t= -0.87
+
+=== reported only: step 1's main cells ===
+30s 90-95c n=   877 win= 91.68% price= 92.38c edge= -1.19c/contract  -1.29c/$1 t= -1.28
+30s 95-98c n=  1244 win= 96.62% price= 96.48c edge= -0.10c/contract  -0.10c/$1 t= -0.19
+10s 90-95c n=   327 win= 88.38% price= 92.40c edge= -4.51c/contract  -4.88c/$1 t= -2.56
+10s 95-98c n=   495 win= 96.57% price= 96.44c edge= -0.11c/contract  -0.12c/$1 t= -0.14

@@ -1,0 +1,21 @@
+Strategy: other_markets.py's favourites rule on the four groups that passed (hourly temperature 30 and 10 minutes before the close; daily gas, SOFR and ERCOT 2 and 1 hours before). At the checkpoint, buy the favourite (the side with the higher ask) when its ask is 90-99.9c and its own bid is within 3c of it, $10 a bet, paying up to the ask plus 0.4c, taker fee with the series' multiplier, and hold it to settlement.
+
+12,987 bets on 10,111 markets; 12,987 checked against depth_tape.jsonl (1,059 of them on markets with no trade at all in the span fetched)
+0 bets (0 markets) have no line in the tape and are left out
+
+                                                                  any $10 at our price  median $            per $10 bet             capped
+                                                          bets  trade    soon  window in window    backtest  full $10    capped     total
+   Climate and Weather · hourly · 30min   Jul 18-Aug 31  3,886    55%      6%     23%        $0       +6.8c     +6.4c     +2.4c      +$92
+   Climate and Weather · hourly · 30min   Sep 1 on       1,971    55%     10%     29%        $1       +7.8c     -3.0c     +0.2c       +$4
+   Climate and Weather · hourly · 30min   all            5,857    55%      7%     25%        $0       +7.1c     +2.8c     +1.6c      +$96
+   Climate and Weather · hourly · 10min   Jul 18-Aug 31  2,117    86%     10%     36%        $3       +6.0c     +9.7c     -0.8c      -$16
+   Climate and Weather · hourly · 10min   Sep 1 on       1,391    76%     17%     45%        $7       +7.3c     +2.8c     +2.3c      +$32
+   Climate and Weather · hourly · 10min   all            3,508    82%     13%     40%        $5       +6.5c     +6.6c     +0.5c      +$16
+   Economics · daily · 2h                 Jul 18-Aug 31    209    44%     16%     30%        $0      +16.0c     -2.6c     -0.6c       -$1
+   Economics · daily · 2h                 Sep 1 on       1,625    34%      5%     23%        $0       +6.8c     +6.0c     +1.7c      +$28
+   Economics · daily · 2h                 all            1,834    35%      6%     23%        $0       +7.8c     +4.8c     +1.4c      +$26
+   Economics · daily · 1h                 Jul 18-Aug 31    202    43%     18%     28%        $0      +19.5c     +9.0c     +2.9c       +$6
+   Economics · daily · 1h                 Sep 1 on       1,586    15%      4%      8%        $0      +12.5c     +4.5c     +0.6c       +$9
+   Economics · daily · 1h                 all            1,788    18%      5%     10%        $0      +13.3c     +5.9c     +0.8c      +$15
+
+Window: from the checkpoint, 5 minutes for an hourly market (soon: the first minute), 30 minutes for a daily one (soon: the first 10). Any trade: some taker bought our side in the window, at any price. $10 at our price: takers bought $10 or more of our side at the ask + 0.4c or better. Median $: dollars bought there in the window. Per $10 bet: the backtest's profit (the full $10 at the ask + 0.4c, as other_markets.py has it) over every bet, over only the bets where $10 traded, and capped (each bet buys only the contracts that traded at our price in the window, up to $10 worth); capped total in dollars.

@@ -1,0 +1,1549 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Favorites Bot</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2328cc95'/%3E%3Cpath d='M10 23V9.5h12M10 16h9' stroke='%23000' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script>try { var k = localStorage.getItem("skin"); if (k) document.documentElement.dataset.skin = k; } catch (e) {}</script>
+<style>
+/*
+ * A quiet take on a prediction-market exchange: near-black page, hairlines, a mint accent, outlined Yes/No
+ * pills, pill buttons. It leads with the account value, a chart and the open positions; everything else
+ * sits in one-line rows that open on tap. Gain/loss colours pass the CVD check (deutan ΔE 12.6) and never stand
+ * alone: every gain or loss carries a sign, an arrow and a label. The page is dark only; test_dark_theme.py checks
+ * every colour pairing.
+ */
+:root {
+  color-scheme: dark;
+  --page: #0a0c0f; --surface: #0f1216; --surface-2: #151a20; --hover: rgba(255, 255, 255, 0.04);
+  --line: rgba(255, 255, 255, 0.09); --line-strong: rgba(255, 255, 255, 0.18);
+  --ink: rgba(255, 255, 255, 0.92); --ink-2: rgba(255, 255, 255, 0.72); --muted: rgba(255, 255, 255, 0.55); --brand-ink: #28cc95;
+  --up: #28cc95; --up-ink: #28cc95; --up-wash: rgba(40, 204, 149, 0.12); --up-line: rgba(40, 204, 149, 0.40);
+  --down: #e5484d; --down-ink: #f0616d; --down-wash: rgba(229, 72, 77, 0.13); --down-line: rgba(229, 72, 77, 0.45);
+  --warn: #f0a63a; --warn-ink: #f4b45a; --warn-wash: rgba(240, 166, 58, 0.12); --warn-line: rgba(240, 166, 58, 0.45);
+  --series-1: #3987e5;
+  --series-2: #a68cf0; --series-3: #2fa8b4;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --cond: "Bahnschrift SemiCondensed", "Bahnschrift", "Roboto Condensed", "Arial Narrow", "Helvetica Neue", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  /* the scales (one definition, shared with live_research.css):
+     7 type sizes, 7 spaces, 3 radii */
+  --fs-1: 11px; --fs-2: 12.5px; --fs-3: 13.5px; --fs-4: 15px; --fs-5: 20px; --fs-6: 26px; --fs-7: 60px;
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+  --r-1: 6px; --r-2: 10px; --r-pill: 999px;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }          /* so a display rule below can never un-hide it */
+html { -webkit-text-size-adjust: 100%; }
+/* one face for numbers: every digit the same width, so columns line up without a monospace font */
+body { margin: 0; background: var(--page); color: var(--ink); font: var(--fs-4)/1.45 var(--sans); font-variant-numeric: tabular-nums; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { font: inherit; color: inherit; cursor: pointer; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3, b, strong { font-weight: 600; }     /* two weights: 400 for text, 600 for titles and key figures */
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: var(--r-1); }
+.mono { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.u { color: var(--muted); }                         /* a unit beside its number: the digits carry the weight */
+.up { color: var(--up-ink); }
+.down { color: var(--down-ink); }
+.part { color: var(--warn-ink); }                   /* an order that filled only in part */
+.s { font-size: var(--fs-2); }
+.only-sm { display: none; }                         /* words only a phone shows, for a column it hides (.hide-sm) */
+.k { font: 400 var(--fs-2)/1.3 var(--sans); color: var(--muted); }   /* a figure's label: plain words, as on Live Research */
+body.offline main { opacity: 0.55; transition: opacity 0.2s; }
+
+/* ------------------------------------------------------------- header */
+.top { position: sticky; top: 0; z-index: 20; background: var(--page); border-bottom: 1px solid var(--line); }
+:root { --gutter: clamp(16px, 3vw, 40px); }
+.top-in { max-width: none; margin: 0 auto; padding: 0 var(--gutter); min-height: 60px; display: flex; align-items: center; gap: var(--sp-3); }
+.brand { font: 600 var(--fs-5)/1 var(--cond); color: var(--brand-ink); white-space: nowrap; }
+/* the tabs: the modes, then Live Research; when the header runs out of room the strip scrolls sideways. Sentence
+   case as written; the current one is set apart twice, by weight and by a 2px rule on the header's bottom edge */
+.nav { display: flex; align-self: stretch; gap: var(--sp-1); min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav-b { position: relative; flex: none; white-space: nowrap; background: none; border: 0; min-height: 44px; padding: 0 var(--sp-3); border-radius: var(--r-1);
+  font: 400 var(--fs-3)/1 var(--sans); color: var(--muted); }
+.nav-b:hover { color: var(--ink); }
+.nav-b:focus-visible { outline-offset: -2px; }
+.nav-b[aria-current="true"] { color: var(--ink); font-weight: 600; }
+.nav-b[aria-current="true"]::after { content: ""; position: absolute; left: var(--sp-3); right: var(--sp-3); bottom: 0; height: 2px; background: var(--ink); }
+.spacer { flex: 1; }
+.status { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-2); color: var(--ink-2); white-space: nowrap; }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.pulse.on { background: var(--up); box-shadow: 0 0 0 3px var(--up-wash); }
+.pulse.off { background: var(--down); }
+.pulse.warn { background: var(--warn); }
+/* the balance in the navbar, read from Kalshi every second; the eye hides the dollars and keeps the % */
+.navbal { display: inline-flex; align-items: center; gap: var(--sp-2); padding-right: var(--sp-3); border-right: 1px solid var(--line); white-space: nowrap;
+  font-variant-numeric: tabular-nums; transition: opacity 0.2s; }
+.navbal:empty { display: none; }
+.navbal.stale { opacity: 0.5; }                     /* Kalshi didn't answer the last read: this is the one before */
+.nb-v { font: 600 var(--fs-4)/1 var(--sans); color: var(--ink); }
+.nb-p { font: 600 var(--fs-3)/1 var(--sans); color: var(--ink-2); }
+.navbal .eye { margin: 0 -4px; }
+/* proof it's polling: the dot blinks once per fresh Kalshi reading (redrawn, so the animation replays), beside its time */
+.nb-tick { display: inline-flex; align-items: center; gap: var(--sp-2); font: 400 var(--fs-2)/1 var(--sans); color: var(--muted); white-space: nowrap; cursor: default; }
+.nb-tick:empty { display: none; }
+.nb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-ink); animation: nb-blink 0.9s ease-out both; }
+.nb-dot.stale { animation: none; opacity: 1; background: var(--down); }   /* Kalshi didn't answer: red and still */
+@keyframes nb-blink { 0% { opacity: 1; } 100% { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { .nb-dot { animation-timing-function: steps(1, end); } }   /* on, then off: no fade */
+.icon-btn { background: none; border: 1px solid var(--line); width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); font-size: var(--fs-4); line-height: 1; }
+.icon-btn:hover { background: var(--hover); color: var(--ink); }
+.halt-btn { height: 36px; padding: 0 var(--sp-4); border-radius: var(--r-pill); border: 1px solid var(--down-line); background: transparent; color: var(--down-ink);
+  font: 600 var(--fs-3)/1 var(--sans); white-space: nowrap; }
+.halt-btn:hover { background: var(--down-wash); }
+.halt-btn.arm { background: var(--down); color: #fff; border-color: var(--down); }
+.halt-btn:disabled { background: var(--surface-2); color: var(--muted); border-color: var(--line); cursor: default; }
+
+/* ------------------------------------------------------------- page */
+.wrap { max-width: none; margin: 0 auto; padding: var(--sp-5) var(--gutter) var(--sp-7); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-6); }
+.banners { display: grid; gap: var(--sp-2); }
+.banners:empty { display: none; }
+.note { border-radius: var(--r-2); padding: var(--sp-3) var(--sp-4); font-size: var(--fs-3); background: var(--down-wash); border: 1px solid var(--down-line); }
+.note b { color: var(--down-ink); }
+.note.warn { background: var(--warn-wash); border-color: var(--warn-line); }
+.note.warn b { color: var(--warn-ink); }
+code { font: var(--fs-2) var(--mono); padding: 1px var(--sp-1); border-radius: var(--r-1); background: var(--surface-2); }
+
+.hero-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--sp-3); }
+.hk { display: inline-flex; align-items: center; gap: 2px; }
+.eye { background: none; border: 0; width: 32px; height: 32px; margin: -8px 0; padding: 0; border-radius: 50%; display: grid; place-items: center; color: var(--muted); }
+.eye:hover { background: var(--hover); color: var(--ink); }
+.hv { font: 600 var(--fs-7)/1 var(--cond); letter-spacing: -0.01em; margin: var(--sp-2) 0; }
+.fd { font: 400 var(--fs-4)/1.3 var(--sans); font-variant-numeric: tabular-nums; }
+.fmeta { margin-top: var(--sp-1); font-size: var(--fs-3); }
+/* the scoreboard under the balance: settled bets won and lost, the win rate, and a bar splitting the two */
+.score { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: var(--sp-3) var(--sp-6); margin-top: var(--sp-5); max-width: 470px; }
+.sc { display: grid; gap: var(--sp-1); }
+.sc b { font: 600 var(--fs-6)/1 var(--cond); font-variant-numeric: tabular-nums; }
+.sc-bar { grid-column: 1 / -1; position: relative; height: 8px; border-radius: var(--r-pill); background: var(--down); overflow: hidden; }
+.sc-bar i { display: block; height: 100%; background: var(--up); }
+.sc-be { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--ink); }   /* the break-even */
+.timer { text-align: right; line-height: 1.15; }
+.timer b { display: block; margin-top: var(--sp-1); font: 600 var(--fs-5)/1.1 var(--cond); color: var(--ink); }   /* a countdown, not a warning */
+.timer b.down { color: var(--down-ink); }
+
+.chart-tools { display: flex; justify-content: flex-end; gap: var(--sp-2); align-items: center; flex-wrap: wrap; min-height: 28px; }
+.chips { display: flex; gap: var(--sp-2); flex-wrap: wrap; }
+.grp { display: inline-flex; background: var(--surface-2); border-radius: var(--r-pill); padding: var(--sp-1); }
+.grp button { background: none; border: 0; border-radius: var(--r-pill); padding: var(--sp-1) var(--sp-3); font: 600 var(--fs-2)/1 var(--sans); color: var(--muted); }
+.grp button:hover { color: var(--ink); }
+.grp button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line-strong); }
+.ghost { background: none; border: 0; padding: var(--sp-1); font: 600 var(--fs-2) var(--sans); color: var(--muted); }
+.ghost:hover { color: var(--ink); }
+.chart { position: relative; min-height: 220px; }
+.cv { display: block; overflow: visible; }
+.cv.up { --c: var(--up); } .cv.down { --c: var(--down); }
+.cv text { fill: var(--muted); font: var(--fs-1) var(--mono); font-variant-numeric: tabular-nums; }
+.cv .grid-l { stroke: var(--line); stroke-width: 1; }
+.cv .ref { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 1 4; stroke-linecap: round; }
+.cv .tagbox { fill: var(--surface-2); stroke: var(--line-strong); }
+.cv .tagtxt { fill: var(--ink-2); font: 600 var(--fs-1) var(--sans); letter-spacing: 0.06em; }
+.cv .valbox { fill: var(--c); }
+.cv .valtxt { fill: #000; font: 600 var(--fs-1) var(--sans); font-variant-numeric: tabular-nums; }
+.cv .ln { fill: none; stroke: var(--c); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.cv .dot { fill: var(--c); stroke: var(--page); stroke-width: 2; }
+.cv .halo { fill: var(--c); opacity: 0.25; transform-box: fill-box; transform-origin: center; animation: pulse 2.2s ease-out infinite; }
+.cv .xh { stroke: var(--line-strong); stroke-width: 1; }
+.cv .hit { fill: transparent; cursor: crosshair; }
+.cv .dep { fill: var(--page); stroke: var(--ink-2); stroke-width: 1.5; }
+/* 1H and 6H: a faint divider at every 15-minute window, and each window that lost money shaded under the line */
+.cv .wl { stroke: var(--line); stroke-dasharray: 2 4; }
+.cv .lw { fill: var(--down); opacity: 0.1; }
+.cv .lw-t { fill: var(--down-ink); font: 600 11px var(--sans); }
+@keyframes pulse { 0% { transform: scale(1); opacity: 0.35; } 100% { transform: scale(3.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .cv .halo { animation: none; } }
+/* the fill-rate fold: the answer first, two tiles (since fast entry, what it was before, the change in points, green when
+   it got better), then one calm line, the last 12 windows' share filled, over the shaded fast-entry period, with each
+   period's average dashed and labelled. A column per window under the pointer gives its figures. */
+.fr-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: var(--sp-3) var(--sp-6); padding: var(--sp-3) var(--sp-4); }   /* side by side even on a phone: the words wrap */
+.fr-tile { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: var(--sp-1) var(--sp-2); }
+.fr-tl, .fr-ts { grid-column: 1 / -1; font-size: var(--fs-2); color: var(--muted); }
+.fr-tl { color: var(--ink-2); }
+.fr-tv { font: 600 var(--fs-6)/1 var(--cond); font-variant-numeric: tabular-nums; }
+.fr-td { font: 600 var(--fs-3)/1 var(--sans); white-space: nowrap; }   /* its colour: .up (better), .down (worse), .muted */
+.fr { display: block; width: 100%; height: auto; margin-bottom: var(--sp-2); font: var(--fs-1) var(--sans); }
+.fr text { fill: var(--muted); }
+.fr .axis { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.fr .fr-grid { stroke: var(--line); stroke-width: 1; }
+.fr .fr-after { fill: var(--surface-2); }
+.fr .fr-off { fill: url(#fr-hatch); }   /* time the bot wasn't trading: a painted fill, so its title shows on hover */
+.fr .fr-hatch { stroke: var(--line-strong); stroke-width: 1; }
+.fr .fr-off-t { fill: var(--muted); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+.fr .fr-ln { fill: none; stroke: var(--series-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+.fr .fr-avg { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 5 4; pointer-events: none; }
+.fr .fr-avg-t { fill: var(--ink-2); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.fr .fr-mark { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 1 4; stroke-linecap: round; }
+.fr .fr-mark-t { fill: var(--ink-2); }
+.fr .fr-hit { fill: transparent; }
+.fr .fr-pt:hover .fr-hit { fill: var(--hover); }
+.empty { padding: var(--sp-6) var(--sp-4); color: var(--muted); text-align: center; display: grid; gap: var(--sp-2); justify-items: center; font-size: var(--fs-3); }
+.empty svg { opacity: 0.8; }
+.empty b { font-size: var(--fs-4); color: var(--ink-2); }
+/* an empty section inside a fold is one quiet line at row height, not a block bigger than a full one */
+.empty-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--sp-2); padding: var(--sp-2) var(--sp-4); font-size: var(--fs-3); line-height: 20px; color: var(--muted); }
+.empty-line b { color: var(--ink-2); }
+.fold-body > .empty { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--sp-2); padding: var(--sp-2) var(--sp-4); text-align: left; line-height: 20px; }
+.fold-body > .empty svg { display: none; }
+.fold-body > .empty b { font-size: inherit; }
+
+.tip { position: fixed; z-index: 30; pointer-events: none; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: var(--r-2);
+  padding: var(--sp-2) var(--sp-3); box-shadow: var(--shadow); min-width: 150px; font-size: var(--fs-2); color: var(--ink-2); }
+.tip .t-when { color: var(--muted); margin-bottom: var(--sp-1); }
+.tip .t-row { display: flex; justify-content: space-between; gap: var(--sp-4); align-items: baseline; }
+.tip .t-row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.tip .key { display: inline-block; width: 12px; height: 2px; border-radius: var(--r-pill); background: var(--c, var(--brand)); vertical-align: middle; margin-right: var(--sp-2); }
+
+/* ------------------------------------------------------------- the Live tab's sections: one fold each (fold() below)
+   Positions, Live markets, Orders, How it trades and Details are each a fold: one hairline panel whose header keeps the
+   count and the key line in view while folded. What's inside sits flush with the panel's edges (no box in a box); the
+   tab's one Open all / Close all sits above them, and folded panels stack like a list, 8px apart. */
+.fold-b .n { font: 400 var(--fs-2) var(--sans); color: var(--muted); }         /* the count beside a title */
+.fm-ln { display: block; }                                                      /* a meta of two lines (the orders' fills) */
+.live-folds { display: flex; justify-content: flex-end; margin: -16px 0; }        /* the tab's Open all / Close all, */
+.live-folds + section { margin-top: -12px; }                                    /* 16px under the chart, 8px over the folds */
+.live-folds:empty { display: none; }
+.wrap > :has(> .fold[data-open="false"]) + :has(> .fold[data-open="false"]) { margin-top: -24px; }
+.fold-body > .more { margin: var(--sp-3) auto var(--sp-4); }                    /* a long table's Show all, inside its panel */
+/* a small heading and its note inside a fold, on the fold's 16px edge (the Orders fold's fills by order size) */
+.sub-h { margin: 0; padding: var(--sp-3) var(--sp-4) var(--sp-1); font: 600 var(--fs-3)/20px var(--sans); color: var(--ink); }
+.sub-note { margin: 0; padding: 0 var(--sp-4) var(--sp-2); font-size: var(--fs-2); color: var(--muted); }
+/* the fills by order size, under the orders: a hairline across the panel sets them off, 16px clear of the last row (or
+   of the Show all, whose own 16px it shares), and their table keeps its four columns together rather than stretch
+   across the fold. Beside each share filled, a small bar as long as it on a quiet track; the % beside it is the same
+   width on every row, so the bars line up */
+.sz { margin-top: var(--sp-4); padding: var(--sp-1) 0 var(--sp-2); border-top: 1px solid var(--line); }
+.sz table { width: auto; min-width: min(100%, 560px); }
+.sz-bar { display: inline-block; vertical-align: middle; width: 64px; height: 6px; margin-right: var(--sp-2); border-radius: var(--r-pill);
+  background: var(--line); overflow: hidden; }
+.sz-bar i { display: block; height: 100%; background: var(--series-1); border-radius: inherit; }
+.sz-p { display: inline-block; min-width: 4.5ch; }
+
+/* ------------------------------------------------------------- positions: tiles, as many to a row as fit
+   Hairlines part the tiles, not boxes (nothing boxed inside a fold): each tile draws the line on its right and its
+   bottom, and the grid clips the ones on the panel's own edges, so a short last row leaves blank space. */
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); overflow: hidden; }
+.pcard { display: grid; align-content: start; gap: var(--sp-2); min-width: 0; padding: var(--sp-3) var(--sp-4); box-shadow: 1px 0 0 var(--line), 0 1px 0 var(--line); }
+.pcard:hover { background: var(--hover); }
+.pc-top, .pc-bot { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--sp-1) var(--sp-2); }
+.pc-bot { align-items: center; }
+.pc-m { font-weight: 600; min-width: 0; }
+.pcard .pl { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pcard .s { font-size: var(--fs-2); white-space: nowrap; }
+.ext { color: var(--muted); font-size: var(--fs-2); }
+.pill { display: inline-flex; align-items: center; height: 28px; padding: 0 var(--sp-3); border-radius: var(--r-pill); border: 1px solid var(--line-strong);
+  font: 600 var(--fs-2)/1 var(--sans); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pill.yes { color: var(--up-ink); border-color: var(--up-line); background: var(--up-wash); }
+.pill.no { color: var(--down-ink); border-color: var(--down-line); background: var(--down-wash); }
+.chip { display: inline-block; font: 600 var(--fs-1)/1 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; padding: var(--sp-1) var(--sp-2); border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong); color: var(--ink-2); white-space: nowrap; }
+.chip.won, .chip.bet { color: var(--up-ink); border-color: var(--up-line); background: var(--up-wash); }
+.chip.lost, .chip.error { color: var(--down-ink); border-color: var(--down-line); background: var(--down-wash); }
+.chip.halted { color: var(--warn-ink); border-color: var(--warn-line); background: var(--warn-wash); }
+
+/* ------------------------------------------------------------- the quiet rows, inside the Details fold */
+.acc + .acc { border-top: 1px solid var(--line); }
+/* the same chevron as a fold's, first in the row and on the same 16px edge, so every toggle on the tab reads alike */
+.acc summary { list-style: none; display: flex; align-items: center; gap: var(--sp-2); min-height: 44px; padding: var(--sp-2) var(--sp-4); font-size: var(--fs-4); cursor: pointer; }
+.acc summary::-webkit-details-marker { display: none; }
+.acc summary:hover { background: var(--hover); }
+.acc .sum { margin-left: auto; color: var(--muted); font-size: var(--fs-2); text-align: right; font-variant-numeric: tabular-nums; }
+.acc .chev { flex: none; width: 7px; height: 7px; margin: 0 1px 0 0; border: solid var(--muted); border-width: 0 1.5px 1.5px 0;
+  transform: rotate(-45deg); transition: transform 0.15s; }
+.acc summary:hover .chev { border-color: var(--ink); }
+.acc[open] .chev { transform: translateY(-2px) rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .acc .chev { transition: none; } }
+.acc-body { padding: var(--sp-1) var(--sp-4) var(--sp-5) var(--sp-6); }             /* under its row's title */
+/* a fold (fold() in the script, on the Live and Live Research tabs): one hairline panel whose header is a
+   single line, a heading holding one button (the chevron, then the title) with the meta muted at the right, outside the
+   button so it stays in view while folded; the body's top rule takes over from the header's, so a folded section is
+   one slim row. Only the chevron moves. The chevron starts 16px in (the header's 8 and the button's 8), on the same
+   edge as the tables' first column below it. */
+.fold { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-2); }
+.fold-h { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0 var(--sp-3); min-height: 48px; padding: var(--sp-1) var(--sp-4) var(--sp-1) var(--sp-2); }
+.fold-t { display: flex; flex: 1 1 auto; min-width: 0; font: 600 var(--fs-4)/1.3 var(--sans); }
+.fold-b { display: flex; flex: 1 1 auto; align-items: center; gap: var(--sp-2); min-width: 0; min-height: 40px; padding: var(--sp-1) var(--sp-2); background: none; border: 0;
+  border-radius: var(--r-1); text-align: left; font: inherit; letter-spacing: inherit; color: var(--ink); }
+.fold-b:hover { background: var(--hover); }
+.fold-b:focus-visible { outline-offset: 0; border-radius: var(--r-1); }
+.fold-b > .chev { flex: none; width: 7px; height: 7px; margin: 0 1px 0 0; border: solid var(--muted); border-width: 0 1.5px 1.5px 0;
+  transform: rotate(-45deg); transition: transform 0.15s; }
+.fold-b:hover > .chev { border-color: var(--ink); }
+.fold-b[aria-expanded="true"] > .chev { transform: translateY(-2px) rotate(45deg); }   /* the V sits low: lift it to the text */
+.fold-m { margin-left: auto; font-size: var(--fs-2); color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.fold-body { min-width: 0; border-top: 1px solid var(--line); }
+.folds-b { min-height: 28px; padding: var(--sp-1) var(--sp-3); background: none; border: 1px solid var(--line); border-radius: var(--r-1); font: 600 var(--fs-2)/1.3 var(--sans); color: var(--ink-2); white-space: nowrap; }
+.folds-b:hover { color: var(--ink); background: var(--hover); }
+@media (prefers-reduced-motion: reduce) { .fold-b > .chev { transition: none; } }
+.flag { color: var(--down-ink); font-weight: 600; }
+.flag::before { content: "● "; }
+
+.numbers { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-5); padding-top: var(--sp-2); }
+.numbers .v { font: 600 var(--fs-5)/1.2 var(--cond); display: block; margin-top: var(--sp-1); }
+.numbers .s { display: block; color: var(--muted); margin-top: 1px; }
+.kv { display: flex; justify-content: space-between; gap: var(--sp-3); align-items: baseline; padding: var(--sp-2) 0; border-top: 1px solid var(--line); font-size: var(--fs-3); }
+.kv:first-child { border-top: 0; }
+.kv .l { color: var(--muted); }
+.kv b { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.stops { list-style: none; margin: 0; padding: 0; }
+.method { display: grid; gap: var(--sp-5); padding: var(--sp-4) var(--sp-4) var(--sp-5); }
+.mg h3 { margin: 0 0 var(--sp-2); font: 600 var(--fs-3)/1.3 var(--sans); color: var(--ink); }
+.mg ul { display: grid; gap: var(--sp-1); max-width: 72ch; margin: 0; padding-left: var(--sp-4); font-size: var(--fs-3); line-height: 1.5; color: var(--ink-2); }
+.mg li::marker { color: var(--muted); }
+.mg b { color: var(--ink); font-weight: 600; }
+.mg code { font-size: var(--fs-2); white-space: nowrap; }                       /* a command never breaks at its "--" */
+/* On a wide screen the Live tab reads like a trading dashboard: the account beside its chart, the tables across the
+   page, and the rules in columns so no line runs too long. Narrower, it stacks as one column. */
+@media (min-width: 1100px) {
+  body:not(.wide) .wrap { grid-template-columns: minmax(320px, 1fr) minmax(0, 2.2fr); column-gap: var(--sp-7); align-items: start; }
+  body:not(.wide) .wrap > * { grid-column: 1 / -1; }
+  body:not(.wide) #hero { grid-column: 1; }
+  body:not(.wide) #chartPanel { grid-column: 2; }
+  .method { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); column-gap: var(--sp-6); }   /* four columns inside the panel at 1440 */
+  .numbers { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.stops li { display: grid; grid-template-columns: 18px 1fr; gap: var(--sp-3); padding: var(--sp-2) 0; border-top: 1px solid var(--line); font-size: var(--fs-3); }
+.stops li:first-child { border-top: 0; }
+.stops .s { display: block; color: var(--muted); }
+.ok { width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; border: 1.5px solid var(--up-line); background: var(--up-wash); position: relative; }
+.ok::after { content: ""; position: absolute; left: 4px; top: 2.5px; width: 4px; height: 7px; border: solid var(--up-ink); border-width: 0 1.6px 1.6px 0; transform: rotate(40deg); }
+.ok.off { border-color: var(--line-strong); background: var(--surface-2); }
+.ok.off::after { display: none; }
+
+/* ------------------------------------------------------------- tables: one style on every tab
+   No header fill, one hairline per row, 13.5px text on 20px lines with 8px above and below (a 36px row; a row with a
+   line under its first, 52px); the header is the same height as a row. */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-3); }
+th { text-align: left; font: 600 var(--fs-1)/20px var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: var(--sp-2) var(--sp-3) var(--sp-2) 0; white-space: normal; }
+td { padding: var(--sp-2) var(--sp-3) var(--sp-2) 0; border-top: 1px solid var(--line); vertical-align: middle; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; padding-left: var(--sp-3); }
+td:last-child, th:last-child { padding-right: 0; }     /* the last column ends on the panel's edge; the others keep 12px apart */
+td.mono { white-space: nowrap; }
+
+/* ------------------------------------------------------------- live markets: an exchange board on the Live tab */
+.bd-status { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-2); color: var(--ink-2); white-space: nowrap; }
+.bd-wrap { overflow-x: auto; }                                                 /* flush in its fold: the fold is the panel */
+.bd-t { font-size: var(--fs-3); }
+.bd-t th { padding: var(--sp-2) var(--sp-3); text-align: right; white-space: nowrap; }
+.bd-t th:first-child, .bd-t th:nth-child(2) { text-align: left; }
+.bd-t td { padding: var(--sp-2) var(--sp-3); text-align: right; white-space: nowrap; line-height: 20px; color: var(--ink-2); }
+.bd-t td:first-child, .bd-t td:nth-child(2) { text-align: left; }
+#orders .fold-body > .table-wrap { margin-top: 0; border: 0; border-radius: 0; }   /* the orders sit flush in their fold, which is their panel */
+#orders th, #orders th.num { padding: var(--sp-2) var(--sp-3); }
+#orders td, #orders td.num { padding: var(--sp-2) var(--sp-3); }
+#orders td.mono { color: var(--ink-2); }
+.bd-t th:first-child, .bd-t td:first-child, #orders th:first-child, #orders td:first-child { padding-left: var(--sp-4); }   /* in line with the header */
+.bd-t th:last-child, .bd-t td:last-child, #orders th:last-child, #orders td:last-child { padding-right: var(--sp-4); }
+.bd-t td.up { color: var(--up-ink); }
+.bd-t td.down { color: var(--down-ink); }
+.bd-t td.muted { color: var(--muted); }                                        /* a cell with nothing in it yet: its "—" recedes */
+.bd-r:hover td { background: var(--hover); }
+.bd-r.in td:first-child { box-shadow: inset 2px 0 0 var(--brand-ink); }       /* in the bot's buying range */
+.bd-mk { padding: 0; border: 0; background: none; font: 600 var(--fs-3)/20px var(--sans); color: var(--ink); text-decoration: none; }
+.bd-mk:hover { text-decoration: underline; }
+.bd-in { margin-left: var(--sp-2); padding: 2px var(--sp-1); border: 1px solid var(--brand-ink); border-radius: var(--r-1); font: 600 var(--fs-1)/1 var(--sans);
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand-ink); vertical-align: 1px; }
+.bd-fav { display: inline-flex; align-items: center; gap: var(--sp-2); vertical-align: top; }
+.bd-fav .pill { height: 20px; padding: 0 var(--sp-2); font-size: var(--fs-1); letter-spacing: 0.06em; }
+.bd-px { font: 600 var(--fs-4)/20px var(--sans); color: var(--ink); }
+.bd-tick { font-style: normal; font-size: var(--fs-1); margin-left: 2px; }    /* this second's move: an arrow as well as the flash */
+.bd-spark { display: block; margin-left: auto; width: 84px; height: 20px; overflow: visible; }
+.bd-spark path { fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+.bd-spark circle { fill: var(--ink); }
+.bd-empty { padding: var(--sp-5) var(--sp-4); text-align: center; font-size: var(--fs-3); color: var(--muted); }
+/* one table per asset class, each under its own header; with two or more, two columns, stacked until the screen is wide
+   enough to set them side by side. From a tablet up every table lays out fixed, so the columns line up across them */
+.bd-gh { margin: 0; padding: var(--sp-2) var(--sp-4); font: 600 var(--fs-2)/20px var(--sans); color: var(--ink-2); border-bottom: 1px solid var(--line); }
+.bd-gh .n { color: var(--muted); font-weight: 400; }
+.bd-cols { display: grid; grid-template-columns: minmax(0, 1fr); }
+.bd-col + .bd-col { border-top: 1px solid var(--line); }
+.bd-col > .bd-g + .bd-g { border-top: 1px solid var(--line); }
+@media (min-width: 900px) {   /* every group's table the same columns, so stacked groups line up as well as side by side */
+  .bd-g .bd-t { width: 100%; table-layout: fixed; }
+  .bd-g .bd-t th:nth-child(1) { width: 24%; }
+  .bd-g .bd-t th:nth-child(2) { width: 19%; }
+  .bd-g .bd-t th:nth-child(3) { width: 9%; }
+  .bd-g .bd-t th:nth-child(4) { width: 9%; }
+  .bd-g .bd-t th:nth-child(5) { width: 10%; }
+  .bd-g .bd-t th:nth-child(6) { width: 14%; }
+  .bd-g .bd-t th:nth-child(7) { width: 15%; }
+}
+@media (min-width: 1360px) {
+  .bd-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bd-col + .bd-col { border-top: 0; border-left: 1px solid var(--line); }
+  .bd-cols .bd-t td:first-child { white-space: normal; }   /* a long name's "In range" goes under it, not past the column */
+  .bd-cols .bd-spark { width: 100%; max-width: 84px; }      /* the sparkline shrinks to its column: its viewBox scales */
+}
+@keyframes bd-up { from { background: var(--up-wash); } to { background: transparent; } }
+@keyframes bd-down { from { background: var(--down-wash); } to { background: transparent; } }
+@keyframes bd-flip { from { background: var(--warn-wash); } to { background: transparent; } }
+.bd-r.fl-up td { animation: bd-up 0.9s ease-out; }
+.bd-r.fl-down td { animation: bd-down 0.9s ease-out; }
+.bd-r.fl-flip td { animation: bd-flip 0.9s ease-out; }
+@media (prefers-reduced-motion: reduce) { .bd-r.fl-up td, .bd-r.fl-down td, .bd-r.fl-flip td { animation: none; } }
+td.what, th.what { padding-left: var(--sp-4); }
+td b { font-weight: 600; }
+.reason { color: var(--ink-2); }
+.more { display: block; margin: var(--sp-3) auto 0; background: var(--surface-2); border: 1px solid var(--line-strong); border-radius: var(--r-pill); padding: var(--sp-2) var(--sp-4); font: 600 var(--fs-3) var(--sans); color: var(--ink-2); }
+.more:hover { color: var(--ink); }
+.sw-row { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); padding: var(--sp-1) 0 var(--sp-3); font-size: var(--fs-3); color: var(--muted); }
+/* a switch: on is the knob at the right on a filled track (position and fill, no colour that means gain) */
+.sw { position: relative; width: 40px; height: 24px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--surface-2); padding: 0; flex: none; }
+.sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: var(--muted); transition: transform 0.15s, background 0.15s; }
+.sw[aria-checked="true"] { background: var(--ink-2); border-color: var(--ink-2); }
+.sw[aria-checked="true"]::after { transform: translateX(16px); background: var(--surface); }
+@media (prefers-reduced-motion: reduce) { .sw::after { transition: none; } }
+.foot { font-size: var(--fs-2); color: var(--muted); text-align: center; }
+.lede { font-size: var(--fs-3); color: var(--ink-2); margin: 0 0 var(--sp-3); }
+.acc-body .table-wrap + .kv, .acc-body .table-wrap + .lede { margin-top: 12px; }
+.acc-body .table-wrap + .table-wrap { margin-top: var(--sp-5); }
+.acc-body td.num span.s { white-space: normal; }        /* a note under a number wraps rather than widen the table */
+@media (max-width: 560px) {
+  /* the tabs take a row of their own under the bar, so none is ever cut off; the bar keeps the balance, the status and
+     the halt button. The tabs' words line up with the page's 16px edge, the current one's rule on the header's edge */
+  .top-in { flex-wrap: wrap; padding: var(--sp-2) var(--sp-4) 0; gap: var(--sp-1) var(--sp-2); min-height: 0; }
+  .top-in > .nav { order: 1; flex: 1 0 100%; margin: 0 -8px; }
+  .nav-b { padding: 0 var(--sp-2); }
+  .nav-b[aria-current="true"]::after { left: var(--sp-2); right: var(--sp-2); }
+  .status { font-size: 0; gap: 0; }                      /* the dot alone; the words are in the page */
+  .navbal { display: inline-grid; grid-auto-flow: column; grid-template-rows: auto auto; gap: 2px var(--sp-2); padding-right: var(--sp-2); }   /* $ over % */
+  .navbal .eye { grid-row: span 2; width: 28px; height: 28px; margin: 0 -4px 0 0; }
+  .navbal .nb-p:first-child { grid-row: span 2; }          /* the balance hidden: the % alone, centred */
+  .nb-v { font-size: var(--fs-3); }
+  .nb-p { font-size: var(--fs-2); }
+  .nb-t { display: none; }                                 /* the blinking dot alone */
+  .score { gap: var(--sp-3) var(--sp-5); }
+  .sc b { font-size: var(--fs-5); }
+  .halt-btn { height: 34px; padding: 0 var(--sp-3); font-size: var(--fs-2); }
+  .icon-btn { width: 44px; height: 44px; border-color: transparent; }   /* a full-size tap target, its ring dropped */
+  .wrap { padding: var(--sp-4) var(--sp-4) var(--sp-7); gap: var(--sp-5); }
+  .wrap > :has(> .fold[data-open="false"]) + :has(> .fold[data-open="false"]) { margin-top: -16px; }   /* still 8px apart */
+  .live-folds { margin: -8px 0 -16px; }
+  .live-folds + section { margin-top: 0; }
+  .hv { font-size: 48px; }
+  .timer { display: none; }
+  .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* two tiles a row on a phone */
+  .pcard { padding: var(--sp-3); }
+  .pc-top, .pc-bot { flex-direction: column; align-items: flex-start; }   /* each line under the last: every tile alike */
+  .fold-m { flex-basis: 100%; margin-left: 0; padding: 0 0 var(--sp-2) var(--sp-5); text-align: left; }   /* a fold's meta under its title */
+  /* tap targets at least 44px tall */
+  .grp button, .ghost, .folds-b { min-height: 44px; }
+  .grp button { padding: 0 var(--sp-3); }
+  .bd-t th, .bd-t td, #orders th, #orders td, #orders th.num, #orders td.num { padding-left: var(--sp-2); padding-right: var(--sp-2); }   /* the board fits a phone */
+  #orders td:nth-child(2) { white-space: nowrap; }         /* a market's name on one line: rows stay two lines tall */
+  .bd-in { margin-left: var(--sp-1); }
+  .bd-t th { white-space: normal; }                        /* "This window" over two lines */
+  .sz th.num { white-space: normal; }                      /* "Contracts filled" too: the fill sizes fit a 375px phone */
+  /* a wide table scrolls inside its panel; its first column (the market) stays in view */
+  .bd-wrap th:first-child, .bd-wrap td:first-child, .fold .table-wrap th:first-child, .fold .table-wrap td:first-child {
+    position: sticky; left: 0; z-index: 1; background: var(--surface); }
+  .method, .acc-body { padding-left: var(--sp-4); }       /* room for the words: no indent on a phone */
+  .hide-sm { display: none; }
+  .only-sm { display: inline; }                            /* ... and what stands in for it shows */
+}
+@media (max-width: 480px) { .brand { display: none; } }             /* the tabs say enough on a phone */
+@media (max-width: 400px) { .icon-btn { display: none; } .navbal .eye { display: none; } }
+</style>
+<link rel="stylesheet" href="/live_research.css">
+<link rel="stylesheet" href="/latency.css">
+<link rel="stylesheet" href="/backtest.css">
+<link rel="stylesheet" href="/exchange.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <span class="brand">Favorites Bot</span>
+    <nav id="modes" class="nav" aria-label="Views"></nav>
+    <span class="spacer"></span>
+    <span id="navTick" class="nb-tick"></span>
+    <span id="navBal" class="navbal" role="group" aria-label="Kalshi balance"></span>
+    <span class="status" role="status" aria-live="polite"><span id="pulse" class="pulse" aria-hidden="true"></span><span id="statusText">Loading</span></span>
+    <button id="skin" class="icon-btn" type="button" aria-label="Switch between the plain and exchange looks" title="Plain / exchange">▦</button>
+    <span id="haltTop"></span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="banners" class="banners"></div>
+  <section id="hero" aria-label="Account value"></section>
+
+  <section id="chartPanel" aria-label="Bankroll chart">
+    <div class="chart-tools">
+      <div id="chartCtl" class="chips" hidden>
+        <div class="grp" role="group" aria-label="Units"><button type="button" data-unit="usd">$</button><button type="button" data-unit="pct">%</button></div>
+        <div class="grp" role="group" aria-label="Time range"><button type="button" data-range="1h">1H</button><button type="button" data-range="6h">6H</button><button type="button" data-range="1d">1D</button><button type="button" data-range="all">All</button></div>
+        <div class="grp" role="group" aria-label="View"><button type="button" data-view="chart">Chart</button><button type="button" data-view="table">Table</button></div>
+      </div>
+      <button id="chartOpts" class="ghost" type="button" aria-expanded="false" aria-controls="chartCtl">Chart options</button>
+    </div>
+    <div class="chart" id="chart"></div>
+  </section>
+
+  <div id="liveFolds" class="live-folds"></div>
+  <section id="positions" aria-label="Open positions"></section>
+
+  <section id="board" aria-label="Live markets"></section>
+
+  <section id="fills" aria-label="Fill rate: contracts filled per window"></section>
+
+  <section id="orders" aria-label="Orders: asked for, filled, won or lost"></section>
+
+  <section id="method" aria-label="How it trades"></section>
+
+  <section id="more" aria-label="Details"></section>
+  <section id="liveresearch" aria-label="Live Research" hidden></section>
+  <section id="latency" aria-label="Latency" hidden></section>
+  <section id="backtest" aria-label="Backtest" hidden></section>
+  <p class="foot" id="foot" hidden></p>
+</main>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const nf = (v, dp = 2) => Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
+const zero = (v, dp = 2) => Math.abs(v) < 0.5 * Math.pow(10, -dp);            // rounds to nothing: no sign, no colour
+const money = (v, dp = 2) => v == null ? "—" : (v < 0 && !zero(v, dp) ? "−$" : "$") + nf(v, dp);
+const signed = (v, dp = 2) => v == null ? "—" : (zero(v, dp) ? "" : v > 0 ? "+" : "−") + "$" + nf(v, dp);
+const pct = (v, dp = 1) => v == null ? "—" : (v * 100).toFixed(dp) + "%";
+const limitPct = (v) => v == null ? "—" : +(v * 100).toFixed(1) + "%";   // a limit as set: 1.5%, 10% (no stray .0, no rounding 1.5 up to 2)
+const winRate = (d) => d.winShare ?? (d.wins + d.losses ? d.wins / (d.wins + d.losses) : null);   // per contract, as the break-even is (per bet from an older server)
+const spct = (v, dp = 1) => v == null ? "—" : (zero(v * 100, dp) ? "" : v > 0 ? "+" : "−") + Math.abs(v * 100).toFixed(dp) + "%";
+const tone = (v) => v == null || zero(v) ? "" : v > 0 ? "up" : "down";
+const arrow = (v) => tone(v) === "up" ? "▲ " : tone(v) === "down" ? "▼ " : "";
+const cents = (p) => p == null ? "—" : (Math.abs(p * 100 - Math.round(p * 100)) < 0.05 ? String(Math.round(p * 100)) : (p * 100).toFixed(1)) + "¢";
+const hhmm = (t) => new Date(t * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+const hms = (t) => new Date(t * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+const when = (t) => {
+  const d = new Date(t * 1000), today = new Date();
+  return d.toDateString() === today.toDateString() ? hhmm(t) : d.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + hhmm(t);
+};
+const sym = (series) => (series || "").replace(/^KX/, "").replace(/15M$/, "");
+const clock = (s) => `${Math.floor(Math.max(0, s) / 60)}:${String(Math.floor(Math.max(0, s) % 60)).padStart(2, "0")}`;
+const entryText = (left, minute) => left > 0 ? `entry in ${clock(left)}` : `entry was minute ${minute}`;
+const count = (n) => Number(n).toLocaleString("en-US");
+const title = (series) => sym(series) + " 15 min";
+// The 15-minute window's page on Kalshi: /markets/{series}/{slug}/{event}; Kalshi fixes the slug if it's off.
+const kalshiUrl = (ticker) => {
+  const p = ticker.split("-"), s = p[0].toLowerCase();
+  return p.length < 2 ? `https://kalshi.com/markets/${s}` : `https://kalshi.com/markets/${s}/${s}/${p.slice(0, 2).join("-").toLowerCase()}`;
+};
+const market = (b) => `<a href="${esc(kalshiUrl(b.ticker))}" target="_blank" rel="noopener" title="${esc(b.ticker)} on Kalshi">${esc(title(b.series))}<span class="ext"> ↗</span></a>`;
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
+                set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
+const label = (m) => ({ "live-prod": "Live", "live-demo": "Demo", "dry-prod": "Paper" })[m] || m;   // the paper ledger's tab; live tabs only while there's none (dashboard.modes)
+const LIMITS = { betPct: 0.015, windowPct: 0.10, ordersPerWindow: 20, ordersPerDay: 600, minCash: 67, dayDrop: 0.35, halfStart: 0.5,
+                 windowLosses: 8, settleLag: 1800, persist: 300, orderErrors: 3,
+                 minute: 8, lo: 0.92, hi: 0.999, limitUp: 0, shadowUp: 0.01, grace: 45, spreadMax: 0.02, lateMid: 0.50, jump: 0.10, orderDeadline: 60, bookMaxAge: 15,
+                 restingEvery: 15, orderConnect: 3.05, orderAnswer: 5 };   // only until the server says what the bot enforces
+
+const parse = (k, dflt) => { try { return JSON.parse(store.get(k)) ?? dflt; } catch { return dflt; } };
+let data = null, mode = store.get("mode"), range = store.get("range") || "all", unit = store.get("unit") || "usd";
+let view = "chart", skew = 0, armed = false, armTimer = null, running = false, hovering = false, cm = null, ids = [];
+let openSecs = new Set(parse("open", [])), fullTables = new Set(), showSkips = store.get("skips") === "1", chartOpts = store.get("chartOpts") === "1";
+let hideBal = store.get("hideBal") === "1";
+// Live Research ("liveresearch", live_research.js), Latency ("latency", latency.js) and Backtest ("backtest",
+// backtest.js) fetch their own data, and are remembered across reloads. Anything else opens the account, a
+// "research" page remembered from the backtests' tab (taken off the page on Oct 15) included.
+let page = ["liveresearch", "latency", "backtest"].includes(store.get("page")) ? store.get("page") : "account";
+// ------------------------------------------------------------------ folds: a section that shrinks to its header line
+// The Live, Live Research and Latency pages fold alike: a heading holding one button (a chevron and the
+// title), the section's meta beside it and still in view while folded, and a body that is only hidden, so folded
+// content stays in the page. FOLDS: every fold key on the first two -> open on a first visit (Latency passes its own). `folds`: the viewer's
+// own choices, kept in localStorage "folds"; a stored value that isn't an object, or a choice that isn't true or false,
+// is ignored. A page may give a fold a default of its own as it draws it (dflt, a boolean): the live +1¢ card opens
+// by default once it's on. Keys hold only a-z, 0-9, dots and dashes; titles are the page's own words, meta and body
+// arrive escaped.
+const FOLDS = {
+  "live.positions": true, "live.board": true, "live.fills": true, "live.orders": false, "live.method": false, "live.details": true,
+  "lr.shadow": true, "lr.shadow.about": false, "lr.shadow.extra": true, "lr.shadow.pred": false, "lr.shadow.latest": false,
+  "lr.fast": true, "lr.fast.about": false, "lr.fast.vs": true, "lr.fast.latest": false,
+  "lr.limit": false, "lr.limit.about": false, "lr.limit.fills": false, "lr.limit.extra": true, "lr.limit.pred": false,
+  "lr.limit.latest": false, "lr.terms": false,
+};
+let folds = ((v) => (v && typeof v === "object" && !Array.isArray(v) ? v : {}))(parse("folds", {}));
+const foldOpen = (key, dflt) => typeof folds[key] === "boolean" ? folds[key] : typeof dflt === "boolean" ? dflt : !!FOLDS[key];
+function fold(key, name, body, meta = "", cls = "", dflt) {
+  const open = foldOpen(key, dflt);
+  return `<section class="fold${cls ? " " + cls : ""}" data-fold-key="${key}" data-open="${open}"><div class="fold-h"><h2 class="fold-t">`
+    + `<button type="button" class="fold-b" data-fold="${key}" aria-expanded="${open}" aria-controls="fold-${key}"><i class="chev" aria-hidden="true"></i>${name}</button>`
+    + `</h2>${meta ? `<span class="fold-m">${meta}</span>` : ""}</div><div class="fold-body" id="fold-${key}"${open ? "" : " hidden"}>${body}</div></section>`;
+}
+// The page's one Open all (while any of its folds is closed) or Close all; it carries the keys it sets.
+function foldsButton(keys, dflts = {}) {
+  const any = keys.some((k) => !foldOpen(k, dflts[k]));
+  return `<button type="button" class="folds-b" data-folds="${any ? "open" : "close"}" data-fold-keys="${keys.join(" ")}">${any ? "Open all" : "Close all"}</button>`;
+}
+// A choice made: these folds open (or close) where they stand, at once and with no fetch, and the choice is saved so
+// every later redraw draws them the same; each Open all / Close all relabels itself from what's on screen.
+function foldSet(keys, open) {
+  for (const k of keys) {
+    folds[k] = open;
+    const body = $("fold-" + k), sec = body && body.parentElement;
+    if (sec) { body.hidden = !open; sec.dataset.open = open; sec.querySelector(".fold-b").setAttribute("aria-expanded", open); }
+  }
+  store.set("folds", JSON.stringify(folds));
+  document.querySelectorAll("[data-folds]").forEach((b) => {
+    const any = (b.dataset.foldKeys || "").split(" ").some((k) => { const f = k && $("fold-" + k); return f ? f.hidden : !!k && !foldOpen(k); });
+    b.dataset.folds = any ? "open" : "close"; b.textContent = any ? "Open all" : "Close all";
+  });
+}
+// The Live tab's folds, top to bottom; its one Open all / Close all sets them all, and every Details row with them.
+const LIVE_FOLDS = Object.keys(FOLDS).filter((k) => k.startsWith("live."));
+const shown = new Map();
+// Write a region only when its markup changed, so an unchanged refresh (every second) never disturbs hover, focus or scroll.
+function patch(id, html) {
+  if (shown.get(id) === html) return false;
+  shown.set(id, html);
+  $(id).innerHTML = html;
+  return true;
+}
+const nowS = () => Date.now() / 1000 + skew;
+
+// The Live tab's state, read every STATE_EVERY ms. One read at a time: while one is out, a tick (or a click) skips.
+// An answer for an account the viewer has since left for another is dropped, so the account picked mid-read is the
+// one that shows, on the next tick.
+const STATE_EVERY = 1000;
+let loading = false;
+async function load() {
+  if (loading) return;
+  loading = true;
+  const asked = mode;
+  try {
+    const r = await fetch("/api/state" + (mode ? "?mode=" + encodeURIComponent(mode) : ""), { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    if (mode !== asked) return;
+    data = d;
+    skew = (data.now || Date.now() / 1000) - Date.now() / 1000;
+    document.body.classList.remove("offline");
+    render();
+  } catch (e) {
+    document.body.classList.add("offline");          // keep the last picture, dimmed, rather than blanking it
+    status("off", "Can't reach the dashboard's server");
+  } finally {
+    loading = false;
+  }
+}
+
+function status(kind, text) {
+  $("pulse").className = "pulse " + kind;
+  $("statusText").textContent = text;
+}
+
+const ICON_LIST = `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 9h8M8 12.5h8M8 16h5" stroke-linecap="round"/></svg>`;
+const emptyState = (text, sub) => `<div class="empty">${ICON_LIST}<b>${text}</b>${sub ? `<span>${sub}</span>` : ""}</div>`;
+const eyeIcon = (off) => `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>${off ? `<path d="M4 4l16 16"/>` : ""}</svg>`;
+
+// The scoreboard under the balance: settled bets won and lost, then the win rate against the break-even. Both rates are
+// per contract (the break-even is the all-in cost per contract), so they compare: a per-bet rate made a winning bot
+// look like a losing one, its few losses being small early bets. The bar is the win rate, ticked at the break-even.
+// No dollar figure, so it stays when the balance is hidden; a count is coloured only when it isn't zero.
+// The scoreboard sits straight under the headline, so with a simulated account showing it is that account's
+// record, not the paper bot's handful of bets since Nov 3, which would read as the simulation's own.
+const simScore = (s) => ({ wins: s.wins || 0, losses: (s.bets || 0) - (s.wins || 0), winShare: s.winRate, need: s.need });
+
+function scoreBlock(d) {
+  if (d.sim) d = simScore(d.sim);   // with a simulated account showing, the scoreboard is its record
+  const n = d.wins + d.losses;
+  if (!n) return `<div class="score muted s">No bets settled yet</div>`;
+  const w = winRate(d), rate = pct(w, 1), be = d.need == null ? null : pct(d.need, 1);
+  return `<div class="score" role="group" aria-label="Record: ${d.wins} won, ${d.losses} lost; ${rate} of contracts won${be ? `, break-even ${be}` : ""}" title="Settled bets: ${d.wins} won, ${d.losses} lost">
+      <span class="sc"><b${d.wins ? ' class="up"' : ""}>${d.wins}</b> <span class="k">Won</span></span>
+      <span class="sc"><b${d.losses ? ' class="down"' : ""}>${d.losses}</b> <span class="k">Lost</span></span>
+      <span class="sc" title="Share of contracts that won; break-even is per contract too"><b>${rate}</b> <span class="k">Win rate</span></span>
+      ${be ? `<span class="sc" title="The win rate that breaks even: the all-in cost per contract, fees included"><b>${be}</b> <span class="k">Break-even</span></span>` : ""}
+      <div class="sc-bar" aria-hidden="true"><i style="width:${+(w * 100).toFixed(2)}%"></i>${be ? `<b class="sc-be" style="left:${+(d.need * 100).toFixed(2)}%"></b>` : ""}</div>
+    </div>`;
+}
+
+// ------------------------------------------------------------------ render
+function render() {
+  const d = data, lab = page === "liveresearch", lat = page === "latency", bt = page === "backtest";
+  const other = lab || lat || bt;                                   // other: a tab that isn't the account
+  patch("modes", (d.modes || []).map((m) => `<button class="nav-b" type="button" data-mode="${esc(m)}" aria-current="${!other && m === d.mode}">${esc(label(m))}</button>`).join("")
+    + `<button class="nav-b" type="button" data-page="liveresearch" aria-current="${lab}">Live Research</button>`
+    + `<button class="nav-b" type="button" data-page="latency" aria-current="${lat}">Latency</button>`
+    + `<button class="nav-b" type="button" data-page="backtest" aria-current="${bt}">Backtest</button>`);
+  for (const id of ["hero", "chartPanel", "board", "fills", "positions", "orders", "method", "more"]) $(id).hidden = other;
+  $("liveFolds").hidden = other;
+  $("liveresearch").hidden = !lab;
+  $("latency").hidden = !lat;
+  $("backtest").hidden = !bt;
+  document.body.classList.toggle("wide", other);
+  if (!d.modes || !d.modes.length) return renderEmpty();
+  mode = d.mode;
+  const L = Object.assign({}, LIMITS, d.limits);
+  const equity = d.bankroll + (d.unrealized || 0), diff = equity - d.start;
+  const acct = d.kalshi && !d.kalshi.error && d.kalshi.value != null ? d.kalshi : null;   // your real Kalshi account, live
+  // a paper mode with a simulated account (d.sim): the hero and the chart lead with the sim, not the dry ledger's books
+  const sim = d.sim && d.sim.value != null ? d.sim : null;
+  const simFunds = sim ? fundsLine({ ...d, live: false, start: sim.start }, sim.value) : "";
+  // its start date read in UTC: t0 is midnight UTC, which is still the day before west of London
+  const simNote = sim ? `Simulated ${money(sim.start, 0)} since ${new Date(Date.parse(sim.t0)).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })} · replayed on real prices and real book depth` : "";
+  const age = d.heartbeat ? d.now - d.heartbeat : null;
+  running = age != null && age < 30;
+  const halted = !!d.halt, paused = !!(d.blackout && d.blackout.active);
+
+  // header
+  if (halted) status("warn", "Halted");
+  else if (running) status("on", "Running");
+  else status("off", "Not running");
+  patch("haltTop", haltButton());
+  $("skin").setAttribute("aria-pressed", String(document.documentElement.dataset.skin === "exchange"));
+
+  // the things worth interrupting you for
+  const b = [];
+  if (halted) b.push(`<div class="note" role="alert"><b>Trading halted</b> since ${when(Date.parse(d.halt.ts) / 1000)} · ${esc(d.halt.reason)}. No new orders until you run <code>python bot.py --resume</code>. Open bets still settle.</div>`);
+  else if (paused) b.push(`<div class="note warn" role="status"><b>${esc(d.blackout.what)} blackout</b> no new bets until ${hhmm(d.blackout.to)}</div>`);
+  if (!running) b.push(`<div class="note warn" role="status"><b>Bot not running</b> ${d.heartbeat ? "last seen " + when(d.heartbeat) + ". " : ""}Nothing is being bought. Start it with <code>python bot.py ${d.live ? "--live" + (d.env === "prod" ? " --env prod" : "") : ""}</code>.</div>`);
+  const idle = acct && acct.crypto != null ? acct.total - acct.crypto : 0;   // cash in sections the bot can't bet from
+  if (idle >= 0.01) b.push(`<div class="note warn" role="status"><b>${hideBal ? "Some cash" : money(idle)} outside Crypto &amp; Commodities</b> It's in another section of your Kalshi account, which the bot can't bet from. Move it with <code>python bot.py --fund-crypto</code>.</div>`);
+  const gap = bookGap(d, equity, acct, hideBal);
+  if (gap) b.push(gap);
+  if (d.live && d.kalshi && d.kalshi.crypto != null && d.kalshi.crypto < L.minCash) b.push(`<div class="note warn" role="status"><b>Low cash for these markets</b> ${money(d.kalshi.crypto)} in Kalshi's Crypto &amp; Commodities section, under the ~${money(L.minCash, 0)} a $1 bet needs. Move cash there with <code>python bot.py --fund-crypto</code>.</div>`);
+  const restart = restartNote(d);
+  if (restart) b.push(restart);
+  patch("banners", other ? (halted ? b[0] : "") : b.join(""));
+
+  // the account, in one glance; with the balance hidden, the change since the start in % takes its place
+  const r = sim ? (sim.start ? sim.value / sim.start - 1 : null) : d.start ? diff / d.start : null;   // the sim's own change on a paper mode
+  const rp = r == null ? null : Math.round(r * 1000) / 10;   // rp: the % as shown, so its colour and arrow agree with it
+  const openN = d.openBets.length ? `${d.openBets.length} open bet${d.openBets.length === 1 ? "" : "s"}` : "";
+  patch("hero", `
+    <div class="hero-top"><span class="hk"><span class="k">Portfolio${d.mode === "live-prod" ? "" : " · " + esc(label(d.mode))}</span><button class="eye" type="button" data-bal aria-pressed="${hideBal}" aria-label="Hide balance" title="${hideBal ? "Show" : "Hide"} balance">${eyeIcon(hideBal)}</button></span><div class="timer" id="timer" aria-live="off"></div></div>
+    ${hideBal ? `
+    <div class="hv ${tone(rp)}">${spct(r)}</div>
+    <div class="fd ${tone(rp)}">${arrow(rp)}since the start</div>
+    <div class="fmeta muted">Balance hidden${openN ? " · " + openN : ""}</div>` : `
+    <div class="hv">${money(sim ? sim.value : acct ? acct.value : equity)}</div>
+    ${sim ? simFunds : fundsLine(d, equity) + stakedLine(d.staked)}
+    <div class="fmeta muted">${sim ? simNote : acct ? `Live from Kalshi: ${money(acct.total)} cash${acct.held >= 0.005 ? ` · ${money(acct.held)} in open positions` : ""}`
+      : "From the bot's books"}${openN ? " · " + openN : ""}</div>`}
+    ${scoreBlock(d)}`);
+  if (lab) { if (window.liveResearchView) liveResearchView(); }   // live_research.js loads after this script
+  else if (lat) { if (window.latencyView) latencyView(); }        // ... and latency.js
+  else if (bt) { if (window.backtestView) backtestView(); }      // ... and backtest.js
+  else { tick(); chart(); positions(); fillsBlock(); ordersBlock(); method(L); more(L); patch("liveFolds", foldsButton(LIVE_FOLDS)); }
+  if (lab) labMissing();
+  if (lat) latMissing();
+  if (bt) btMissing();
+  // the page's clock: real time from internet time servers (state's clock), or this PC's while there's none yet
+  const ck = d.clock, off = ck && ck.synced && typeof ck.offset === "number" ? ck.offset : null;
+  const clockAt = off == null ? `<span>clock from this PC</span>`
+    : `<span title="this PC's clock is ${Math.abs(off).toFixed(3)} s ${off >= 0 ? "behind" : "ahead"}">clock set to internet time</span>`;
+  patch("foot", `Updated ${hhmm(d.now)} · refreshes every second${bal ? " · the balance up top every second" : ""} · ${clockAt} · times are your local time`);
+  syncControls();
+}
+
+// A reminder added on Oct 12: that day's changes (the +1¢ limit measured on paper, the Live Research tab)
+// start only once the dashboard and then the bot are restarted. A dashboard from before them doesn't send restartBot at
+// all; a restarted one says whether the real-money ledger is still the old bot's. The note goes once both have restarted.
+function restartNote(d) {
+  if (d.mode !== "live-prod" || d.restartBot === false) return "";
+  const botRestart = `in the bot's own window press Ctrl+C, then run <code>python bot.py --live --env prod</code>, not in minutes`
+    + ` :08–:09, :23–:24, :38–:39 or :53–:54 of the hour (an entry may be under way)`;
+  return d.restartBot === undefined
+    ? `<div class="note warn" role="status"><b>Restart pending</b> The Oct 12 changes (the +1¢ limit measured on paper, the Live Research tab) start after a restart. First the dashboard: stop it and run <code>python dashboard.py</code>. Then the bot: ${botRestart}. This note goes away by itself once both have restarted.</div>`
+    : `<div class="note warn" role="status"><b>Restart the bot</b> Its Oct 12 changes (the +1¢ limit measured on paper) start after a restart: ${botRestart}. This note goes away by itself once it has.</div>`;
+}
+
+// The line under the Portfolio figure: your own money, and what the bot has made on top of it. "Put in" is the
+// ledger's start, which every --rebase keeps at money in less money out; a dry run's is play money. Both are taken to
+// the cent first, so they add up to the figure above them.
+function fundsLine(d, equity) {
+  const put = Math.round(d.start * 100) / 100, p = Math.round((Math.round(equity * 100) / 100 - put) * 100) / 100;
+  return `<div class="fd">${d.live ? "Put in" : "Started with"} ${money(put)} · <span class="${tone(p)}">Profit ${arrow(p)}${signed(p)} (${spct(d.start ? p / d.start : null)})</span></div>`;
+}
+
+// The line under that: what the bets have cost (state()'s staked: every bet, then the last 24 hours'), and what the
+// settled ones made per $1 they cost, in cents. Nothing from a dashboard started before it, or before the first bet.
+function stakedLine(s) {
+  if (!s || !s.bets) return "";
+  const since = s.since ? ` since ${new Date(s.since * 1000).toLocaleDateString([], { month: "short", day: "numeric" })}` : "";
+  const per = s.settled ? s.profit / s.settled * 100 : null;
+  const cents = per == null ? "" : ` · profit ${zero(per, 1) ? "" : per < 0 ? "−" : ""}${Math.abs(per).toFixed(1)}¢ per $1 staked`;
+  return `<div class="fmeta muted">Staked ${money(s.all)} in ${count(s.bets)} bet${s.bets === 1 ? "" : "s"}${since} · ${money(s.day)} in the last 24 hours${cents}</div>`;
+}
+
+// Kalshi's cash and the bot's books $1 or more apart with nothing riding: money added or taken out that --rebase
+// hasn't counted yet, which would otherwise read as profit or a loss.
+function bookGap(d, equity, acct, hide) {
+  if (!d.live || !acct || d.openBets.length || (acct.held || 0) >= 0.005) return "";
+  const gap = Math.round(((acct.crypto != null ? acct.crypto : acct.total) - equity) * 100) / 100, more = gap > 0;
+  if (Math.abs(gap) < 1) return "";
+  return `<div class="note warn" role="status"><b>Kalshi holds ${hide ? "" : money(Math.abs(gap)) + " "}${more ? "more" : "less"} than the bot's books</b> `
+    + `If you ${more ? "added money" : "took money out"}, run <code>python bot.py --rebase</code> so it counts as ${more ? "put in, not profit" : "taken out, not a loss"}.</div>`;
+}
+
+function renderEmpty() {
+  status("off", "The bot hasn't run yet");
+  for (const id of ["haltTop", "banners", "liveFolds", "board", "fills", "positions", "orders", "method", "more", "foot"]) patch(id, "");
+  $("foot").hidden = true;
+  if (page === "liveresearch") return window.liveResearchView && liveResearchView();
+  if (page === "latency") return window.latencyView && latencyView();
+  if (page === "backtest") return window.backtestView && backtestView();
+  $("chartPanel").hidden = true;
+  patch("hero", emptyState("Nothing to show yet", "Run the bot once and its account appears here: <code>python bot.py</code> for a dry run, or <code>python bot.py --live</code>."));
+}
+
+// A dashboard started before the Live Research tab existed doesn't serve its script (live_research.js) or its data. Once
+// every script on the page has had its turn (the document is past "loading") and that one never arrived, the tab says
+// so rather than staying blank.
+function labMissing() {
+  if (window.liveResearchHtml || document.readyState === "loading") return;
+  patch("liveresearch", `<div class="note warn" role="status"><b>Restart the dashboard</b> to open Live Research. This dashboard`
+    + ` was started before the tab was added, so it doesn't serve the tab's files yet: stop <code>python dashboard.py</code> and start it again.</div>`);
+}
+
+// The same for the Latency tab (latency.js), added Oct 15.
+function latMissing() {
+  if (window.latencyHtml || document.readyState === "loading") return;
+  patch("latency", `<div class="note warn" role="status"><b>Restart the dashboard</b> to open Latency. This dashboard`
+    + ` was started before the tab was added, so it doesn't serve the tab's files yet: stop <code>python dashboard.py</code> and start it again.</div>`);
+}
+
+// The same for the Backtest tab (backtest.js), added Oct 28.
+function btMissing() {
+  if (window.backtestHtml || document.readyState === "loading") return;
+  patch("backtest", `<div class="note warn" role="status"><b>Restart the dashboard</b> to open Backtest. This dashboard`
+    + ` was started before the tab was added, so it doesn't serve the tab's files yet: stop <code>python dashboard.py</code> and start it again.</div>`);
+}
+
+// One halt button, always in reach: two taps, so a stray touch can't halt it. There is no resume button.
+function haltButton() {
+  if (data && data.halt) return `<button class="halt-btn" type="button" disabled>Halted</button>`;
+  return `<button class="halt-btn${armed ? " arm" : ""}" type="button" data-halt>${armed ? "Tap again to halt" : "Halt trading"}</button>`;
+}
+
+// ------------------------------------------------------------------ the countdown to the next entry
+function tick() {
+  document.querySelectorAll("[data-close]").forEach((c) => { c.textContent = clock(+c.dataset.close - nowS()); });
+  document.querySelectorAll("[data-entry]").forEach((c) => { c.textContent = entryText(+c.dataset.entry - nowS(), c.dataset.min); });
+  const el = $("timer");
+  if (!el || !data) return;
+  const s = nowS() % 900;
+  let text, cls = "";
+  if (data.halt) { text = "Halted"; cls = "down"; }
+  else if (!running) { text = "Not running"; cls = "down"; }
+  else if (data.blackout && data.blackout.active) text = "Blackout";
+  else if (s >= 480 && s <= 525) text = "Entering now";
+  else {
+    const left = Math.ceil(s < 480 ? 480 - s : 1380 - s);
+    text = String(Math.floor(left / 60)).padStart(2, "0") + ":" + String(left % 60).padStart(2, "0");
+  }
+  const html = `<span class="k">Next entry</span><b class="${cls}">${text}</b>`;
+  if (el.dataset.h !== html) { el.dataset.h = html; el.innerHTML = html; }
+}
+
+// ------------------------------------------------------------------ the bankroll chart
+function niceTicks(lo, hi, n) {
+  const raw = (hi - lo || 1) / n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= raw) || raw;
+  const out = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10));
+  return { ticks: out, step };
+}
+
+// The windows whose losses the 1H and 6H charts shade: short enough ranges for 15-minute chunks to show.
+const LOSS_RANGES = ["1h", "6h"];
+// Each 15-minute window that lost money on net, from the chart's points: every settlement's change, less money put in or
+// taken out, counts toward the window its market closed at (it settles after the close, up to ~15 minutes late), and its
+// share is of the balance before the window's first settlement. On the real account the settlements are the points that
+// say won or lost (not fees on bets placed, deposits, or the "now" mark); on the bot's own curve, every point after the
+// first. [{open, close, pnl, before, pct}], oldest first.
+function lossWindows(pts, real) {
+  const by = new Map();
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i];
+    if (real && !/\b(won|lost)\b/.test(p[3] || "")) continue;
+    const close = Math.floor(p[0] / 900) * 900, w = by.get(close) || { open: close - 900, close, pnl: 0, before: pts[i - 1][1] };
+    w.pnl += p[1] - pts[i - 1][1] - (p[2] || 0);
+    by.set(close, w);
+  }
+  return [...by.values()].filter((w) => w.pnl < 0 && !zero(w.pnl)).sort((a, b) => a.open - b.open)
+    .map((w) => ({ open: w.open, close: w.close, pnl: w.pnl, before: w.before, pct: w.pnl / w.before }));
+}
+
+// The line in dollars. The real account's is drawn as brokerage apps draw a portfolio: money put in or taken out (p[2])
+// lifts or lowers the line before it rather than jumping it, so the line ends at the account's real value and its rise
+// is what the bets made. The first point's p[2] is the range's start, not money moved. The bot's own curve is as it is.
+function dollarLine(pts, real) {
+  const out = pts.map((p) => p[1]);
+  if (real) for (let i = pts.length - 1, later = 0; i >= 0; i--) { out[i] += later; later += i ? pts[i][2] || 0 : 0; }
+  return out;
+}
+
+function chart() {
+  const d = data, box = $("chart");
+  if (hovering) return;                                     // don't redraw under the pointer
+  const secs = { "1h": 3600, "6h": 21600, "1d": 86400 }[range];
+  // a paper mode with a simulated account: the line is the sim's bankroll, one point every step hours from its t0
+  // (the server sends null before the account started, and once it's broke: those draw nothing)
+  const sim = d.sim && d.sim.curve && d.sim.curve.length ? d.sim : null;
+  const simT0 = sim ? Date.parse(sim.t0) / 1000 : 0;
+  const real = !sim && !!d.kalshiCurve;                     // a live account: its real value over time, from Kalshi
+  let pts = sim ? sim.curve.map((v, i) => [simT0 + i * (sim.step || 1) * 3600, v]).filter((p) => p[1] != null)
+                : (d.kalshiCurve || d.curve).slice();
+  if (secs) {
+    const cut = d.now - secs, before = pts.filter((p) => p[0] < cut);
+    pts = pts.filter((p) => p[0] >= cut);
+    if (pts.length && before.length) pts.unshift([cut, before[before.length - 1][1], 0, ""]);
+  }
+  if (view === "table") { cm = null; patch("chart", tableView(pts, real)); return; }
+  if (pts.length < 2) {
+    cm = null;
+    patch("chart", emptyState(secs ? "No settled bets in this range" : "The line starts with the first settled bet", ""));
+    return;
+  }
+  // The real account is measured from its value where the range starts, not counting money put in or taken out
+  // since (p[2]); the sim from its own start; the bot's own curve from the bot's start.
+  const ref = real ? pts[0][1] : sim ? sim.start : d.start;
+  let moved = 0;
+  const adj = pts.map((p, i) => p[1] - (moved += i ? p[2] || 0 : 0));
+  const dl = dollarLine(pts, real);
+  const isPct = unit === "pct", base = isPct ? 0 : real ? dl[0] : ref;
+  const val = (i) => isPct ? (ref ? (adj[i] / ref - 1) * 100 : 0) : dl[i];
+  const W = Math.max(300, Math.floor(box.clientWidth)), H = 230, M = { t: 12, r: 76, b: 26, l: 2 };
+  const t0 = pts[0][0], t1 = pts[pts.length - 1][0];
+  const vs = pts.map((p, i) => val(i)).concat([base]);
+  let lo = Math.min(...vs), hi = Math.max(...vs);
+  const pad = Math.max((hi - lo) * 0.14, isPct ? 0.25 : 0.5); lo -= pad; hi += pad;
+  const x = (t) => M.l + (t1 === t0 ? 0 : (t - t0) / (t1 - t0)) * (W - M.l - M.r);
+  const y = (v) => M.t + (1 - (v - lo) / (hi - lo)) * (H - M.t - M.b);
+  const { ticks, step } = niceTicks(lo, hi, 4);
+  const whole = Number.isInteger(+step.toFixed(9)), dp = isPct ? (whole ? 0 : 1) : (whole ? 0 : 2);
+  const fmt = (v) => isPct ? (zero(v, dp) ? "0%" : (v > 0 ? "+" : "−") + Math.abs(v).toFixed(dp) + "%") : money(v, dp);
+  const line = pts.map((p, i) => `${i ? "L" : "M"}${x(p[0]).toFixed(1)},${y(val(i)).toFixed(1)}`).join("");
+  const n = pts.length - 1, last = pts[n], lx = x(last[0]), ly = y(val(n));
+  const area = `${line}L${x(t1).toFixed(1)},${y(lo)}L${x(t0).toFixed(1)},${y(lo)}Z`;
+  const up = adj[n] >= ref, yb = y(base);
+  const ty = Math.abs(ly - yb) < 24 ? yb + (ly <= yb ? 22 : -22) : yb;   // START steps aside when the value tag is on top of it
+  const xt = W < 560 ? [t0, t1] : [t0, (t0 + t1) / 2, t1];
+  const rx = W - M.r;
+  const deps = pts.map((p, i) => i && p[2] ? `<circle class="dep" cx="${x(p[0]).toFixed(1)}" cy="${y(val(i)).toFixed(1)}" r="3.5"/>` : "").join("");
+  // 1H and 6H: a divider at every 15-minute window, and each window that lost money shaded, labelled with its share of
+  // the balance where the band has room (the tooltip has it otherwise)
+  const lw = lossWindows(pts, real), shade = LOSS_RANGES.includes(range);
+  let bands = "", bandText = "";
+  if (shade) {
+    for (let b = Math.floor(t0 / 900) * 900 + 900; b < t1; b += 900) bands += `<line class="wl" x1="${x(b).toFixed(2)}" x2="${x(b).toFixed(2)}" y1="${M.t}" y2="${H - M.b}"/>`;
+    for (const w of lw) {
+      const a = x(Math.max(w.open, t0)), b = x(Math.min(w.close, t1));
+      if (b <= a) continue;
+      bands += `<rect class="lw" x="${a.toFixed(2)}" y="${M.t}" width="${(b - a).toFixed(2)}" height="${H - M.t - M.b}"/>`;
+      if (b - a >= 34) bandText += `<text class="lw-t" x="${((a + b) / 2).toFixed(1)}" y="${M.t + 14}" text-anchor="middle">${spct(w.pct)}</text>`;
+    }
+  }
+  const lossSay = shade && lw.length ? ` ${lw.length} losing window${lw.length === 1 ? "" : "s"} in this range, the worst ${spct(Math.min(...lw.map((w) => w.pct)))} of the balance.` : "";
+  cm = { pts, adj, dl, ref, real, sim: !!sim, x, y, val, M, W, H, t0, t1, up, lw };
+  const html = `<svg class="cv ${up ? "up" : "down"}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="group" aria-label="${real
+      ? `Your Kalshi account's value, from ${money(dl[0])} to ${money(last[1])}: money put in or taken out lifts the line before it rather than jumping it, so its rise is what the bets made. Deposits and withdrawals are marked.`
+      : sim ? `The simulated account's value, from ${money(sim.start)} to ${money(last[1])}.`
+      : `Bankroll after each settled bet, from ${money(d.start)} to ${money(last[1])}.`}${lossSay} Use the left and right arrow keys to read points.">
+    <defs><linearGradient id="wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--c);stop-opacity:.16"/><stop offset="1" style="stop-color:var(--c);stop-opacity:0"/></linearGradient></defs>
+    ${ticks.map((v) => `<line class="grid-l" x1="${M.l}" x2="${rx}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>${Math.abs(y(v) - yb) < 17 || Math.abs(y(v) - ly) < 17 ? "" : `<text x="${rx + 10}" y="${(y(v) + 4).toFixed(1)}">${fmt(v)}</text>`}`).join("")}
+    ${bands}<line class="ref" x1="${M.l}" x2="${rx}" y1="${yb.toFixed(1)}" y2="${yb.toFixed(1)}"/>
+    <rect class="tagbox" x="${rx + 6}" y="${(ty - 9).toFixed(1)}" width="60" height="18" rx="9"/><text class="tagtxt" x="${rx + 36}" y="${(ty + 3.5).toFixed(1)}" text-anchor="middle">${real && secs ? range.toUpperCase() + " AGO" : "START"}</text>
+    ${xt.map((t, i) => `<text x="${x(t).toFixed(1)}" y="${H - 6}" text-anchor="${i === 0 ? "start" : i === xt.length - 1 ? "end" : "middle"}">${when(t)}</text>`).join("")}
+    <path d="${area}" fill="url(#wash)"/><path class="ln" d="${line}"/>${deps}${bandText}
+    ${running ? `<circle class="halo" cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="4"/>` : ""}
+    <circle class="dot" cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="5"/>
+    <rect class="valbox" x="${rx + 6}" y="${(ly - 10).toFixed(1)}" width="64" height="20" rx="10"/><text class="valtxt" x="${rx + 38}" y="${(ly + 4).toFixed(1)}" text-anchor="middle">${isPct ? fmt(val(n)) : money(val(n), 2)}</text>
+    <line id="xh" class="xh" x1="0" x2="0" y1="${M.t}" y2="${H - M.b}" visibility="hidden"/>
+    <circle id="hd" class="dot" r="5" visibility="hidden"/>
+    <rect id="hit" class="hit" x="${M.l}" y="${M.t}" width="${W - M.l - M.r}" height="${H - M.t - M.b}" tabindex="0"/>
+  </svg>`;
+  if (patch("chart", html)) bindChart();
+}
+
+// What a point on the real account's curve was: money in or out, or the bets that settled then.
+const happened = (p) => p[2] ? (p[2] > 0 ? "Deposit" : "Withdrawal") : p[3] === "now" ? "Now" : esc(p[3] || "");
+
+function tableView(pts, real) {
+  if (!pts.length) return emptyState("No settled bets yet", "");
+  const start = data.sim && data.sim.value != null ? data.sim.start : data.start;   // vs the sim's own start on a paper mode
+  const rows = pts.map((p, i) => ({ p, t: p[0], v: p[1], ch: i ? p[1] - pts[i - 1][1] : null })).reverse();
+  return `<div class="table-wrap"><table><thead><tr><th>Time</th><th class="num">${real ? "Account" : "Bankroll"}</th><th class="num">Change</th>${real ? `<th class="what hide-sm">What happened</th>` : `<th class="num hide-sm">vs start</th>`}</tr></thead><tbody>
+    ${rows.slice(0, 40).map((r) => `<tr><td class="mono">${when(r.t)}</td><td class="num">${money(r.v)}</td><td class="num ${r.p[2] ? "" : tone(r.ch)}">${r.ch == null ? "start" : r.p[2] ? signed(r.ch) : arrow(r.ch) + signed(r.ch)}</td>${real
+      ? `<td class="what hide-sm">${r.ch == null ? "" : happened(r.p)}</td>`
+      : `<td class="num hide-sm ${tone(r.v - start)}">${signed(r.v - start)}</td>`}</tr>`).join("")}
+  </tbody></table></div>${rows.length > 40 ? `<p class="s muted" style="padding:8px 0">Showing the latest 40 of ${rows.length} points.</p>` : ""}`;
+}
+
+function bindChart() {
+  const hit = $("chart").querySelector("#hit"), xh = $("chart").querySelector("#xh"), hd = $("chart").querySelector("#hd");
+  if (!hit || !cm) return;
+  const tip = $("tip");
+  let idx = cm.pts.length - 1;
+  const at = (i, cx, cy) => {
+    idx = Math.max(0, Math.min(cm.pts.length - 1, i));
+    const p = cm.pts[idx], [t, v] = p, px = cm.x(t), py = cm.y(cm.val(idx)), prev = idx ? cm.pts[idx - 1][1] : null;
+    xh.setAttribute("x1", px); xh.setAttribute("x2", px); xh.setAttribute("visibility", "visible");
+    hd.setAttribute("cx", px); hd.setAttribute("cy", py); hd.setAttribute("visibility", "visible");
+    const from = cm.adj[idx] - cm.ref;   // for the real account, deposits and withdrawals don't count
+    const since = !cm.real ? "Since start" : ({ "1h": "Profit, last hour", "6h": "Profit, last 6 hours", "1d": "Profit, last day" })[range] || "Profit since start";
+    const change = prev == null ? "" : cm.real
+      ? (p[2] || p[3] ? `<div class="t-row"><span>${happened(p)}</span><b class="${p[2] ? "" : tone(v - prev)}">${p[2] ? signed(p[2]) : arrow(v - prev) + signed(v - prev)}</b></div>` : "")
+      : cm.sim ? ""   // a sim point is a reading every few hours, not a bet
+      : `<div class="t-row"><span>This bet</span><b class="${tone(v - prev)}">${arrow(v - prev)}${signed(v - prev)}</b></div>`;
+    // a settlement in a window that lost money: what the whole window lost, and its share of the balance
+    const settled = idx > 0 && (!cm.real || /\b(won|lost)\b/.test(p[3] || ""));
+    const w = settled ? cm.lw.find((lost) => lost.close === Math.floor(t / 900) * 900) : null;
+    const lostRow = w ? `<div class="t-row"><span>This window</span><b class="down">${arrow(w.pnl)}${signed(w.pnl)} · ${spct(w.pct)} of the balance</b></div>` : "";
+    tip.innerHTML = `<div class="t-when">${when(t)}</div>
+      <div class="t-row"><span><i class="key" style="--c:var(${cm.up ? "--up" : "--down"})"></i>${cm.real ? "Account" : "Bankroll"}</span><b>${money(cm.dl[idx])}</b></div>${cm.real && Math.abs(cm.dl[idx] - v) >= 0.005
+        ? `<div class="t-row"><span>Then in the account</span><b>${money(v)}</b></div>` : ""}
+      <div class="t-row"><span>${since}</span><b class="${tone(from)}">${arrow(from)}${signed(from)} · ${spct(cm.ref ? from / cm.ref : null)}</b></div>
+      ${prev == null && !cm.real && !cm.sim ? `<div class="t-row"><span>First bet</span></div>` : change}${lostRow}`;
+    tip.hidden = false;
+    if (cx == null) { const r = hit.ownerSVGElement.getBoundingClientRect(); cx = r.left + px; cy = r.top + py; }
+    tip.style.left = Math.max(8, Math.min(cx + 14, innerWidth - tip.offsetWidth - 8)) + "px";
+    tip.style.top = Math.max(8, cy - tip.offsetHeight - 14) + "px";
+  };
+  const off = () => { hovering = false; xh.setAttribute("visibility", "hidden"); hd.setAttribute("visibility", "hidden"); tip.hidden = true; };
+  hit.addEventListener("pointerenter", () => { hovering = true; });
+  hit.addEventListener("pointermove", (e) => {
+    const r = hit.getBoundingClientRect(), t = cm.t0 + ((e.clientX - r.left) / r.width) * (cm.t1 - cm.t0);
+    let best = 0;
+    cm.pts.forEach((p, j) => { if (Math.abs(p[0] - t) < Math.abs(cm.pts[best][0] - t)) best = j; });
+    at(best, e.clientX, e.clientY);
+  });
+  hit.addEventListener("pointerleave", off);
+  hit.addEventListener("focus", () => { hovering = true; at(idx); });
+  hit.addEventListener("blur", off);
+  hit.addEventListener("keydown", (e) => {
+    const step = { ArrowLeft: -1, ArrowRight: 1, Home: -1e9, End: 1e9 }[e.key];
+    if (step) { e.preventDefault(); at(idx + step); }
+    else if (e.key === "Escape") { off(); hit.blur(); }
+  });
+}
+
+// ------------------------------------------------------------------ open positions: the one list that's always there
+// Each bet is a tile, as many to a row as fit: the market and its profit on top, the side, price and size and when it
+// settles below.
+function positions() {
+  const d = data;
+  const tiles = d.openBets.map((b) => `
+    <div class="pcard" role="listitem">
+      <div class="pc-top"><b class="pc-m">${market(b)}</b><span class="pl ${b.unrealized == null ? "muted" : tone(b.unrealized)}">${b.unrealized == null ? "—" : arrow(b.unrealized) + signed(b.unrealized)}</span></div>
+      <div class="pc-bot"><span class="pill ${esc(b.side)}">${esc(b.side.toUpperCase())} ${cents(b.price)} × ${b.contracts}</span><span class="s muted">settles ${hhmm(b.close_ts)}</span></div>
+    </div>`).join("");
+  // none open: one quiet line at row height (the fold's count already says 0), not an icon block taller than a row
+  patch("positions", fold("live.positions", `Positions <span class="n">${d.openBets.length}</span>`,
+    tiles ? `<div class="pgrid" role="list">${tiles}</div>`
+      : `<p class="empty-line"><b>No open bets</b> <span>New ones are placed at minute 8 of each 15-minute window.</span></p>`,
+    d.openBets.length ? `worth ${signed(d.unrealized)} vs cost` : ""));
+}
+
+// ------------------------------------------------------------------ how it trades: the rules, from the bot's own constants
+function method(L) {
+  const m = L.minute, min = (s) => Math.round(s / 60);
+  const g = (data.groups || []).map(esc), groups = g.length < 2 ? g.join("") : g.slice(0, -1).join(", ") + " and " + g[g.length - 1];
+  const parts = [
+    ["What it buys", [
+      `At the end of <b>minute ${m}</b> of every 15-minute window (entering within ${L.grace}s), it looks at each ${groups || "of its"} market.`,
+      `It buys the <b>favorite</b>, the side (Yes or No) that costs more, only if it costs <b>${cents(L.lo)} to ${cents(L.hi)}</b>.`,
+      `It skips the favorite if its ask is <b>${cents(L.spreadMax)} or more over its bid</b>, if it was <b>${cents(L.lateMid)} or under at minute ${m - 2} or ${m - 1}</b>,`
+        + ` or if it <b>rose ${cents(L.jump)} or more during minute ${m}</b>.`,
+    ]],
+    ["How much", [
+      `<b>${limitPct(L.betPct)} of the bankroll</b> a bet, a window's bets together at most <b>${limitPct(L.windowPct)}</b>, with no cap on an order's size;`
+        + ` whole contracts only, and no bet under $1.`,
+      `It <b>holds every bet to the close</b>: $1 a contract if the favorite wins, nothing if it loses. It never sells early.`,
+    ]],
+    ["How it orders", [
+      // live: at the ask it saw until bot.LIMIT_UP is set over 0; the +1¢ meanwhile runs on paper (bot.SHADOW_UP)
+      L.limitUp > 0
+        ? `An <b>immediate-or-cancel</b> limit order ${cents(L.limitUp)} over the best price it just saw on the book (at most ${cents(L.hi)}): it takes the cheapest offers first, never pays more than that limit, and nothing waits on the book.`
+        : `An <b>immediate-or-cancel</b> limit order at the best price it just saw on the book: it never pays more, and nothing waits on the book.`
+          + (L.shadowUp > 0 ? ` On paper it also measures what a limit ${cents(L.shadowUp)} higher would have bought (the Live Research tab).` : ""),
+      `No order later than <b>${L.orderDeadline}s after minute ${m}</b>, or on a book read more than <b>${L.bookMaxAge}s</b> before. Each order gets`
+        + ` ${Math.round(L.orderConnect)}s to connect and ${Math.round(L.orderAnswer)}s for an answer, and is never retried.`,
+      `At most ${L.ordersPerWindow} orders a window and ${L.ordersPerDay} a day. Any of its orders found resting on the book is cancelled within ${L.restingEvery}s.`,
+    ]],
+    ["When it stops", [
+      `It <b>halts</b>, placing nothing until <code>python bot.py --resume</code>, when it's down ${pct(L.dayDrop, 0)} within 24 hours or at half its start;`
+        + ` after ${L.windowLosses}+ losses in one window, ${L.orderErrors} failed orders in a row, a fill worse than its limit or an order left resting;`
+        + ` or when a bet is unsettled ${min(L.settleLag)} min after its close, or Kalshi is paused or unreachable, for ${min(L.persist)} min.`,
+      `It skips a window during a Fed-decision blackout, or whenever it can't confirm Kalshi is trading.`,
+    ]],
+  ];
+  patch("method", fold("live.method", "How it trades",
+    `<div class="method">${parts.map(([h, items]) => `<div class="mg"><h3>${h}</h3><ul>${items.map((x) => `<li>${x}</li>`).join("")}</ul></div>`).join("")}</div>`,
+    "the rules bot.py runs"));
+}
+
+// ------------------------------------------------------------------ fill rate: is live fast entry filling more than before?
+// Fast entry went live with the 21:00 UTC window of Oct 14 (state()'s fillsFast.live). A dot per
+// window and two lines were hard to read, so the fold leads with the answer: two tiles, contracts filled and orders that
+// got nothing since fast entry, against the FILL_BEFORE_DAYS before it. Under them one line from state()'s fillWindows
+// ([window, orders, asked, filled, none] for each 15-minute window with a buy order in the last 7 days, oldest first):
+// the share of contracts filled over the last FILL_ROLL windows that asked for any. state()'s fillOff are the stretches
+// between those windows the bot wasn't trading in ([from, to, "halted" or "off"]): the line breaks
+// across each and a hatched band covers it, so off time is never drawn as if it traded through.
+const FILL_ROLL = 12;                                // the windows the line is taken over: 3 hours
+const FILL_BEFORE_DAYS = 4;                          // the "before fast entry" span, as the server's FILL_BEFORE_DAYS
+const fillShare = (a, b) => b ? a / b : null;        // nothing to share out: "—", never NaN
+// fillOff's stretches cut to the chart's span [t0, t1], and only those with any time left: the ones it draws
+const fillOffIn = (off, t0, t1) => (off || []).map(([f, t, k]) => [Math.max(f, t0), Math.min(t, t1), k]).filter((s) => s[1] > s[0]);
+// A headline tile: the share since fast entry, what it was before, and the change in whole points between the two figures
+// as shown, green when it got better (up for contracts filled, down for orders that got nothing).
+function fillTile(label, now, was, upIsBetter) {
+  const fig = (v) => +(v * 100).toFixed(0), diff = now == null || was == null ? null : fig(now) - fig(was);
+  const tone = !diff ? "muted" : (diff > 0) === upIsBetter ? "up" : "down";
+  const say = !diff ? "no change" : `${diff > 0 ? "▲" : "▼"} ${Math.abs(diff)} pt${Math.abs(diff) === 1 ? "" : "s"}`;
+  return `<div class="fr-tile"><span class="fr-tl">${label}</span><b class="fr-tv">${pct(now, 0)}</b>${diff == null ? "" : `<span class="fr-td ${tone}">${say}</span>`}`
+    + `<span class="fr-ts">since fast entry${was == null ? "" : ` · was ${pct(was, 0)}`}</span></div>`;
+}
+function fillChart(rows, fast, W, off) {
+  const t0 = rows[0][0], t1 = rows[rows.length - 1][0], on = !!fast && t0 <= fast.live && fast.live <= t1, offs = fillOffIn(off, t0, t1);
+  const A = on && fast.after, B = on && fast.before, a = on ? fillShare(A.filled, A.asked) : null, b = on ? fillShare(B.filled, B.asked) : null;
+  const H = 200, M = { t: 18, r: a == null ? 16 : 84, b: 24, l: 48 }, rx = W - M.r, by = H - M.b, f1 = (v) => v.toFixed(1);   // the right margin: the since label
+  const x = (t) => M.l + (t1 === t0 ? 0 : (t - t0) / (t1 - t0)) * (rx - M.l), y = (v) => M.t + (1 - v) * (by - M.t);
+  const n = (v) => Number.isInteger(v) ? String(v) : v.toFixed(2);   // Kalshi fills fractions of a contract, as the orders write them
+  const wide = (s) => s.length * 6.6;                                 // about how far 11px text runs, to keep labels apart
+  // the line: each window that asked for any, at the share filled over the last FILL_ROLL such windows up to it, picked
+  // up afresh (a new M) after each stretch left out instead of running across it
+  const asked = rows.filter((r) => r[2] > 0);
+  const roll = new Map(asked.map((r, i) => { const last = asked.slice(Math.max(0, i - FILL_ROLL + 1), i + 1); return [r, last.reduce((s, q) => s + q[3], 0) / last.reduce((s, q) => s + q[2], 0)]; }));
+  const line = asked.map((r, i) => `${!i || offs.some((s) => asked[i - 1][0] <= s[0] && s[0] < r[0]) ? "M" : "L"}${f1(x(r[0]))},${f1(y(roll.get(r)))}`).join(" ");
+  const levels = [0, 0.25, 0.5, 0.75, 1];
+  const grid = levels.map((v) => `<line class="fr-grid" x1="${M.l}" x2="${rx}" y1="${f1(y(v))}" y2="${f1(y(v))}"/>`).join("");
+  const yl = levels.map((v) => `<text x="${M.l - 8}" y="${f1(y(v) + 4)}" text-anchor="end">${pct(v, 0)}</text>`).join("");
+  // times along the bottom, as many as fit apart (the first starts at the left edge, the last ends at the right, the rest
+  // on the quarter hour); where even two don't, the last ends at the far right
+  const apart = (ts) => ts.map((t, i) => { const w = wide(when(t)), p = x(t); return i === 0 ? [p, p + w] : i === ts.length - 1 ? [p - w, p] : [p - w / 2, p + w / 2]; })
+    .every((s, i, all) => !i || s[0] - all[i - 1][1] >= 12);
+  let xt = t1 > t0 ? [t0, t1] : [t0];
+  for (let k = 5; k > 2 && t1 > t0; k--) {
+    const ts = Array.from({ length: k }, (_, i) => i && i < k - 1 ? Math.round((t0 + (t1 - t0) * i / (k - 1)) / 900) * 900 : i ? t1 : t0);
+    if (apart(ts)) { xt = ts; break; }
+  }
+  const shove = xt.length === 2 && !apart(xt);
+  const xl = xt.map((t, i) => { const end = i > 0 && i === xt.length - 1; return `<text x="${f1(end && shove ? W - 16 : x(t))}" y="${H - 6}" text-anchor="${end ? "end" : i ? "middle" : "start"}">${when(t)}</text>`; }).join("");
+  // fast entry, when it went live on the chart: its period shaded, a marker where it starts (the flag above the plot,
+  // turned left near the right edge), and each period's average as a dashed level line, the FILL_BEFORE_DAYS before it
+  // (as far back as the chart goes), then since. The before label sits at its line's end by the marker (right of it when
+  // there's no room), above the dashed line or under it, whichever the blue line crosses less there; the since label in
+  // the right margin.
+  const X = on ? x(fast.live) : 0, flag = X + 4 + wide("fast entry") > W - 8;
+  let shade = "", mark = "", avg = "", avgT = "";
+  if (on) {
+    shade = `<rect class="fr-after" x="${f1(X)}" y="${M.t}" width="${f1(rx - X)}" height="${by - M.t}"/>`;
+    mark = `<line class="fr-mark" x1="${f1(X)}" x2="${f1(X)}" y1="4" y2="${by}"/><text class="fr-mark-t" x="${f1(flag ? X - 4 : X + 4)}" y="12" text-anchor="${flag ? "end" : "start"}">fast entry</text>`;
+    if (b != null) {
+      const yb = y(b), s = `before: ${pct(b, 0)}`, room = X - 6 - wide(s) >= M.l, [l, r] = room ? [X - 6 - wide(s), X - 6] : [X + 6, X + 6 + wide(s)];
+      const hits = (lo, hi) => asked.filter((q) => { const px = x(q[0]), py = y(roll.get(q)); return px >= l && px <= r && py >= lo && py <= hi; }).length;
+      const under = yb - 16 < M.t || (yb + 18 <= by && hits(yb + 3, yb + 18) < hits(yb - 16, yb - 2));
+      avg += `<line class="fr-avg" x1="${f1(x(Math.max(t0, fast.live - FILL_BEFORE_DAYS * 86400)))}" x2="${f1(X)}" y1="${f1(yb)}" y2="${f1(yb)}"/>`;
+      avgT += `<text class="fr-avg-t" x="${f1(room ? X - 6 : X + 6)}" y="${f1(under ? yb + 14 : yb - 6)}" text-anchor="${room ? "end" : "start"}">${s}</text>`;
+    }
+    if (a != null) {
+      avg += `<line class="fr-avg" x1="${f1(X)}" x2="${rx}" y1="${f1(y(a))}" y2="${f1(y(a))}"/>`;
+      avgT += `<text class="fr-avg-t" x="${rx + 6}" y="${f1(y(a) + 4)}">since: ${pct(a, 0)}</text>`;
+    }
+  }
+  // each stretch left out: a hatched band over the plot's height, whose title says what happened, labelled at its foot
+  // when the word fits
+  const hatch = offs.length ? `<defs><pattern id="fr-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="fr-hatch" x1="3" x2="3" y1="0" y2="6"/></pattern></defs>` : "";
+  const bands = offs.map(([f, t, k]) => {
+    const l = x(f), w = x(t) - l, s = k === "halted" ? "halted" : "not trading";
+    return `<g class="fr-off-g"><title>Bot ${s}: ${when(f)} to ${when(t)} · left out of the line</title><rect class="fr-off" x="${f1(l)}" y="${M.t}" width="${f1(w)}" height="${by - M.t}"/>`
+      + `${w >= wide(s) + 8 ? `<text class="fr-off-t" x="${f1(l + w / 2)}" y="${by - 6}" text-anchor="middle">${s}</text>` : ""}</g>`;
+  }).join("");
+  // under the pointer, a column per window (halfway to its neighbours, but never into a band), whose title gives its figures
+  const xs = rows.map((r) => x(r[0]));
+  const cols = rows.map((r, i) => {
+    const l = Math.max(i ? (xs[i - 1] + xs[i]) / 2 : M.l, ...offs.filter((s) => s[1] <= r[0]).map((s) => x(s[1])));
+    const rr = Math.min(i < rows.length - 1 ? (xs[i] + xs[i + 1]) / 2 : rx, ...offs.filter((s) => s[0] >= r[0]).map((s) => x(s[0]))), v = roll.get(r);
+    return `<g class="fr-pt"><title>${when(r[0])} window: ${n(r[3])} of ${n(r[2])} contracts filled${r[2] ? ` (${pct(r[3] / r[2], 0)})` : ""} · ${r[4]} of ${r[1]} orders got none`
+      + `${v == null ? "" : ` · last ${FILL_ROLL} windows: ${pct(v, 0)}`}</title><rect class="fr-hit" x="${f1(l)}" y="${M.t}" width="${f1(Math.max(0, rr - l))}" height="${by - M.t}"/></g>`;
+  }).join("");
+  const say = `Share of contracts filled in each 15-minute window: ${count(rows.length)} window${rows.length === 1 ? "" : "s"}, ${when(t0)} to ${when(t1)}.`
+    + (!on ? "" : (A.orders ? ` Since fast entry: ${pct(a, 0)} of contracts filled and ${pct(fillShare(A.none, A.orders), 0)} of orders got none` : " Since fast entry: no orders yet")
+      + (B.orders ? `; the ${FILL_BEFORE_DAYS} days before: ${pct(b, 0)} and ${pct(fillShare(B.none, B.orders), 0)}` : "") + ".")
+    + (offs.length ? ` Left out: ${offs.length} stretch${offs.length === 1 ? "" : "es"} when the bot wasn't trading.` : "");
+  return `<svg class="fr" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${say}">${hatch}${shade}${bands}${grid}${mark}${avg}`
+    + `<path class="fr-ln" d="${line}"/>${avgT}<g class="axis">${yl}${xl}</g>${cols}</svg>`;
+}
+
+// The fold's header says how fast entry has filled since it went live and in the FILL_BEFORE_DAYS before, so it shows
+// while folded; the body leads with the same as two tiles, says what the line is (and that the hatched bands are left
+// out, when one's on the chart), then draws it. A dashboard started before the chart was added sends neither fillWindows
+// nor fillsFast, and one started before the off stretches no fillOff: no bands.
+function fillsBlock() {
+  const d = data, R = d.fillWindows, F = d.fillsFast, A = F && F.after, B = F && F.before, off = d.fillOff || [];
+  const W = Math.max(300, Math.floor($("fills").clientWidth));
+  const after = !F ? "" : A.orders ? `since fast entry (${when(F.live)}): ${pct(fillShare(A.filled, A.asked), 0)} of contracts filled · ${pct(fillShare(A.none, A.orders), 0)} of orders got none · ${count(A.orders)} orders`
+    : `fast entry live since ${when(F.live)}: no orders yet`;
+  const before = B && B.orders ? `the ${FILL_BEFORE_DAYS} days before: ${pct(fillShare(B.filled, B.asked), 0)} filled · ${pct(fillShare(B.none, B.orders), 0)} got none · ${count(B.orders)} orders` : "";
+  const meta = [after, before].filter(Boolean);
+  let body;
+  if (!R) body = emptyState("The fill-rate chart starts once the dashboard restarts", "");
+  else if (!R.length) body = emptyState("No buy orders in the last 7 days", "");
+  else {
+    const was = (x, of) => B.orders ? fillShare(x, of) : null;
+    const tiles = A && A.orders ? `<div class="fr-tiles">${fillTile("Contracts filled", fillShare(A.filled, A.asked), was(B.filled, B.asked), true)}`
+      + `${fillTile("Orders that got nothing", fillShare(A.none, A.orders), was(B.none, B.orders), false)}</div>` : "";
+    const dashed = F && R[0][0] <= F.live && F.live <= R[R.length - 1][0] && (A.asked > 0 || B.asked > 0);   // fillChart draws an average
+    const hatched = fillOffIn(off, R[0][0], R[R.length - 1][0]).length;   // fillChart draws a band
+    body = tiles + `<p class="sub-note">The line is the share of contracts asked for that filled, over the last ${FILL_ROLL} windows the bot placed orders in (about ${FILL_ROLL / 4} hours). `
+      + `Higher is better.${dashed ? " The dashed lines are each period's average." : ""}${hatched ? " Hatched bands are times the bot wasn't trading; they're left out." : ""}</p>`
+      + fillChart(R, F || null, W, off);
+  }
+  patch("fills", fold("live.fills", "Fill rate", body, meta.length > 1 ? meta.map((l) => `<span class="fm-ln">${l}</span>`).join("") : meta.join("")));
+}
+
+// ------------------------------------------------------------------ orders: what each one asked for, what filled, and how it did
+// Every order is immediate-or-cancel, its limit the ask the bot just saw (or limits.limitUp over it, once bot.LIMIT_UP is
+// set): it gets what the book offers up to that limit, cheapest first, and the rest is cancelled at once, so an order fills
+// in full, in part, or not at all. What filled became a bet, which won, lost, or hasn't settled yet; an order that got
+// nothing has no result. Beside what it asked for and got, what the book offered when the bot read it at minute 8 (atAsk:
+// the contracts at its price; plusOne: those within 1¢ over it just after, on top of what filled), so a miss reads at a
+// glance: nothing on offer, on offer but taken first, or the price moved up. On a phone the Asked column hides and the
+// Filled cell says "of <asked>" instead.
+function ordersBlock() {
+  const d = data, F = d.fills;
+  const up = (d.limits && d.limits.limitUp) || 0;   // how far over the ask it saw the live limit sits; 0, as in LIMITS, until the server says
+  const limit = up > 0 ? cents(up) + " over the ask it saw" : "the ask it saw";
+  const n = (v) => (v == null ? "—" : Number.isInteger(v) ? String(v) : v.toFixed(2));   // Kalshi fills fractions of a contract
+  const RESULTS = new Map([["won", ["up", "Won"]], ["lost", ["down", "Lost"]], ["open", ["muted", "Open"]]]);   // only these words
+  const reads = d.orders.some((o) => "atAsk" in o);   // a dashboard started before the book reads were added sends none: no column
+  const rows = d.orders.map((o) => {
+    const tone_ = o.filled == null || o.filled === 0 ? "down" : o.filled >= o.asked ? "up" : "part";
+    const sub = o.filled == null ? esc(o.error) : o.asked ? pct(o.filled / o.asked, 0) + " filled" : "";
+    const [rTone, rWord] = RESULTS.get(o.result) || ["muted", "—"];
+    const rSub = o.result === "open" ? `settles ${hhmm(o.close_ts)}` : RESULTS.has(o.result) ? signed(o.pnl) : "";
+    return `<tr><td class="mono">${when(o.ts)}<span class="s muted" style="display:block">${hhmm(o.ts - (o.ts % 900))}–${hhmm(o.ts - (o.ts % 900) + 900)} window</span></td><td><b>${market(o)}</b></td>`
+      + `<td>${o.side ? `<span class="pill ${esc(o.side)}">${esc(o.side.toUpperCase())} ${cents(o.price)}</span>` : `<span class="muted">—</span>`}</td>`
+      + `<td class="num hide-sm">${n(o.asked)}</td><td class="num ${tone_}">${n(o.filled)}`
+      + `${o.asked == null ? "" : `<span class="only-sm"> of ${n(o.asked)}</span>`}<span class="s muted" style="display:block">${sub}</span></td>`
+      + (!reads ? "" : o.atAsk == null ? `<td class="num muted">—</td>`   // no book read for it: one from before they began
+        : `<td class="num">${n(o.atAsk)}${o.plusOne == null ? "" : `<span class="s muted" style="display:block">+${n(o.plusOne)} within 1¢</span>`}</td>`)
+      + `<td class="num ${rTone}">${rWord}${rSub ? `<span class="s muted" style="display:block">${rSub}</span>` : ""}</td></tr>`;
+  });
+  // The header says how the orders filled: the last hour (fillsHour; none if the day had none, its line says so), the last
+  // 24 hours, then every buy order in the ledger (fillsAll), a line each. A dashboard started before fillsHour or fillsAll
+  // was added doesn't send it and that line is left out; the day's line alone is the header as it was.
+  const H = d.fillsHour;
+  const hour = H && F.asked > 0 ? (H.asked ? `last hour: ${n(H.filled)} of ${n(H.asked)} contracts filled (${pct(H.filled / H.asked, 0)}) · ${H.none} of ${H.orders} orders got none` : "none in the last hour") : "";
+  const day = F.asked ? `last 24 hours: ${n(F.filled)} of ${n(F.asked)} contracts filled (${pct(F.filled / F.asked, 0)}) · ${F.none} of ${F.orders} orders got none`
+    : "none in the last 24 hours";
+  const A = d.fillsAll, since = A && A.since ? ` (since ${new Date(A.since * 1000).toLocaleDateString([], { month: "short", day: "numeric" })})` : "";
+  const all = A && A.asked > 0 ? `all time${since}: ${n(A.filled)} of ${n(A.asked)} contracts filled (${pct(A.filled / A.asked, 0)}) · ${A.none} of ${A.orders} orders got none` : "";
+  const meta = [hour, day, all].filter(Boolean);
+  // Under the orders (and their Show all), set off by a hairline, every buy order by its size (fillsBySize, which a
+  // dashboard started before it was added doesn't send): if bigger orders fill less, the bot is outgrowing what the books
+  // offer at 90–99¢. Each share filled has a bar beside it as long as it (full past 100%), in the fill-rate line's blue;
+  // the bar is for the eye only, the % says it.
+  const S = d.fillsBySize || [];
+  const bar = (f) => `<span class="sz-bar" aria-hidden="true"><i style="width:${Math.round(Math.min(Math.max(f, 0), 1) * 100)}%"></i></span>`;
+  const sizes = S.length ? `<div class="sz"><h3 class="sub-h">Fills by order size</h3><p class="sub-note">Every buy order so far, by how many contracts it asked for. `
+      + `If bigger orders fill less, the bot is outgrowing what's offered at 90–99¢. Orders Kalshi refused aren't counted.</p>`
+      + table("fillsBySize", [["Contracts asked"], ["Orders", "num"], ["Contracts filled", "num"], ["Got none", "num"]], S.map((g) => {
+        const f = g.asked ? g.filled / g.asked : 0;
+        return `<tr><td>${esc(g.label)}</td><td class="num">${count(g.orders)}</td>`
+          + `<td class="num">${bar(f)}<span class="sz-p">${pct(f, 0)}</span><span class="s muted" style="display:block">${n(g.filled)} of ${n(g.asked)}</span></td>`
+          + `<td class="num">${pct(g.orders ? g.none / g.orders : 0, 0)}</td></tr>`;
+      }), "") + `</div>` : "";
+  patch("orders", fold("live.orders", `Orders <span class="n">${d.orders.length}</span>`,
+    table("orders", [["Placed"], ["Market"], ["Side · price"], ["Asked", "num hide-sm"], ["Filled", "num"],
+      ...(reads ? [["At the ask", "num"]] : []), ["Result", "num"]], rows,
+          `No orders yet. Each goes in at minute 8, immediate-or-cancel: it fills what the book offers up to its limit, ${limit}, and the rest is cancelled.`) + sizes,
+    meta.length > 1 ? meta.map((l) => `<span class="fm-ln">${l}</span>`).join("") : day));
+}
+
+// ------------------------------------------------------------------ everything else: quiet rows that open on tap
+function table(id, head, rows, empty) {
+  if (!rows.length) return emptyState(empty, "");
+  const LIMIT = 15, all = fullTables.has(id);
+  return `<div class="table-wrap"><table><thead><tr>${head.map(([h, c]) => `<th scope="col" class="${c || ""}">${h}</th>`).join("")}</tr></thead><tbody>${(all ? rows : rows.slice(0, LIMIT)).join("")}</tbody></table></div>`
+    + (rows.length > LIMIT ? `<button class="more" type="button" data-more="${id}">${all ? "Show fewer" : `Show all ${rows.length}`}</button>` : "");
+}
+
+function more(L) {
+  const d = data, n = d.wins + d.losses, min = (s) => Math.round(s / 60);
+  const pill = (b) => `<span class="pill ${esc(b.side)}">${esc(b.side.toUpperCase())} ${cents(b.price)} × ${b.contracts}</span>`;
+  const shownDecisions = d.decisions.filter((r) => showSkips || r.action !== "skip");
+  const stops = [
+    [`Down ${pct(L.dayDrop, 0)} within 24 hours`, "measured from the day's peak"],
+    ["Account at half its start", `${money((d.haltBase || d.start) * L.halfStart)} or less`],
+    [`${L.windowLosses}+ bets lost in one window`, ""],
+    [`A bet unsettled ${min(L.settleLag)} min after close`, `for ${min(L.persist)} minutes running`],
+    ["Kalshi pauses trading", `outside maintenance, for ${min(L.persist)} minutes`],
+    ["Kalshi unreachable", `its exchange status unreadable for ${min(L.persist)} minutes`],
+    [`${L.orderErrors} orders fail in a row`, "or a fill worse than the limit"],
+    ["One of its orders left resting on the book", "cancelled at once"],
+  ];
+  const fedNext = d.blackout && !d.blackout.active ? `${esc(d.blackout.what)} · ${new Date(d.blackout.from * 1000).toLocaleDateString([], { month: "short", day: "numeric" })}, ${hhmm(d.blackout.from)}–${hhmm(d.blackout.to)}` : "";
+  const k = d.kalshi;
+  const num = (kk, v, s) => `<div><span class="k">${kk}</span><span class="v">${v}</span><span class="s">${s}</span></div>`;
+  const secs = [
+    ["numbers", "Numbers", n ? `${d.wins}–${d.losses} · ${pct(winRate(d), 0)} won` : "no settled bets", `<div class="numbers">
+        ${num("Record", n ? `<span class="up">${d.wins}</span> – <span class="down">${d.losses}</span>` : "—", n ? `${pct(winRate(d))} of contracts won · needs ${pct(d.need)}` : "no settled bets yet")}
+        ${num("Last 24 hours", `<span class="${tone(d.day)}">${arrow(d.day)}${signed(d.day)}</span>`, `${d.dayBets} bet${d.dayBets === 1 ? "" : "s"} placed`)}
+        ${num("Worst drop", `<span class="${d.maxDrop >= L.dayDrop ? "down" : ""}">${pct(d.maxDrop, 1)}</span>`, `from a peak · the stop is ${pct(L.dayDrop, 0)} in a day`)}
+        ${num("Fees paid", money(d.fees), n + d.openBets.length ? `${money(d.fees / Math.max(1, n + d.openBets.length))} a bet` : "")}
+      </div>`],
+    ["history", "History", `${d.recentBets.length} settled`, table("history",
+      [["Market"], ["Position", "hide-sm"], ["Result"], ["P&amp;L", "num"]],
+      d.recentBets.map((b) => `<tr><td><b>${market(b)}</b><span class="s muted" style="display:block">${when(b.settled_ts)}</span></td><td class="hide-sm">${pill(b)}</td><td><span class="chip ${esc(b.status)}">${esc(b.status)}</span></td>
+        <td class="num ${tone(b.pnl)}">${arrow(b.pnl)}${signed(b.pnl)}</td></tr>`), "No settled bets yet.")],
+    ["stops", "Stop-losses", d.halt ? "paused while halted" : `${stops.length} armed`, `<ul class="stops">${stops.map(([t, s]) =>
+        `<li><span class="ok ${d.halt ? "off" : ""}" aria-hidden="true"></span><span>${t}${s ? `<span class="s">${s}</span>` : ""}</span></li>`).join("")}</ul>`],
+    ["settings", "Bot settings", `next bet ${money(d.nextBet)}`, `
+        <div class="kv"><span class="l">Next bet</span><b>${money(d.nextBet)} · ${limitPct(L.betPct)} of the bankroll, no cap on an order</b></div>
+        <div class="kv"><span class="l">Window cap</span><b>${limitPct(L.windowPct)} · ${money(d.bankroll * L.windowPct)} across a window's bets</b></div>
+        <div class="kv"><span class="l">Order limits</span><b>${L.ordersPerWindow} a window · ${L.ordersPerDay} a day</b></div>
+        ${fedNext ? `<div class="kv"><span class="l">Next blackout</span><b>${fedNext}</b></div>` : ""}`],
+  ];
+  if (k) secs.push(["account", "Kalshi account", k.error ? "unavailable" : `${money(k.crypto)} cash`, k.error ? `<p class="s muted">${esc(k.error)}</p>` : `
+        <div class="kv"><span class="l">Crypto &amp; Commodities cash</span><b>${money(k.crypto)}</b></div>
+        <div class="kv"><span class="l">All cash, every section</span><b>${money(k.total)}</b></div>
+        <div class="kv"><span class="l">Open positions</span><b>${k.positions}${k.held != null ? " · worth " + money(k.held) : ""}</b></div>
+        ${k.value != null ? `<div class="kv"><span class="l">Account value</span><b>${money(k.value)}</b></div>` : ""}`]);
+  secs.push(
+    ["decisions", "Decisions", `${shownDecisions.length} ${showSkips ? "logged" : "actions"}`, `
+        <div class="sw-row"><span>Include markets it skipped</span><button class="sw" type="button" role="switch" aria-checked="${showSkips}" aria-label="Include skipped markets" data-skips></button></div>` + table("decisions",
+      [["Market"], ["Action"], ["Why"]],
+      shownDecisions.map((r) => `<tr><td><b>${market(r)}</b><span class="s muted" style="display:block">${when(r.ts)}</span></td><td><span class="chip ${esc(r.action)}">${esc(r.action)}</span></td>
+        <td class="reason">${esc(r.reason)}</td></tr>`), showSkips ? "No decisions yet." : "No bets, errors or halts yet.")],
+    ["markets", "By market", `${d.bySeries.length} markets`, table("markets",
+      [["Market"], ["Bets", "num"], ["Won", "num hide-sm"], ["P&amp;L", "num"], ["Per $10", "num hide-sm"]],
+      d.bySeries.map((s) => `<tr><td><b>${esc(title(s.series))}</b></td><td class="num">${s.n}</td><td class="num hide-sm">${pct(s.wins / s.n, 0)}</td>
+        <td class="num ${tone(s.pnl)}">${arrow(s.pnl)}${signed(s.pnl)}</td><td class="num hide-sm ${tone(s.pnl)}">${s.staked ? ((s.pnl / s.staked) * 1000 >= 0 ? "+" : "−") + Math.abs((s.pnl / s.staked) * 1000).toFixed(1) + "¢" : `<span class="muted">—</span>`}</td></tr>`), "No settled bets yet.")],
+    ["errors", "Errors", d.errors.length ? `<span class="flag">${d.errors.length} failed order${d.errors.length === 1 ? "" : "s"}</span>` : "none", table("errors",
+      [["Market"], ["HTTP", "num"], ["Kalshi said"]],
+      d.errors.map((r) => `<tr><td><b>${esc(title((r.ticker || "").split("-")[0]))}</b><span class="s muted" style="display:block">${when(r.ts)}</span></td>
+        <td class="num">${r.http_status ?? "none"}</td><td class="reason">${esc((r.response || "").slice(0, 160))}</td></tr>`), "No failed orders.")],
+  );
+  ids = secs.map((s) => s[0]);
+  patch("more", fold("live.details", "Details", `<div class="accs" id="accs">${secs.map(([id, name, sum, body]) =>
+      `<details class="acc" data-sec="${id}"><summary><span class="chev" aria-hidden="true"></span><span class="t">${name}</span><span class="sum">${sum}</span></summary><div class="acc-body">${body}</div></details>`).join("")}</div>`));
+  applyOpen();
+}
+
+// The rows you opened stay open, across refreshes and reloads; the tab's Open all / Close all opens or closes them all.
+function applyOpen() {
+  document.querySelectorAll(".accs details").forEach((el) => { el.open = openSecs.has(el.dataset.sec); });
+}
+
+// ------------------------------------------------------------------ controls
+function syncControls() {
+  document.querySelectorAll("[data-unit]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.unit === unit)));
+  document.querySelectorAll("[data-range]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.range === range)));
+  document.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === view)));
+  $("chartCtl").hidden = !chartOpts;
+  $("chartOpts").setAttribute("aria-expanded", String(chartOpts));
+  $("chartOpts").textContent = chartOpts ? "Hide chart options" : "Chart options";
+  $("foot").hidden = false;
+}
+
+document.addEventListener("click", async (e) => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.mode) { mode = t.dataset.mode; page = "account"; store.set("mode", mode); store.set("page", page); load(); }
+  else if (t.dataset.page) { if (["liveresearch", "latency", "backtest"].includes(t.dataset.page)) { page = t.dataset.page; store.set("page", page); load(); } }
+  else if (t.dataset.fold) foldSet([t.dataset.fold], t.getAttribute("aria-expanded") !== "true");   // a fold: flipped in place
+  else if (t.dataset.folds) {   // Open all / Close all: every fold of its page, and on the Live tab every Details row
+    const open = t.dataset.folds === "open";
+    foldSet((t.dataset.foldKeys || "").split(" ").filter(Boolean), open);
+    if (page === "account") { openSecs = open ? new Set(ids) : new Set(); store.set("open", JSON.stringify([...openSecs])); }
+    if (data) render();
+  }
+  else if (t.dataset.unit) { unit = t.dataset.unit; store.set("unit", unit); render(); }
+  else if (t.dataset.range) { range = t.dataset.range; store.set("range", range); render(); }
+  else if (t.dataset.view) { view = t.dataset.view; shown.delete("chart"); render(); }
+  else if (t.id === "chartOpts") { chartOpts = !chartOpts; store.set("chartOpts", chartOpts ? "1" : "0"); syncControls(); }
+  else if ("skips" in t.dataset) { showSkips = !showSkips; store.set("skips", showSkips ? "1" : "0"); render(); }
+  else if ("bal" in t.dataset) {
+    const had = document.activeElement === t;
+    hideBal = !hideBal; store.set("hideBal", hideBal ? "1" : "0"); if (data) render(); navBalance();   // one setting: navbar and hero
+    if (had) $(t.dataset.bal === "nav" ? "navBal" : "hero").querySelector("[data-bal]").focus();   // redrawn: keep keyboard focus on the toggle
+  }
+  else if (t.dataset.more) { fullTables.has(t.dataset.more) ? fullTables.delete(t.dataset.more) : fullTables.add(t.dataset.more); render(); }
+  else if ("halt" in t.dataset) {
+    if (!armed) {
+      armed = true; render();
+      armTimer = setTimeout(() => { armed = false; if (data) render(); }, 4000);
+      return;
+    }
+    clearTimeout(armTimer); armed = false;
+    t.disabled = true; t.textContent = "Halting…";
+    try { await fetch("/api/halt", { method: "POST" }); } catch (err) {}
+    load();
+  }
+});
+document.addEventListener("toggle", (e) => {
+  const s = e.target.dataset && e.target.dataset.sec;
+  if (!s) return;
+  e.target.open ? openSecs.add(s) : openSecs.delete(s);
+  store.set("open", JSON.stringify([...openSecs]));
+  applyOpen();
+}, true);
+// The exchange skin (exchange.css): a denser, mono-figured look for the Live tab.
+$("skin").onclick = () => {
+  const on = document.documentElement.dataset.skin === "exchange";
+  if (on) { delete document.documentElement.dataset.skin; store.set("skin", ""); }
+  else { document.documentElement.dataset.skin = "exchange"; store.set("skin", "exchange"); }
+  $("skin").setAttribute("aria-pressed", String(!on));
+};
+// Redraw the chart whenever its box changes width (a window resize, a scrollbar appearing, a phone turning), not only on resize.
+let resizeTimer = null, lastWidth = 0;
+const redraw = () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (data && data.modes && data.modes.length) { shown.delete("chart"); chart(); } }, 60); };
+if (window.ResizeObserver) new ResizeObserver(() => { const w = Math.floor($("chart").clientWidth); if (w !== lastWidth) { lastWidth = w; redraw(); } }).observe($("chart"));
+else addEventListener("resize", redraw);
+// ------------------------------------------------------------------ live markets: an exchange board on the Live tab
+// The markets the bot trades, straight from Kalshi (the server streams them; /api/research/live), read four times a second
+// while the Live tab is on screen. Each market's name opens it on Kalshi.
+const BOARD_EVERY = 250;    // ms between reads
+const BOARD_FRESH = 10;     // seconds: prices older than this show as stale
+const BOARD_GROUPS = { crypto: "Crypto", metals: "Metals", energy: "Energy" };
+let board = null, boardErr = false, boardBusy = false;
+// The favorite's price at the last draw, per market: a change since then flashes its row, with an arrow beside the price.
+const lastFav = new Map();
+function flashOf(m) {
+  const prev = lastFav.get(m.ticker), now = m.favSide ? { side: m.favSide, px: m.favPrice } : null;
+  lastFav.set(m.ticker, now);
+  if (!prev || !now || (prev.side === now.side && prev.px === now.px)) return "";
+  return prev.side !== now.side ? "flip" : now.px > prev.px ? "up" : "down";
+}
+// The favorite side's price through the window so far: each minute's closing mid, then now. x spans the window's 15 minutes.
+function sparkOf(m) {
+  const flip = m.favSide === "no", mid = (b, a) => (b == null || a == null ? null : flip ? 1 - (b + a) / 2 : (b + a) / 2);
+  const pts = (m.path || []).map((p) => [p[0], mid(p[1], p[2])]).filter((p) => p[1] != null);
+  const now = mid(m.yes_bid, m.yes_ask);
+  if (now != null) pts.push([Math.max((nowS() % 900) / 60, pts.length ? pts[pts.length - 1][0] : 0), now]);
+  if (pts.length < 2) return `<svg class="bd-spark" viewBox="0 0 84 20" aria-hidden="true"></svg>`;
+  const vs = pts.map((p) => p[1]), c = (Math.min(...vs) + Math.max(...vs)) / 2, span = Math.max(Math.max(...vs) - Math.min(...vs), 0.1);
+  const x = (t) => (Math.min(t, 15) / 15 * 82 + 1).toFixed(1), y = (v) => (10 - (v - c) / span * 17).toFixed(1);   // at least a 10¢ range
+  const last = pts[pts.length - 1];
+  return `<svg class="bd-spark" viewBox="0 0 84 20" aria-hidden="true"><path d="${pts.map((p, i) => `${i ? "L" : "M"}${x(p[0])} ${y(p[1])}`).join("")}"/>`
+    + `<circle cx="${x(last[0])}" cy="${y(last[1])}" r="1.8"/></svg>`;
+}
+function boardBlock() {
+  const lv = board && board.live, now = nowS(), s = now % 900;
+  const hb = lv && lv.heartbeat ? Date.parse(lv.heartbeat) / 1000 : null, age = hb == null ? null : Math.max(0, now - hb), stream = lv && lv.source === "stream";
+  const [kind, text] = boardErr ? ["off", "Offline"] : age == null ? ["", "Connecting"]
+    : age < BOARD_FRESH ? (stream ? ["on", "Streaming"] : ["warn", "Polling"])
+    : ["warn", "Stale · " + (age < 90 ? Math.round(age) + "s" : Math.round(age / 60) + "m")];
+  const why = stream ? "Prices stream from Kalshi as they change" : (lv && lv.streamWhy) || "Prices are read from Kalshi once a second";
+  const traded = new Set((data && data.groups) || Object.keys(BOARD_GROUPS)), [lo, hi] = (lv && lv.band) || [LIMITS.lo, LIMITS.hi];
+  // "In range" only until the bot's entry at minute 8: after it, nothing more is bought in this window
+  const buying = s < ((data && data.limits && data.limits.minute) || LIMITS.minute) * 60;
+  // only what the bot trades, highest favorite price first (re-sorted on every read, four times a second); no price yet sorts last
+  const ms = ((lv && lv.markets) || []).filter((m) => traded.has(m.group))
+    .sort((a, b) => (b.favPrice ?? -1) - (a.favPrice ?? -1) || String(a.label).localeCompare(String(b.label)));
+  const row = (m) => {
+    const fl = flashOf(m), side = m.favSide ? esc(m.favSide) : "";
+    const inRange = buying && m.favPrice != null && m.favPrice >= lo && m.favPrice <= hi;
+    const [bid, ask] = m.favSide === "no" ? [m.yes_ask == null ? null : 1 - m.yes_ask, m.yes_bid == null ? null : 1 - m.yes_bid] : [m.yes_bid, m.yes_ask];
+    const first = m.path && m.path.length > 1 ? m.path[0] : null;   // the window's first minute: one point is no move yet
+    const mid = m.yes_bid != null && m.yes_ask != null ? (m.yes_bid + m.yes_ask) / 2 : m.last;
+    const ch = first && first[1] != null && first[2] != null && mid != null ? (mid - (first[1] + first[2]) / 2) * (m.favSide === "no" ? -1 : 1) : null;
+    return `<tr class="bd-r${inRange ? " in" : ""}${fl ? " fl-" + fl : ""}">`
+      + `<td><a class="bd-mk" href="${esc(kalshiUrl(m.ticker))}" target="_blank" rel="noopener" title="${esc(m.label)} on Kalshi">${esc(m.label)}</a>`
+      + (inRange ? `<span class="bd-in" title="In the bot's ${cents(lo)}–${cents(hi)} buying range">In range</span>` : "") + `</td>`
+      + `<td>${m.favSide ? `<span class="bd-fav"><span class="pill ${side}">${side.toUpperCase()}</span><span class="bd-px">${cents(m.favPrice)}`
+        + (fl ? `<i class="bd-tick ${fl === "up" ? "up" : fl === "down" ? "down" : ""}">${fl === "up" ? "▲" : fl === "down" ? "▼" : "⇄"}</i>` : "") + `</span></span>` : "—"}</td>`
+      + `<td class="hide-sm">${cents(bid)}</td><td class="hide-sm">${cents(ask)}</td>`
+      + `<td class="hide-sm">${bid != null && ask != null ? cents(ask - bid) : "—"}</td>`
+      + `<td class="${tone(ch == null ? null : ch * 100)}">${ch == null || Math.abs(ch) < 0.0005 ? "—" : (ch > 0 ? "▲ " : "▼ ") + (Math.abs(ch) * 100).toFixed(1) + "¢"}</td>`
+      + `<td class="hide-sm">${sparkOf(m)}</td></tr>`;
+  };
+  // a cell with nothing in it yet (no price, no move) keeps its "—" but mutes it, so the blanks recede
+  const mute = (rows) => rows.replace(/<td(?: class="([^"]*)")?>—<\/td>/g, (_, c) => `<td class="${c ? c + " " : ""}muted">—</td>`);
+  // One table per asset class under its own header (crypto, metals, energy, then any other by name), each in the order
+  // above. With two or more, each goes to the column with fewer rows so far (its markets + its header and the table's),
+  // a tie to the left: two columns side by side on a wide screen, stacked on a narrower one.
+  const known = Object.keys(BOARD_GROUPS), rank = (g) => known.indexOf(g) + 1 || known.length + 1;
+  const gs = [...new Set(ms.map((m) => m.group))].sort((a, b) => rank(a) - rank(b) || String(a).localeCompare(String(b)));
+  const group = (g) => { const mine = ms.filter((m) => m.group === g);
+    return `<div class="bd-g"><h3 class="bd-gh">${BOARD_GROUPS[g] || esc(g)} <span class="n">${mine.length}</span></h3>`
+      + `<div class="bd-wrap"><table class="bd-t"><thead><tr><th scope="col">Market</th><th scope="col" aria-sort="descending">Favorite ↓</th>`
+      + `<th scope="col" class="hide-sm">Bid</th><th scope="col" class="hide-sm">Ask</th><th scope="col" class="hide-sm">Spread</th>`
+      + `<th scope="col">This window</th><th scope="col" class="hide-sm">Trend</th></tr></thead><tbody>${mute(mine.map(row).join(""))}</tbody></table></div></div>`; };
+  const cols = [[], []], tall = [0, 0];
+  for (const g of gs) { const i = tall[1] < tall[0] ? 1 : 0; cols[i].push(g); tall[i] += ms.filter((m) => m.group === g).length + 2; }
+  const empty = boardErr ? "Can't reach the dashboard's server." : !lv ? "Connecting to Kalshi's live markets…" : "None of the bot's markets is open right now.";
+  const body = !gs.length ? `<div class="bd-wrap"><p class="bd-empty">${empty}</p></div>` : gs.length === 1 ? group(gs[0])
+    : `<div class="bd-cols">${cols.filter((c) => c.length).map((c) => `<div class="bd-col">${c.map(group).join("")}</div>`).join("")}</div>`;
+  // a fold: the count and the feed's status stay in its header, so a folded board still says what it's doing each second
+  patch("board", fold("live.board", `Live markets <span class="n">${ms.length}</span>`, body,
+    `<span class="bd-status" title="${esc(why)}"><span class="pulse ${kind}" aria-hidden="true"></span>${text} · minute ${Math.min(15, Math.floor(s / 60) + 1)} of 15</span>`));
+}
+async function pollBoard() {
+  if (boardBusy || document.hidden || page !== "account") return;   // only while the Live tab is on screen
+  boardBusy = true;
+  try {
+    const r = await fetch("/api/research/live", { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    board = await r.json();
+    boardErr = false;
+  } catch (e) { boardErr = true; }
+  boardBusy = false;
+  boardBlock();
+}
+
+// ------------------------------------------------------------------ the balance in the navbar, from Kalshi every second
+const BALANCE_EVERY = 1000;
+let bal = null, balStale = false, balBusy = false, balReads = [];
+// The account's value and its change since the bot's start, as the hero has them; with the balance hidden (the eye,
+// here or in the hero), only the change. Nothing until the first reading; a reading Kalshi couldn't refresh is dimmed.
+function navBalance() {
+  const ok = !!bal && bal.value != null, r = ok ? bal.pct : null, rp = r == null ? null : Math.round(r * 1000) / 10;
+  patch("navBal", !ok ? "" : (bal.paper ? `<span class="chip" title="The paper bot's simulated account, not real money">Paper</span>` : "")
+    + (hideBal ? "" : `<b class="nb-v">${money(bal.value)}</b>`)
+    + (r == null ? "" : `<span class="nb-p ${tone(rp)}" title="Change since the bot's start">${arrow(rp)}${spct(r)}</span>`)
+    + `<button class="eye" type="button" data-bal="nav" aria-pressed="${hideBal}" aria-label="Hide balance" title="${hideBal ? "Show" : "Hide"} balance">${eyeIcon(hideBal)}</button>`);
+  $("navBal").classList.toggle("stale", balStale);
+}
+// The time of each fresh reading, the last minute of them: about 60 while the 1-second poll is working.
+function noteRead(t) {
+  if (t !== balReads[balReads.length - 1]) balReads.push(t);
+  balReads = balReads.filter((x) => x > t - 60);
+}
+// The proof it's polling: a dot that blinks once per fresh Kalshi reading (its markup carries the reading's time, so each
+// one redraws it and the animation replays) and the reading's time to the second; hover for the reads in the last minute.
+function navTick() {
+  const ok = !!bal && bal.value != null;
+  patch("navTick", !ok ? "" : `<span class="nb-dot${balStale ? " stale" : ""}" data-t="${bal.now}" aria-hidden="true"></span><span class="nb-t">${hms(bal.now)}</span>`);
+  $("navTick").title = !ok ? "" : `${balStale ? "Kalshi didn't answer the last poll. " : ""}Read from Kalshi at ${hms(bal.now)} · ${balReads.length} read${balReads.length === 1 ? "" : "s"} in the last minute`;
+}
+async function pollBalance() {
+  if (balBusy) return;                               // one request at a time: a slow answer never stacks up
+  balBusy = true;
+  try {
+    const r = await fetch("/api/balance" + (mode ? "?mode=" + encodeURIComponent(mode) : ""), { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const b = await r.json();
+    if (b.error) throw new Error(b.error);
+    bal = b; balStale = false; noteRead(b.now);
+  } catch (e) { balStale = true; }
+  balBusy = false;
+  navBalance(); navTick();
+}
+
+setInterval(tick, 1000);
+load();
+setInterval(load, STATE_EVERY);
+pollBoard();
+setInterval(pollBoard, BOARD_EVERY);
+pollBalance();
+setInterval(pollBalance, BALANCE_EVERY);
+</script>
+<script src="/live_research.js"></script>
+<script src="/latency.js"></script>
+<script src="/backtest.js"></script>
+</body>
+</html>

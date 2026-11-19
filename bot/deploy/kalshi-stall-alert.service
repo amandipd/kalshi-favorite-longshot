@@ -1,0 +1,20 @@
+# The stall alarm: one look at the bot's own records and, if it has stopped working, one ntfy push
+# (kalshi_bot/stall_alert.py). Reads the ledger read-only and never writes to it. Run by kalshi-stall-alert.timer
+# every 10 minutes. What it saw: journalctl -u kalshi-stall-alert
+#
+# Why it exists: on Oct 24, 2026 Kalshi's status=open filter matched nothing for about seven hours (200 OK,
+# an empty list, no error) and the bot placed no bets for 27 windows while looking perfectly healthy
+# (process up, heartbeat fresh, no halt, empty error log). kalshi-watchdog only proves the process is
+# alive, so nothing caught it. This runs outside the bot on purpose: a tripwire inside the bot's own loop
+# shares the loop's faults. Placeholders as in kalshi-bot.service.
+[Unit]
+Description=Kalshi bot: alarm when the bot stops working (stall_alert.py)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=kalshi
+WorkingDirectory=/opt/kalshi-bot/bot
+ExecStart=/opt/kalshi-bot/venv/bin/python -u -m kalshi_bot.stall_alert --db /opt/kalshi-bot/bot/state/live-prod.db --seen /opt/kalshi-bot/stall_alert.json
+TimeoutStartSec=45

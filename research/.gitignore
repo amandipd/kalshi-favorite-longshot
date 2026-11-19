@@ -1,0 +1,45 @@
+# Downloaded and recorded data, rebuilt by each study's scripts (see its README). Never commit it.
+# Small JSON and text results that the READMEs quote are tracked; only the names below are ignored.
+
+# Anywhere under research/
+data/
+*.log
+*.jsonl
+*.jsonl.gz
+*.csv
+*.npz
+*.parquet
+*.db
+__pycache__/
+.pytest_cache/
+.hypothesis/
+
+# kalshi_15min: minute files, snapshots and quotes are *.csv above
+kalshi_15min/strategies.json
+kalshi_15min/liquidity.json
+kalshi_15min/minutes_pre_missing.txt
+kalshi_15min/series_catalog.json
+kalshi_15min/other_markets.json
+kalshi_15min/depth_books_results.json
+kalshi_15min/depth_tape_markets.json
+kalshi_15min/.rebuild_pid
+kalshi_15min/dashboard/
+kalshi_15min/lab/edge_map.json
+kalshi_15min/lab/spot/
+# built from the live bot's private order ledger
+kalshi_15min/live_fills.json
+kalshi_15min/live_losses.json
+kalshi_15min/lab/live_fills/live_fills.json
+kalshi_15min/lab/live_fills/markets.json
+kalshi_15min/lab/fast_entry/timing.json
+
+# polymarket_5min: the forward test's done marker and score
+polymarket_5min/forward_done.json
+polymarket_5min/forward_score.json
+
+# settle_average: raw trade tapes, a gzip file a day
+settle_average/tape/
+settle_average/tape_old/
+
+# maker_shadow: the replay's report
+maker_shadow/report.json

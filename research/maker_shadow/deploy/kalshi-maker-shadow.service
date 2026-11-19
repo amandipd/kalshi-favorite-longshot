@@ -1,0 +1,36 @@
+# Maker shadow test (research/maker_shadow/SPEC.md): records the bot's 16 markets' order books and trades from
+# Kalshi's WebSocket. Read only: no orders, no port, no REST calls in seconds 360-600 of a window, and systemd only
+# lets it write inside its own folder, so it can't touch the bot, and hides the bot's state/ from it entirely. Stops
+# itself on --until. A second copy started on the same data folder exits 3 (recorder.lock) and is retried 60 s later.
+[Unit]
+Description=Kalshi maker shadow recorder (read-only research)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=kalshi
+WorkingDirectory=/home/kalshi/kalshi/maker-shadow
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/home/kalshi/kalshi/venv/bin/python -u maker_shadow.py record --out data --until 2026-11-28
+# on-failure, not always: a clean exit at --until must stay stopped
+Restart=on-failure
+RestartSec=60
+# below the bot in every queue
+Nice=10
+CPUWeight=20
+IOWeight=20
+MemoryMax=300M
+# the folder is the only place it can write
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/kalshi/kalshi/maker-shadow
+# and it can't even see the bot's state (its ledger, halt file and logs): it reads only the bot's .env and key file
+InaccessiblePaths=/home/kalshi/kalshi/bot/state
+PrivateTmp=true
+NoNewPrivileges=true
+StandardOutput=append:/home/kalshi/kalshi/maker-shadow/recorder.log
+StandardError=append:/home/kalshi/kalshi/maker-shadow/recorder.err.log
+
+[Install]
+WantedBy=multi-user.target

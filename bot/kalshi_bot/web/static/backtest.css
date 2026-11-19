@@ -1,0 +1,55 @@
+/*
+ * The Backtest tab (backtest.js): the live bot's own rules replayed on every window each market has ever had,
+ * from $2,000 and from $10,000.
+ *
+ * Like the Latency tab's sheet, this one is small. The tab borrows Live Research's header, figures, notes and
+ * table styles (.lr-*, from live_research.css) so the three read alike, so what is left here is the tab's frame
+ * and its bankroll chart. Colours come from the page's tokens, spaces keep to the page's scale,
+ * and every rule is scoped to #backtest or a .bt- class, so it cannot reach the account pages.
+ */
+#backtest { display: grid; gap: var(--sp-6); min-width: 0; font-variant-numeric: tabular-nums; }
+#backtest h2, #backtest h3, #backtest p, #backtest figure { margin: 0; }
+/* the market table is the whole tab, so it may use the full width rather than Live Research's reading measure */
+#backtest .lr-t { max-width: none; }
+
+/* ------------------------------------------------------------ the bankroll chart: one line per starting amount,
+   all three overlaid on the one chart */
+.bt-fig { display: grid; gap: var(--sp-2); min-width: 0; }
+.bt-scroll { overflow-x: auto; min-width: 0; }   /* a phone scrolls the chart in its box, never the page */
+.bt-chart { display: block; width: 100%; min-width: 600px; height: auto; }
+.bt-plot { fill: none; stroke: var(--line); }
+.bt-grid { stroke: var(--line); }
+.bt-zero { stroke: var(--line-strong); }         /* where the money started: below it the account is down */
+.bt-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+/* the $850 account is the main line, so it is solid and in the page's own series colour; the two
+   other amounts are dashed, which tells them apart by shape as well as by hue */
+.bt-l1 { stroke: var(--series-1); }
+.bt-l2 { stroke: var(--series-2); stroke-dasharray: 6 4; }
+.bt-l3 { stroke: var(--series-3); stroke-dasharray: 1 4; }
+.bt-ax { font: 400 var(--fs-1) var(--sans); fill: var(--muted); }
+/* where each kind of market started: an upright rule, with its name ringed in the panel colour so it reads
+   over whatever the lines are doing behind it */
+.bt-mark { stroke: var(--line-strong); stroke-dasharray: 2 3; }
+.bt-mlbl { font: 400 var(--fs-1) var(--sans); fill: var(--ink-2); paint-order: stroke; stroke: var(--surface);
+  stroke-width: 3px; stroke-linejoin: round; }
+
+/* the ribbon under the plot: a shaded band a kind of market, from where Kalshi started listing it to the right
+   edge. It sits below the lines rather than across them, which would muddy the curves it is meant to explain.
+   The washes are the page's own, so they carry no up or down meaning of their own. */
+.bt-band { stroke: none; }
+.bt-bd1 { fill: var(--up-wash); }
+.bt-bd2 { fill: var(--warn-wash); }
+.bt-bd3 { fill: var(--hover); }
+.bt-blbl { font: 400 var(--fs-1) var(--sans); fill: var(--ink-2); }
+
+/* the key, and the same swatch beside each amount in the table above it */
+.bt-keys { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-4); }
+.bt-ki { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-2); color: var(--muted); }
+.bt-key { display: inline-block; width: 12px; height: 2px; border-radius: var(--r-pill); background: currentColor;
+  margin-right: var(--sp-2); vertical-align: middle; }
+.bt-key.bt-l1 { background: var(--series-1); }
+.bt-key.bt-l2 { background: var(--series-2); }
+.bt-key.bt-l3 { background: var(--series-3); }
+/* the key's swatches echo the dashes, so the key reads like the chart */
+.bt-key.bt-l2, .bt-key.bt-l3 { height: 2px; opacity: 0.85; }
+.bt-ki .bt-key { margin-right: 0; }

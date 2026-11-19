@@ -1,0 +1,12 @@
+# Runs kalshi-watchdog.service every minute. Enable it together with the bot: with no live bot running, every run
+# pings /fail.
+[Unit]
+Description=Kalshi bot: heartbeat ping every minute
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=60s
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

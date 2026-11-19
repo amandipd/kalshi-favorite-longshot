@@ -1,0 +1,14 @@
+# The dead man's switch: one look at the bot's heartbeat and one ping to healthchecks.io (kalshi_bot/watchdog.py), at
+# the address HEALTHCHECK_URL gives in .env. Run by kalshi-watchdog.timer each minute; it always exits 0.
+# What it saw: journalctl -u kalshi-watchdog. Placeholders as in kalshi-bot.service.
+[Unit]
+Description=Kalshi bot: heartbeat ping to healthchecks.io
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=kalshi
+WorkingDirectory=/opt/kalshi-bot/bot
+ExecStart=/opt/kalshi-bot/venv/bin/python -u -m kalshi_bot.watchdog
+TimeoutStartSec=45

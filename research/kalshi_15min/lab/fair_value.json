@@ -1,0 +1,5154 @@
+{
+ "settlement": "YES iff the 60-second average of CF Benchmarks' index before the close >= the same average before the open (floor_strike = the opening average = the previous window's settlement value)",
+ "spotCoverage": {
+  "BTC": {
+   "markets": 28091,
+   "withSpot": 28091
+  },
+  "ETH": {
+   "markets": 28063,
+   "withSpot": 28063
+  },
+  "SOL": {
+   "markets": 25762,
+   "withSpot": 25762
+  },
+  "XRP": {
+   "markets": 22576,
+   "withSpot": 22576
+  },
+  "DOGE": {
+   "markets": 19207,
+   "withSpot": 19207
+  },
+  "BNB": {
+   "markets": 19207,
+   "withSpot": 19207
+  },
+  "HYPE": {
+   "markets": 19207,
+   "withSpot": 19207
+  },
+  "NEAR": {
+   "markets": 9490,
+   "withSpot": 9490
+  },
+  "ZEC": {
+   "markets": 9490,
+   "withSpot": 9490
+  }
+ },
+ "mismatch": {
+  "rule": {
+   "markets": 174758,
+   "settle>=strike matches result": 0.9997825564494901,
+   "result in markets.npz matches listing": 1.0
+  },
+  "byCoin": {
+   "BTC": {
+    "markets": 25271,
+    "gapBpsMedian": -0.666840451946117,
+    "absGapBpsMedian": 0.89906436117959,
+    "absGapBps95": 3.060920804370413,
+    "coinbaseCallsResult": 0.9681848759447588,
+    "absMoveBpsMedian": 9.437504237566316
+   },
+   "ETH": {
+    "markets": 25270,
+    "gapBpsMedian": -0.7025487869091607,
+    "absGapBpsMedian": 1.1256129214323911,
+    "absGapBps95": 3.830051491982801,
+    "coinbaseCallsResult": 0.9715868618915711,
+    "absMoveBpsMedian": 11.919184374289664
+   },
+   "SOL": {
+    "markets": 25233,
+    "gapBpsMedian": -0.9019861632752433,
+    "absGapBpsMedian": 1.2982782761799405,
+    "absGapBps95": 4.256339251915562,
+    "coinbaseCallsResult": 0.9705148020449411,
+    "absMoveBpsMedian": 14.387931378645733
+   },
+   "XRP": {
+    "markets": 22509,
+    "gapBpsMedian": -1.1244672848105823,
+    "absGapBpsMedian": 1.4346173182931126,
+    "absGapBps95": 4.348590742132434,
+    "coinbaseCallsResult": 0.9692567417477453,
+    "absMoveBpsMedian": 13.20945989267169
+   },
+   "DOGE": {
+    "markets": 19172,
+    "gapBpsMedian": -1.271059752953615,
+    "absGapBpsMedian": 1.7010219700318543,
+    "absGapBps95": 5.3442606824242525,
+    "coinbaseCallsResult": 0.9605674942624661,
+    "absMoveBpsMedian": 13.923827048083881
+   },
+   "BNB": {
+    "markets": 19174,
+    "gapBpsMedian": -2.1682668059342323,
+    "absGapBpsMedian": 2.3927154010782417,
+    "absGapBps95": 6.650878850007325,
+    "coinbaseCallsResult": 0.9320955460519453,
+    "absMoveBpsMedian": 8.776290040475155
+   },
+   "HYPE": {
+    "markets": 19171,
+    "gapBpsMedian": -0.8292039493273267,
+    "absGapBpsMedian": 2.6520391051401546,
+    "absGapBps95": 8.551930110258688,
+    "coinbaseCallsResult": 0.961973814615826,
+    "absMoveBpsMedian": 21.60277201074317
+   },
+   "NEAR": {
+    "markets": 9480,
+    "gapBpsMedian": -4.862568556452578,
+    "absGapBpsMedian": 5.137969765832194,
+    "absGapBps95": 13.20148051901883,
+    "coinbaseCallsResult": 0.9562236286919831,
+    "absMoveBpsMedian": 25.5409673797591
+   },
+   "ZEC": {
+    "markets": 9478,
+    "gapBpsMedian": -1.851262513966765,
+    "absGapBpsMedian": 2.8001431625001736,
+    "absGapBps95": 8.872536526608235,
+    "coinbaseCallsResult": 0.963705423085039,
+    "absMoveBpsMedian": 24.246954260867135
+   }
+  }
+ },
+ "splits": {
+  "pickPre_testPost": {
+   "6": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.75,
+     "nu": 4,
+     "trainLogLoss": 0.5148879259129904,
+     "fitMarkets": 109503
+    },
+    "calibration": {
+     "combinedFit": [
+      0.003,
+      0.563,
+      0.5
+     ],
+     "train": {
+      "markets": 110331,
+      "market mid": {
+       "brier": 0.17181,
+       "logloss": 0.51553
+      },
+      "model": {
+       "brier": 0.17186,
+       "logloss": 0.51502
+      },
+      "both": {
+       "brier": 0.17048,
+       "logloss": 0.51153
+      }
+     },
+     "test": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.16954,
+       "logloss": 0.51045
+      },
+      "model": {
+       "brier": 0.17055,
+       "logloss": 0.5128
+      },
+      "both": {
+       "brier": 0.16879,
+       "logloss": 0.50803
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 15379,
+     "withModel": 15379
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 25,
+       "perBet": -55.481,
+       "mu": -54.741,
+       "lo": null,
+       "hi": null,
+       "pnl": -13.14
+      },
+      "test": {
+       "bets": 17,
+       "perBet": -119.559,
+       "mu": -119.36,
+       "lo": null,
+       "hi": null,
+       "pnl": -19.16
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 41,
+       "perBet": -90.288,
+       "mu": -90.026,
+       "lo": -207.662,
+       "hi": 27.611,
+       "pnl": -35.03
+      },
+      "test": {
+       "bets": 93,
+       "perBet": -44.343,
+       "mu": -43.616,
+       "lo": -112.527,
+       "hi": 25.296,
+       "pnl": -39.16
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 249,
+       "perBet": -21.801,
+       "mu": -21.764,
+       "lo": -60.636,
+       "hi": 17.108,
+       "pnl": -51.45
+      },
+      "test": {
+       "bets": 387,
+       "perBet": -3.769,
+       "mu": -3.876,
+       "lo": -33.242,
+       "hi": 25.491,
+       "pnl": -13.85
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 929,
+       "perBet": -3.417,
+       "mu": -3.505,
+       "lo": -21.325,
+       "hi": 14.316,
+       "pnl": -30.21
+      },
+      "test": {
+       "bets": 1031,
+       "perBet": -5.84,
+       "mu": -5.687,
+       "lo": -23.181,
+       "hi": 11.807,
+       "pnl": -57.31
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 1812,
+       "perBet": 3.468,
+       "mu": 3.702,
+       "lo": -7.384,
+       "hi": 14.787,
+       "pnl": 60.25
+      },
+      "test": {
+       "bets": 1741,
+       "perBet": -0.49,
+       "mu": -0.239,
+       "lo": -12.211,
+       "hi": 11.734,
+       "pnl": -8.15
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 2548,
+       "perBet": 8.153,
+       "mu": 8.242,
+       "lo": -0.227,
+       "hi": 16.71,
+       "pnl": 199.11
+      },
+      "test": {
+       "bets": 2587,
+       "perBet": 7.849,
+       "mu": 7.946,
+       "lo": -1.404,
+       "hi": 17.296,
+       "pnl": 194.06
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 1681,
+       "perBet": 7.786,
+       "mu": 7.692,
+       "lo": -5.807,
+       "hi": 21.191,
+       "pnl": 123.87
+      },
+      "test": {
+       "bets": 2238,
+       "perBet": 19.471,
+       "mu": 19.678,
+       "lo": 8.168,
+       "hi": 31.188,
+       "pnl": 413.05
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 7285,
+      "perBet": 3.645,
+      "mu": 3.693,
+      "lo": -3.005,
+      "hi": 10.391,
+      "pnl": 253.4
+     },
+     "test": {
+      "bets": 8094,
+      "perBet": 6.089,
+      "mu": 6.268,
+      "lo": -0.725,
+      "hi": 13.26,
+      "pnl": 469.48
+     }
+    },
+    "b_filter": {
+     "chosenMargin": -0.01,
+     "chosen": {
+      "train": {
+       "bets": 5293,
+       "perBet": 7.723,
+       "mu": 7.821,
+       "lo": 0.611,
+       "hi": 15.031,
+       "pnl": 390.53
+      },
+      "test": {
+       "bets": 5822,
+       "perBet": 10.766,
+       "mu": 10.945,
+       "lo": 3.442,
+       "hi": 18.448,
+       "pnl": 597.26
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 7285,
+       "trainPerBet": 3.645,
+       "trainPnl": 253.4,
+       "testBets": 8094,
+       "testPerBet": 6.089,
+       "testPnl": 469.48
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 7260,
+       "trainPerBet": 3.847,
+       "trainPnl": 266.54,
+       "testBets": 8077,
+       "testPerBet": 6.35,
+       "testPnl": 488.64
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 7253,
+       "trainPerBet": 4.069,
+       "trainPnl": 281.66,
+       "testBets": 8059,
+       "testPerBet": 6.861,
+       "testPnl": 526.76
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 7219,
+       "trainPerBet": 4.377,
+       "trainPnl": 301.58,
+       "testBets": 7984,
+       "testPerBet": 6.939,
+       "testPnl": 527.81
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 7137,
+       "trainPerBet": 4.526,
+       "trainPnl": 308.31,
+       "testBets": 7844,
+       "testPerBet": 7.022,
+       "testPnl": 524.79
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 6970,
+       "trainPerBet": 5.305,
+       "trainPnl": 353.03,
+       "testBets": 7597,
+       "testPerBet": 7.483,
+       "testPnl": 541.65
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 6490,
+       "trainPerBet": 5.762,
+       "trainPnl": 357.09,
+       "testBets": 7063,
+       "testPerBet": 8.958,
+       "testPnl": 602.95
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 6041,
+       "trainPerBet": 6.641,
+       "trainPnl": 383.23,
+       "testBets": 6566,
+       "testPerBet": 9.572,
+       "testPnl": 598.96
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 5293,
+       "trainPerBet": 7.723,
+       "trainPnl": 390.53,
+       "testBets": 5822,
+       "testPerBet": 10.766,
+       "testPnl": 597.26
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 4229,
+       "trainPerBet": 8.008,
+       "trainPnl": 322.98,
+       "testBets": 4825,
+       "testPerBet": 13.216,
+       "testPnl": 607.11
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 2823,
+       "trainPerBet": 11.115,
+       "trainPnl": 298.09,
+       "testBets": 3539,
+       "testPerBet": 17.104,
+       "testPnl": 574.95
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1681,
+       "trainPerBet": 7.786,
+       "trainPnl": 123.87,
+       "testBets": 2238,
+       "testPerBet": 19.471,
+       "testPnl": 413.05
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.0,
+     "chosen": {
+      "train": {
+       "bets": 5561,
+       "perBet": 7.547,
+       "mu": 7.632,
+       "lo": 0.314,
+       "hi": 14.95,
+       "pnl": 400.18
+      },
+      "test": {
+       "bets": 6409,
+       "perBet": 9.784,
+       "mu": 9.964,
+       "lo": 2.592,
+       "hi": 17.337,
+       "pnl": 597.06
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 7285,
+       "trainPnl": 253.4,
+       "testBets": 8094,
+       "testPnl": 469.48
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 7284,
+       "trainPnl": 263.16,
+       "testBets": 8092,
+       "testPnl": 468.77
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 7284,
+       "trainPnl": 263.16,
+       "testBets": 8091,
+       "testPnl": 468.03
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 7265,
+       "trainPnl": 269.46,
+       "testBets": 8088,
+       "testPnl": 465.63
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 7261,
+       "trainPnl": 267.25,
+       "testBets": 8083,
+       "testPnl": 481.99
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 7258,
+       "trainPnl": 264.95,
+       "testBets": 8067,
+       "testPnl": 501.77
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 7224,
+       "trainPnl": 292.92,
+       "testBets": 7996,
+       "testPnl": 522.75
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 7144,
+       "trainPnl": 324.39,
+       "testBets": 7888,
+       "testPnl": 496.11
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 6844,
+       "trainPnl": 365.71,
+       "testBets": 7512,
+       "testPnl": 581.66
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 5561,
+       "trainPnl": 400.18,
+       "testBets": 6409,
+       "testPnl": 597.06
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 3057,
+       "trainPnl": 335.41,
+       "testBets": 4027,
+       "testPnl": 565.17
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1283,
+       "trainPnl": 58.52,
+       "testBets": 1837,
+       "testPnl": 282.7
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.1,
+     "chosen": {
+      "train": {
+       "bets": 5532,
+       "perBet": 54.954,
+       "mu": 54.669,
+       "lo": 12.07,
+       "hi": 97.269,
+       "pnl": 2971.74
+      },
+      "test": {
+       "bets": 5643,
+       "perBet": 84.06,
+       "mu": 83.756,
+       "lo": 43.025,
+       "hi": 124.486,
+       "pnl": 4642.95
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 493,
+        "perBet": 152.82,
+        "mu": 151.132,
+        "lo": -167.979,
+        "hi": 470.244,
+        "pnl": 747.22
+       },
+       "test": {
+        "bets": 601,
+        "perBet": 308.302,
+        "mu": 308.041,
+        "lo": 64.892,
+        "hi": 551.19,
+        "pnl": 1836.97
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 2268,
+        "perBet": 49.373,
+        "mu": 49.301,
+        "lo": -14.196,
+        "hi": 112.799,
+        "pnl": 1101.45
+       },
+       "test": {
+        "bets": 2482,
+        "perBet": 86.753,
+        "mu": 86.959,
+        "lo": 26.365,
+        "hi": 147.553,
+        "pnl": 2118.98
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 2569,
+        "perBet": 38.108,
+        "mu": 38.175,
+        "lo": 7.841,
+        "hi": 68.509,
+        "pnl": 950.56
+       },
+       "test": {
+        "bets": 2354,
+        "perBet": 24.573,
+        "mu": 24.896,
+        "lo": -6.896,
+        "hi": 56.688,
+        "pnl": 562.04
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 202,
+        "perBet": 89.165,
+        "mu": 89.283,
+        "lo": 39.486,
+        "hi": 139.081,
+        "pnl": 172.51
+       },
+       "test": {
+        "bets": 206,
+        "perBet": 63.164,
+        "mu": 63.409,
+        "lo": 9.119,
+        "hi": 117.699,
+        "pnl": 124.97
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 47332,
+       "trainPerBet": -28.992,
+       "trainPnl": -13357.97,
+       "testBets": 39395,
+       "testPerBet": -8.028,
+       "testPnl": -3081.12
+      },
+      {
+       "X": 0.03,
+       "trainBets": 35670,
+       "trainPerBet": -16.558,
+       "trainPnl": -5752.31,
+       "testBets": 30875,
+       "testPerBet": 0.495,
+       "testPnl": 148.89
+      },
+      {
+       "X": 0.05,
+       "trainBets": 20077,
+       "trainPerBet": -2.014,
+       "trainPnl": -394.44,
+       "testBets": 18620,
+       "testPerBet": 17.519,
+       "testPnl": 3183.89
+      },
+      {
+       "X": 0.07,
+       "trainBets": 11620,
+       "trainPerBet": 11.143,
+       "trainPnl": 1264.13,
+       "testBets": 11293,
+       "testPerBet": 41.888,
+       "testPnl": 4622.79
+      },
+      {
+       "X": 0.1,
+       "trainBets": 5532,
+       "trainPerBet": 54.954,
+       "trainPnl": 2971.74,
+       "testBets": 5643,
+       "testPerBet": 84.06,
+       "testPnl": 4642.95
+      },
+      {
+       "X": 0.15,
+       "trainBets": 2017,
+       "trainPerBet": 128.792,
+       "trainPnl": 2544.9,
+       "testBets": 2044,
+       "testPerBet": 146.612,
+       "testPnl": 2938.7
+      },
+      {
+       "X": 0.2,
+       "trainBets": 893,
+       "trainPerBet": 228.175,
+       "trainPnl": 1999.99,
+       "testBets": 848,
+       "testPerBet": 212.541,
+       "testPnl": 1771.65
+      }
+     ]
+    }
+   },
+   "8": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.7,
+     "nu": 4,
+     "trainLogLoss": 0.44274529128674267,
+     "fitMarkets": 109507
+    },
+    "calibration": {
+     "combinedFit": [
+      0.015,
+      0.572,
+      0.492
+     ],
+     "train": {
+      "markets": 110337,
+      "market mid": {
+       "brier": 0.14416,
+       "logloss": 0.44408
+      },
+      "model": {
+       "brier": 0.14427,
+       "logloss": 0.44309
+      },
+      "both": {
+       "brier": 0.14265,
+       "logloss": 0.43871
+      }
+     },
+     "test": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.14278,
+       "logloss": 0.44072
+      },
+      "model": {
+       "brier": 0.14451,
+       "logloss": 0.44504
+      },
+      "both": {
+       "brier": 0.14229,
+       "logloss": 0.43856
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 32091,
+     "withModel": 32091
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 44,
+       "perBet": 31.744,
+       "mu": 32.94,
+       "lo": -16.221,
+       "hi": 82.102,
+       "pnl": 13.39
+      },
+      "test": {
+       "bets": 36,
+       "perBet": -87.223,
+       "mu": -85.674,
+       "lo": -227.81,
+       "hi": 56.462,
+       "pnl": -29.84
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 91,
+       "perBet": -33.626,
+       "mu": -34.302,
+       "lo": -96.904,
+       "hi": 28.3,
+       "pnl": -29.01
+      },
+      "test": {
+       "bets": 149,
+       "perBet": -46.096,
+       "mu": -47.737,
+       "lo": -102.267,
+       "hi": 6.793,
+       "pnl": -65.12
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 524,
+       "perBet": -20.428,
+       "mu": -20.218,
+       "lo": -45.053,
+       "hi": 4.617,
+       "pnl": -101.58
+      },
+      "test": {
+       "bets": 662,
+       "perBet": -33.897,
+       "mu": -33.978,
+       "lo": -58.96,
+       "hi": -8.996,
+       "pnl": -213.33
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 1619,
+       "perBet": -10.614,
+       "mu": -10.479,
+       "lo": -23.085,
+       "hi": 2.127,
+       "pnl": -164.34
+      },
+      "test": {
+       "bets": 1768,
+       "perBet": -6.402,
+       "mu": -6.224,
+       "lo": -18.181,
+       "hi": 5.733,
+       "pnl": -108.15
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 4198,
+       "perBet": -0.624,
+       "mu": -0.519,
+       "lo": -7.023,
+       "hi": 5.985,
+       "pnl": -25.32
+      },
+      "test": {
+       "bets": 3752,
+       "perBet": 3.626,
+       "mu": 3.731,
+       "lo": -3.346,
+       "hi": 10.808,
+       "pnl": 130.97
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 6527,
+       "perBet": 4.191,
+       "mu": 4.103,
+       "lo": -0.492,
+       "hi": 8.699,
+       "pnl": 265.04
+      },
+      "test": {
+       "bets": 6263,
+       "perBet": 8.124,
+       "mu": 8.175,
+       "lo": 3.38,
+       "hi": 12.97,
+       "pnl": 491.78
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 2647,
+       "perBet": 11.634,
+       "mu": 11.558,
+       "lo": 1.498,
+       "hi": 21.618,
+       "pnl": 291.67
+      },
+      "test": {
+       "bets": 3811,
+       "perBet": 16.954,
+       "mu": 16.918,
+       "lo": 8.55,
+       "hi": 25.286,
+       "pnl": 613.61
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 15650,
+      "perBet": 1.659,
+      "mu": 1.659,
+      "lo": -2.476,
+      "hi": 5.794,
+      "pnl": 249.85
+     },
+     "test": {
+      "bets": 16441,
+      "perBet": 5.196,
+      "mu": 5.229,
+      "lo": 0.876,
+      "hi": 9.583,
+      "pnl": 819.92
+     }
+    },
+    "b_filter": {
+     "chosenMargin": -0.01,
+     "chosen": {
+      "train": {
+       "bets": 11857,
+       "perBet": 4.936,
+       "mu": 4.937,
+       "lo": 0.735,
+       "hi": 9.139,
+       "pnl": 564.32
+      },
+      "test": {
+       "bets": 12400,
+       "perBet": 9.432,
+       "mu": 9.507,
+       "lo": 4.981,
+       "hi": 14.032,
+       "pnl": 1123.99
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 15650,
+       "trainPerBet": 1.659,
+       "trainPnl": 249.85,
+       "testBets": 16441,
+       "testPerBet": 5.196,
+       "testPnl": 819.92
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 15606,
+       "trainPerBet": 1.574,
+       "trainPnl": 236.46,
+       "testBets": 16405,
+       "testPerBet": 5.397,
+       "testPnl": 849.76
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 15592,
+       "trainPerBet": 1.656,
+       "trainPnl": 248.49,
+       "testBets": 16371,
+       "testPerBet": 5.391,
+       "testPnl": 847.15
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 15515,
+       "trainPerBet": 1.778,
+       "trainPnl": 265.47,
+       "testBets": 16256,
+       "testPerBet": 5.863,
+       "testPnl": 914.88
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 15327,
+       "trainPerBet": 2.212,
+       "trainPnl": 326.42,
+       "testBets": 16007,
+       "testPerBet": 6.132,
+       "testPnl": 942.27
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 14991,
+       "trainPerBet": 2.542,
+       "trainPnl": 367.06,
+       "testBets": 15594,
+       "testPerBet": 7.534,
+       "testPnl": 1128.21
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 14166,
+       "trainPerBet": 3.177,
+       "trainPnl": 433.6,
+       "testBets": 14684,
+       "testPerBet": 8.533,
+       "testPnl": 1203.74
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 13372,
+       "trainPerBet": 4.123,
+       "trainPnl": 531.4,
+       "testBets": 13826,
+       "testPerBet": 9.306,
+       "testPnl": 1236.36
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 11857,
+       "trainPerBet": 4.936,
+       "trainPnl": 564.32,
+       "testBets": 12400,
+       "testPerBet": 9.432,
+       "testPnl": 1123.99
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 9174,
+       "trainPerBet": 6.304,
+       "trainPnl": 556.72,
+       "testBets": 10074,
+       "testPerBet": 11.428,
+       "testPnl": 1105.39
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 5221,
+       "trainPerBet": 8.748,
+       "trainPnl": 436.12,
+       "testBets": 6609,
+       "testPerBet": 13.902,
+       "testPnl": 877.44
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 2647,
+       "trainPerBet": 11.634,
+       "trainPnl": 291.67,
+       "testBets": 3811,
+       "testPerBet": 16.954,
+       "testPnl": 613.61
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.0,
+     "chosen": {
+      "train": {
+       "bets": 11926,
+       "perBet": 4.748,
+       "mu": 4.752,
+       "lo": 0.383,
+       "hi": 9.121,
+       "pnl": 544.63
+      },
+      "test": {
+       "bets": 13237,
+       "perBet": 10.204,
+       "mu": 10.279,
+       "lo": 5.851,
+       "hi": 14.706,
+       "pnl": 1296.25
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 15650,
+       "trainPnl": 249.85,
+       "testBets": 16441,
+       "testPnl": 819.92
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 15650,
+       "trainPnl": 249.85,
+       "testBets": 16439,
+       "testPnl": 819.31
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 15649,
+       "trainPnl": 249.24,
+       "testBets": 16436,
+       "testPnl": 827.92
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 15626,
+       "trainPnl": 243.81,
+       "testBets": 16431,
+       "testPnl": 855.68
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 15618,
+       "trainPnl": 241.03,
+       "testBets": 16422,
+       "testPnl": 858.86
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 15603,
+       "trainPnl": 232.62,
+       "testBets": 16395,
+       "testPnl": 841.26
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 15536,
+       "trainPnl": 274.25,
+       "testBets": 16294,
+       "testPnl": 904.33
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 15372,
+       "trainPnl": 354.59,
+       "testBets": 16069,
+       "testPnl": 956.64
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 14756,
+       "trainPnl": 390.6,
+       "testBets": 15505,
+       "testPnl": 1155.3
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 11926,
+       "trainPnl": 544.63,
+       "testBets": 13237,
+       "testPnl": 1296.25
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 5283,
+       "trainPnl": 462.44,
+       "testBets": 7113,
+       "testPnl": 972.06
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1849,
+       "trainPnl": 242.24,
+       "testBets": 2932,
+       "testPnl": 448.17
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.1,
+     "chosen": {
+      "train": {
+       "bets": 6644,
+       "perBet": 85.03,
+       "mu": 84.868,
+       "lo": 41.522,
+       "hi": 128.213,
+       "pnl": 5522.78
+      },
+      "test": {
+       "bets": 6380,
+       "perBet": 53.403,
+       "mu": 53.061,
+       "lo": 15.439,
+       "hi": 90.682,
+       "pnl": 3332.92
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 752,
+        "perBet": 193.139,
+        "mu": 193.291,
+        "lo": -101.345,
+        "hi": 487.928,
+        "pnl": 1441.59
+       },
+       "test": {
+        "bets": 732,
+        "perBet": 142.579,
+        "mu": 141.895,
+        "lo": -80.147,
+        "hi": 363.938,
+        "pnl": 1035.25
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 2507,
+        "perBet": 70.254,
+        "mu": 70.048,
+        "lo": 9.022,
+        "hi": 131.074,
+        "pnl": 1733.3
+       },
+       "test": {
+        "bets": 2618,
+        "perBet": 41.82,
+        "mu": 41.614,
+        "lo": -15.593,
+        "hi": 98.82,
+        "pnl": 1077.33
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 3011,
+        "perBet": 69.808,
+        "mu": 69.927,
+        "lo": 43.156,
+        "hi": 96.698,
+        "pnl": 2040.9
+       },
+       "test": {
+        "bets": 2728,
+        "perBet": 40.266,
+        "mu": 40.232,
+        "lo": 11.665,
+        "hi": 68.799,
+        "pnl": 1066.89
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 374,
+        "perBet": 85.762,
+        "mu": 86.489,
+        "lo": 52.22,
+        "hi": 120.758,
+        "pnl": 306.99
+       },
+       "test": {
+        "bets": 302,
+        "perBet": 53.056,
+        "mu": 52.859,
+        "lo": 9.519,
+        "hi": 96.2,
+        "pnl": 153.45
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 47444,
+       "trainPerBet": -27.349,
+       "trainPnl": -12611.28,
+       "testBets": 38812,
+       "testPerBet": -20.917,
+       "testPnl": -7896.39
+      },
+      {
+       "X": 0.03,
+       "trainBets": 36322,
+       "trainPerBet": -13.861,
+       "trainPnl": -4896.59,
+       "testBets": 30441,
+       "testPerBet": -2.169,
+       "testPnl": -642.68
+      },
+      {
+       "X": 0.05,
+       "trainBets": 21442,
+       "trainPerBet": 8.63,
+       "trainPnl": 1802.9,
+       "testBets": 18877,
+       "testPerBet": 18.293,
+       "testPnl": 3366.84
+      },
+      {
+       "X": 0.07,
+       "trainBets": 12944,
+       "trainPerBet": 41.344,
+       "trainPnl": 5222.6,
+       "testBets": 11959,
+       "testPerBet": 28.717,
+       "testPnl": 3353.03
+      },
+      {
+       "X": 0.1,
+       "trainBets": 6644,
+       "trainPerBet": 85.03,
+       "trainPnl": 5522.78,
+       "testBets": 6380,
+       "testPerBet": 53.403,
+       "testPnl": 3332.92
+      },
+      {
+       "X": 0.15,
+       "trainBets": 2614,
+       "trainPerBet": 136.198,
+       "trainPnl": 3490.41,
+       "testBets": 2601,
+       "testPerBet": 136.484,
+       "testPnl": 3481.41
+      },
+      {
+       "X": 0.2,
+       "trainBets": 1223,
+       "trainPerBet": 216.313,
+       "trainPnl": 2597.92,
+       "testBets": 1184,
+       "testPerBet": 209.433,
+       "testPnl": 2435.28
+      }
+     ]
+    },
+    "staleSpot1min": {
+     "b": {
+      "train": {
+       "bets": 9451,
+       "perBet": 6.835,
+       "mu": 6.842,
+       "lo": 2.132,
+       "hi": 11.552,
+       "pnl": 622.41
+      },
+      "test": {
+       "bets": 10119,
+       "perBet": 8.765,
+       "mu": 8.81,
+       "lo": 3.703,
+       "hi": 13.917,
+       "pnl": 852.0
+      }
+     },
+     "c": {
+      "train": {
+       "bets": 28620,
+       "perBet": -104.573,
+       "mu": -104.022,
+       "lo": -129.818,
+       "hi": -78.226,
+       "pnl": -29353.29
+      },
+      "test": {
+       "bets": 20895,
+       "perBet": -73.739,
+       "mu": -73.411,
+       "lo": -104.033,
+       "hi": -42.788,
+       "pnl": -15106.99
+      }
+     }
+    }
+   },
+   "10": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.65,
+     "nu": 4,
+     "trainLogLoss": 0.3626870196075906,
+     "fitMarkets": 109518
+    },
+    "calibration": {
+     "combinedFit": [
+      0.003,
+      0.597,
+      0.47
+     ],
+     "train": {
+      "markets": 110350,
+      "market mid": {
+       "brier": 0.11474,
+       "logloss": 0.36349
+      },
+      "model": {
+       "brier": 0.11505,
+       "logloss": 0.36292
+      },
+      "both": {
+       "brier": 0.113,
+       "logloss": 0.35709
+      }
+     },
+     "test": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.11701,
+       "logloss": 0.36942
+      },
+      "model": {
+       "brier": 0.1194,
+       "logloss": 0.3759
+      },
+      "both": {
+       "brier": 0.11678,
+       "logloss": 0.36788
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 53201,
+     "withModel": 53201
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 81,
+       "perBet": 1.764,
+       "mu": 1.955,
+       "lo": -42.701,
+       "hi": 46.611,
+       "pnl": 1.37
+      },
+      "test": {
+       "bets": 78,
+       "perBet": -173.058,
+       "mu": -173.453,
+       "lo": -269.462,
+       "hi": -77.444,
+       "pnl": -128.63
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 125,
+       "perBet": -45.869,
+       "mu": -45.017,
+       "lo": -100.451,
+       "hi": 10.417,
+       "pnl": -54.98
+      },
+      "test": {
+       "bets": 229,
+       "perBet": -61.02,
+       "mu": -61.879,
+       "lo": -106.124,
+       "hi": -17.635,
+       "pnl": -132.94
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 746,
+       "perBet": -21.615,
+       "mu": -21.941,
+       "lo": -42.242,
+       "hi": -1.64,
+       "pnl": -154.28
+      },
+      "test": {
+       "bets": 857,
+       "perBet": -23.181,
+       "mu": -23.155,
+       "lo": -43.316,
+       "hi": -2.994,
+       "pnl": -189.78
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 2359,
+       "perBet": -5.675,
+       "mu": -5.38,
+       "lo": -14.223,
+       "hi": 3.464,
+       "pnl": -129.11
+      },
+      "test": {
+       "bets": 2237,
+       "perBet": -12.279,
+       "mu": -11.942,
+       "lo": -22.303,
+       "hi": -1.581,
+       "pnl": -264.21
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 7768,
+       "perBet": -4.455,
+       "mu": -4.527,
+       "lo": -8.476,
+       "hi": -0.579,
+       "pnl": -338.69
+      },
+      "test": {
+       "bets": 6166,
+       "perBet": -6.701,
+       "mu": -6.694,
+       "lo": -12.066,
+       "hi": -1.323,
+       "pnl": -402.59
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 12884,
+       "perBet": 1.87,
+       "mu": 1.853,
+       "lo": -0.977,
+       "hi": 4.682,
+       "pnl": 235.91
+      },
+      "test": {
+       "bets": 12436,
+       "perBet": 1.823,
+       "mu": 1.813,
+       "lo": -1.403,
+       "hi": 5.028,
+       "pnl": 221.52
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 2825,
+       "perBet": 15.283,
+       "mu": 15.338,
+       "lo": 7.136,
+       "hi": 23.541,
+       "pnl": 409.89
+      },
+      "test": {
+       "bets": 4410,
+       "perBet": 10.379,
+       "mu": 10.461,
+       "lo": 3.153,
+       "hi": 17.768,
+       "pnl": 435.32
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 26788,
+      "perBet": -0.115,
+      "mu": -0.093,
+      "lo": -2.622,
+      "hi": 2.436,
+      "pnl": -29.89
+     },
+     "test": {
+      "bets": 26413,
+      "perBet": -1.801,
+      "mu": -1.774,
+      "lo": -4.98,
+      "hi": 1.432,
+      "pnl": -461.32
+     }
+    },
+    "b_filter": {
+     "chosenMargin": 0.0,
+     "chosen": {
+      "train": {
+       "bets": 15709,
+       "perBet": 4.221,
+       "mu": 4.278,
+       "lo": 1.413,
+       "hi": 7.143,
+       "pnl": 645.8
+      },
+      "test": {
+       "bets": 16846,
+       "perBet": 4.018,
+       "mu": 4.077,
+       "lo": 0.747,
+       "hi": 7.406,
+       "pnl": 656.85
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 26788,
+       "trainPerBet": -0.115,
+       "trainPnl": -29.89,
+       "testBets": 26413,
+       "testPerBet": -1.801,
+       "testPnl": -461.32
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 26707,
+       "trainPerBet": -0.12,
+       "trainPnl": -31.27,
+       "testBets": 26335,
+       "testPerBet": -1.302,
+       "testPnl": -332.69
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 26675,
+       "trainPerBet": -0.035,
+       "trainPnl": -9.2,
+       "testBets": 26280,
+       "testPerBet": -1.118,
+       "testPnl": -285.1
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 26582,
+       "trainPerBet": 0.092,
+       "trainPnl": 23.71,
+       "testBets": 26106,
+       "testPerBet": -0.789,
+       "testPnl": -199.74
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 26339,
+       "trainPerBet": 0.201,
+       "trainPnl": 51.62,
+       "testBets": 25777,
+       "testPerBet": -0.282,
+       "testPnl": -70.51
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 25836,
+       "trainPerBet": 0.707,
+       "trainPnl": 177.99,
+       "testBets": 25249,
+       "testPerBet": -0.041,
+       "testPnl": -9.96
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 24769,
+       "trainPerBet": 1.122,
+       "trainPnl": 270.9,
+       "testBets": 24079,
+       "testPerBet": 1.152,
+       "testPnl": 269.45
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 23477,
+       "trainPerBet": 1.341,
+       "trainPnl": 307.11,
+       "testBets": 23012,
+       "testPerBet": 1.137,
+       "testPnl": 254.25
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 21133,
+       "trainPerBet": 2.484,
+       "trainPnl": 512.27,
+       "testBets": 21006,
+       "testPerBet": 2.373,
+       "testPnl": 484.33
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 15709,
+       "trainPerBet": 4.221,
+       "trainPnl": 645.8,
+       "testBets": 16846,
+       "testPerBet": 4.018,
+       "testPnl": 656.85
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 6639,
+       "trainPerBet": 8.389,
+       "trainPnl": 535.33,
+       "testBets": 8880,
+       "testPerBet": 6.991,
+       "testPnl": 596.29
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 2825,
+       "trainPerBet": 15.283,
+       "trainPnl": 409.89,
+       "testBets": 4410,
+       "testPerBet": 10.379,
+       "testPnl": 435.32
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.01,
+     "chosen": {
+      "train": {
+       "bets": 5962,
+       "perBet": 9.402,
+       "mu": 9.42,
+       "lo": 3.878,
+       "hi": 14.962,
+       "pnl": 535.36
+      },
+      "test": {
+       "bets": 8696,
+       "perBet": 7.529,
+       "mu": 7.541,
+       "lo": 2.33,
+       "hi": 12.753,
+       "pnl": 626.06
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 26788,
+       "trainPnl": -29.89,
+       "testBets": 26413,
+       "testPnl": -461.32
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 26785,
+       "trainPnl": -20.74,
+       "testBets": 26409,
+       "testPnl": -452.93
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 26785,
+       "trainPnl": -20.74,
+       "testBets": 26406,
+       "testPnl": -424.3
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 26768,
+       "trainPnl": -31.6,
+       "testBets": 26396,
+       "testPnl": -410.56
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 26736,
+       "trainPnl": -32.4,
+       "testBets": 26374,
+       "testPnl": -403.45
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 26712,
+       "trainPnl": -31.48,
+       "testBets": 26338,
+       "testPnl": -366.4
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 26645,
+       "trainPnl": -9.62,
+       "testBets": 26210,
+       "testPnl": -242.23
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 26482,
+       "trainPnl": 59.24,
+       "testBets": 25989,
+       "testPnl": -163.63
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 25665,
+       "trainPnl": 153.08,
+       "testBets": 25262,
+       "testPnl": -4.7
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 19848,
+       "trainPnl": 488.37,
+       "testBets": 21547,
+       "testPnl": 483.39
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 5962,
+       "trainPnl": 535.36,
+       "testBets": 8696,
+       "testPnl": 626.06
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1843,
+       "trainPnl": 327.65,
+       "testBets": 3179,
+       "testPnl": 373.29
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.1,
+     "chosen": {
+      "train": {
+       "bets": 8056,
+       "perBet": 76.724,
+       "mu": 76.285,
+       "lo": 33.71,
+       "hi": 118.859,
+       "pnl": 6041.24
+      },
+      "test": {
+       "bets": 7300,
+       "perBet": 98.621,
+       "mu": 97.004,
+       "lo": 53.557,
+       "hi": 140.452,
+       "pnl": 7039.81
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 1070,
+        "perBet": 215.988,
+        "mu": 214.904,
+        "lo": -44.438,
+        "hi": 474.245,
+        "pnl": 2294.85
+       },
+       "test": {
+        "bets": 999,
+        "perBet": 489.197,
+        "mu": 487.265,
+        "lo": 233.642,
+        "hi": 740.888,
+        "pnl": 4852.52
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 2815,
+        "perBet": 36.009,
+        "mu": 36.055,
+        "lo": -19.801,
+        "hi": 91.911,
+        "pnl": 997.82
+       },
+       "test": {
+        "bets": 2758,
+        "perBet": 81.596,
+        "mu": 81.402,
+        "lo": 25.211,
+        "hi": 137.593,
+        "pnl": 2215.56
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 3677,
+        "perBet": 72.421,
+        "mu": 72.326,
+        "lo": 48.302,
+        "hi": 96.351,
+        "pnl": 2584.46
+       },
+       "test": {
+        "bets": 3165,
+        "perBet": -2.506,
+        "mu": -2.576,
+        "lo": -29.913,
+        "hi": 24.762,
+        "pnl": -76.96
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 494,
+        "perBet": 34.776,
+        "mu": 34.744,
+        "lo": -1.225,
+        "hi": 70.712,
+        "pnl": 164.1
+       },
+       "test": {
+        "bets": 378,
+        "perBet": 13.498,
+        "mu": 13.224,
+        "lo": -31.189,
+        "hi": 57.638,
+        "pnl": 48.69
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 44846,
+       "trainPerBet": -18.409,
+       "trainPnl": -8020.2,
+       "testBets": 35157,
+       "testPerBet": 4.591,
+       "testPnl": 1569.22
+      },
+      {
+       "X": 0.03,
+       "trainBets": 34993,
+       "trainPerBet": -4.34,
+       "trainPnl": -1476.28,
+       "testBets": 27778,
+       "testPerBet": 18.843,
+       "testPnl": 5091.4
+      },
+      {
+       "X": 0.05,
+       "trainBets": 22026,
+       "trainPerBet": 17.39,
+       "trainPnl": 3731.17,
+       "testBets": 18222,
+       "testPerBet": 36.198,
+       "testPnl": 6428.54
+      },
+      {
+       "X": 0.07,
+       "trainBets": 14311,
+       "trainPerBet": 43.024,
+       "trainPnl": 6007.23,
+       "testBets": 12350,
+       "testPerBet": 61.433,
+       "testPnl": 7406.08
+      },
+      {
+       "X": 0.1,
+       "trainBets": 8056,
+       "trainPerBet": 76.724,
+       "trainPnl": 6041.24,
+       "testBets": 7300,
+       "testPerBet": 98.621,
+       "testPnl": 7039.81
+      },
+      {
+       "X": 0.15,
+       "trainBets": 3609,
+       "trainPerBet": 145.109,
+       "trainPnl": 5135.3,
+       "testBets": 3444,
+       "testPerBet": 169.175,
+       "testPnl": 5713.19
+      },
+      {
+       "X": 0.2,
+       "trainBets": 1870,
+       "trainPerBet": 212.45,
+       "trainPnl": 3904.12,
+       "testBets": 1774,
+       "testPerBet": 274.778,
+       "testPnl": 4788.91
+      }
+     ]
+    }
+   },
+   "12": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.65,
+     "nu": 4,
+     "trainLogLoss": 0.2636323630394653,
+     "fitMarkets": 109526
+    },
+    "calibration": {
+     "combinedFit": [
+      0.017,
+      0.622,
+      0.465
+     ],
+     "train": {
+      "markets": 110363,
+      "market mid": {
+       "brier": 0.0801,
+       "logloss": 0.26229
+      },
+      "model": {
+       "brier": 0.08114,
+       "logloss": 0.26372
+      },
+      "both": {
+       "brier": 0.07842,
+       "logloss": 0.25565
+      }
+     },
+     "test": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.0831,
+       "logloss": 0.2688
+      },
+      "model": {
+       "brier": 0.0867,
+       "logloss": 0.2798
+      },
+      "both": {
+       "brier": 0.08304,
+       "logloss": 0.26784
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 75843,
+     "withModel": 75843
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 185,
+       "perBet": -64.797,
+       "mu": -65.895,
+       "lo": -109.437,
+       "hi": -22.353,
+       "pnl": -117.14
+      },
+      "test": {
+       "bets": 142,
+       "perBet": -66.994,
+       "mu": -66.227,
+       "lo": -119.717,
+       "hi": -12.738,
+       "pnl": -91.61
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 366,
+       "perBet": -47.341,
+       "mu": -46.918,
+       "lo": -76.977,
+       "hi": -16.859,
+       "pnl": -166.8
+      },
+      "test": {
+       "bets": 447,
+       "perBet": -60.708,
+       "mu": -60.155,
+       "lo": -92.36,
+       "hi": -27.95,
+       "pnl": -260.08
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 1292,
+       "perBet": -31.787,
+       "mu": -32.354,
+       "lo": -47.345,
+       "hi": -17.363,
+       "pnl": -396.55
+      },
+      "test": {
+       "bets": 1263,
+       "perBet": -14.561,
+       "mu": -14.517,
+       "lo": -27.944,
+       "hi": -1.089,
+       "pnl": -177.33
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 4160,
+       "perBet": -10.117,
+       "mu": -10.131,
+       "lo": -15.922,
+       "hi": -4.339,
+       "pnl": -411.36
+      },
+      "test": {
+       "bets": 3265,
+       "perBet": -9.702,
+       "mu": -9.744,
+       "lo": -16.71,
+       "hi": -2.778,
+       "pnl": -308.29
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 17818,
+       "perBet": -2.55,
+       "mu": -2.522,
+       "lo": -4.2,
+       "hi": -0.844,
+       "pnl": -450.45
+      },
+      "test": {
+       "bets": 12628,
+       "perBet": -4.691,
+       "mu": -4.733,
+       "lo": -7.26,
+       "hi": -2.205,
+       "pnl": -585.62
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 14558,
+       "perBet": -0.456,
+       "mu": -0.451,
+       "lo": -2.387,
+       "hi": 1.485,
+       "pnl": -65.64
+      },
+      "test": {
+       "bets": 16222,
+       "perBet": 0.3,
+       "mu": 0.299,
+       "lo": -1.488,
+       "hi": 2.086,
+       "pnl": 48.11
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 1326,
+       "perBet": 23.221,
+       "mu": 23.339,
+       "lo": 13.164,
+       "hi": 33.514,
+       "pnl": 293.04
+      },
+      "test": {
+       "bets": 2171,
+       "perBet": 9.814,
+       "mu": 10.068,
+       "lo": -0.951,
+       "hi": 21.086,
+       "pnl": 202.46
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 39705,
+      "perBet": -3.357,
+      "mu": -3.372,
+      "lo": -4.929,
+      "hi": -1.815,
+      "pnl": -1314.9
+     },
+     "test": {
+      "bets": 36138,
+      "perBet": -3.299,
+      "mu": -3.307,
+      "lo": -5.268,
+      "hi": -1.345,
+      "pnl": -1172.37
+     }
+    },
+    "b_filter": {
+     "chosenMargin": 0.01,
+     "chosen": {
+      "train": {
+       "bets": 3350,
+       "perBet": 10.224,
+       "mu": 10.38,
+       "lo": 4.456,
+       "hi": 16.304,
+       "pnl": 330.22
+      },
+      "test": {
+       "bets": 4872,
+       "perBet": 5.748,
+       "mu": 5.903,
+       "lo": -0.484,
+       "hi": 12.29,
+       "pnl": 269.57
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 39705,
+       "trainPerBet": -3.357,
+       "trainPnl": -1314.9,
+       "testBets": 36138,
+       "testPerBet": -3.299,
+       "testPnl": -1172.37
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 39520,
+       "trainPerBet": -3.072,
+       "trainPnl": -1197.76,
+       "testBets": 35996,
+       "testPerBet": -3.053,
+       "testPnl": -1080.76
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 39421,
+       "trainPerBet": -2.981,
+       "trainPnl": -1159.16,
+       "testBets": 35863,
+       "testPerBet": -2.702,
+       "testPnl": -953.11
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 39154,
+       "trainPerBet": -2.669,
+       "trainPnl": -1030.96,
+       "testBets": 35549,
+       "testPerBet": -2.347,
+       "testPnl": -820.68
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 38636,
+       "trainPerBet": -2.263,
+       "trainPnl": -863.16,
+       "testBets": 35023,
+       "testPerBet": -2.094,
+       "testPnl": -721.68
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 37862,
+       "trainPerBet": -1.697,
+       "trainPnl": -634.4,
+       "testBets": 34286,
+       "testPerBet": -1.906,
+       "testPnl": -643.35
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 35818,
+       "trainPerBet": -1.197,
+       "trainPnl": -423.62,
+       "testBets": 32714,
+       "testPerBet": -1.456,
+       "testPnl": -469.24
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 33702,
+       "trainPerBet": -0.669,
+       "trainPnl": -223.05,
+       "testBets": 31021,
+       "testPerBet": -1.096,
+       "testPnl": -335.05
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 29219,
+       "trainPerBet": -0.119,
+       "trainPnl": -34.43,
+       "testBets": 27818,
+       "testPerBet": -0.834,
+       "testPnl": -228.7
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 15884,
+       "trainPerBet": 1.452,
+       "trainPnl": 227.41,
+       "testBets": 18393,
+       "testPerBet": 1.385,
+       "testPnl": 250.57
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 3350,
+       "trainPerBet": 10.224,
+       "trainPnl": 330.22,
+       "testBets": 4872,
+       "testPerBet": 5.748,
+       "testPnl": 269.57
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1326,
+       "trainPerBet": 23.221,
+       "trainPnl": 293.04,
+       "testBets": 2171,
+       "testPerBet": 9.814,
+       "testPnl": 202.46
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.01,
+     "chosen": {
+      "train": {
+       "bets": 3503,
+       "perBet": 11.04,
+       "mu": 11.218,
+       "lo": 4.751,
+       "hi": 17.686,
+       "pnl": 370.55
+      },
+      "test": {
+       "bets": 5358,
+       "perBet": 4.404,
+       "mu": 4.511,
+       "lo": -1.995,
+       "hi": 11.017,
+       "pnl": 225.96
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 39705,
+       "trainPnl": -1314.9,
+       "testBets": 36138,
+       "testPnl": -1172.37
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 39704,
+       "trainPnl": -1315.23,
+       "testBets": 36131,
+       "testPnl": -1145.89
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 39698,
+       "trainPnl": -1287.68,
+       "testBets": 36128,
+       "testPnl": -1147.55
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 39683,
+       "trainPnl": -1275.84,
+       "testBets": 36117,
+       "testPnl": -1133.06
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 39644,
+       "trainPnl": -1227.19,
+       "testBets": 36091,
+       "testPnl": -1135.96
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 39590,
+       "trainPnl": -1204.93,
+       "testBets": 36038,
+       "testPnl": -1101.59
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 39430,
+       "trainPnl": -1173.01,
+       "testBets": 35857,
+       "testPnl": -938.8
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 39151,
+       "trainPnl": -1042.17,
+       "testBets": 35622,
+       "testPnl": -871.54
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 38049,
+       "trainPnl": -753.49,
+       "testBets": 34802,
+       "testPnl": -690.36
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 22610,
+       "trainPnl": 145.9,
+       "testBets": 27035,
+       "testPnl": -309.29
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 3503,
+       "trainPnl": 370.55,
+       "testBets": 5358,
+       "testPnl": 225.96
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1022,
+       "trainPnl": 205.02,
+       "testBets": 1830,
+       "testPnl": 238.39
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.1,
+     "chosen": {
+      "train": {
+       "bets": 8665,
+       "perBet": 123.432,
+       "mu": 121.97,
+       "lo": 66.821,
+       "hi": 177.119,
+       "pnl": 10485.25
+      },
+      "test": {
+       "bets": 7828,
+       "perBet": 147.483,
+       "mu": 145.643,
+       "lo": 85.377,
+       "hi": 205.909,
+       "pnl": 11314.68
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 1957,
+        "perBet": 418.841,
+        "mu": 417.824,
+        "lo": 199.711,
+        "hi": 635.938,
+        "pnl": 8147.99
+       },
+       "test": {
+        "bets": 1789,
+        "perBet": 509.778,
+        "mu": 508.314,
+        "lo": 269.159,
+        "hi": 747.47,
+        "pnl": 9061.79
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 3241,
+        "perBet": 20.307,
+        "mu": 20.132,
+        "lo": -32.584,
+        "hi": 72.849,
+        "pnl": 647.74
+       },
+       "test": {
+        "bets": 2900,
+        "perBet": 68.988,
+        "mu": 69.37,
+        "lo": 12.176,
+        "hi": 126.563,
+        "pnl": 1969.06
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 3029,
+        "perBet": 47.278,
+        "mu": 47.029,
+        "lo": 20.034,
+        "hi": 74.023,
+        "pnl": 1390.36
+       },
+       "test": {
+        "bets": 2753,
+        "perBet": 8.756,
+        "mu": 8.861,
+        "lo": -20.481,
+        "hi": 38.203,
+        "pnl": 233.88
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 438,
+        "perBet": 71.432,
+        "mu": 71.899,
+        "lo": 39.138,
+        "hi": 104.659,
+        "pnl": 299.16
+       },
+       "test": {
+        "bets": 386,
+        "perBet": 13.536,
+        "mu": 13.357,
+        "lo": -31.324,
+        "hi": 58.038,
+        "pnl": 49.95
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 36095,
+       "trainPerBet": -17.241,
+       "trainPnl": -6079.35,
+       "testBets": 27990,
+       "testPerBet": -7.528,
+       "testPnl": -2057.58
+      },
+      {
+       "X": 0.03,
+       "trainBets": 28893,
+       "trainPerBet": 2.958,
+       "trainPnl": 835.25,
+       "testBets": 22772,
+       "testPerBet": 12.857,
+       "testPnl": 2860.02
+      },
+      {
+       "X": 0.05,
+       "trainBets": 19517,
+       "trainPerBet": 44.828,
+       "trainPnl": 8557.83,
+       "testBets": 16080,
+       "testPerBet": 54.069,
+       "testPnl": 8503.92
+      },
+      {
+       "X": 0.07,
+       "trainBets": 13907,
+       "trainPerBet": 57.706,
+       "trainPnl": 7858.04,
+       "testBets": 11800,
+       "testPerBet": 94.585,
+       "testPnl": 10928.15
+      },
+      {
+       "X": 0.1,
+       "trainBets": 8665,
+       "trainPerBet": 123.432,
+       "trainPnl": 10485.25,
+       "testBets": 7828,
+       "testPerBet": 147.483,
+       "testPnl": 11314.68
+      },
+      {
+       "X": 0.15,
+       "trainBets": 4383,
+       "trainPerBet": 181.321,
+       "trainPnl": 7805.39,
+       "testBets": 4300,
+       "testPerBet": 239.338,
+       "testPnl": 10105.27
+      },
+      {
+       "X": 0.2,
+       "trainBets": 2489,
+       "trainPerBet": 287.89,
+       "trainPnl": 7047.48,
+       "testBets": 2565,
+       "testPerBet": 342.293,
+       "testPnl": 8632.95
+      }
+     ]
+    },
+    "staleSpot1min": {
+     "b": {
+      "train": {
+       "bets": 4455,
+       "perBet": 3.9,
+       "mu": 4.01,
+       "lo": -2.207,
+       "hi": 10.228,
+       "pnl": 167.09
+      },
+      "test": {
+       "bets": 5995,
+       "perBet": -0.801,
+       "mu": -0.707,
+       "lo": -7.391,
+       "hi": 5.976,
+       "pnl": -46.14
+      }
+     },
+     "c": {
+      "train": {
+       "bets": 24252,
+       "perBet": -136.636,
+       "mu": -135.742,
+       "lo": -167.489,
+       "hi": -103.995,
+       "pnl": -32537.12
+      },
+      "test": {
+       "bets": 17393,
+       "perBet": -71.172,
+       "mu": -71.197,
+       "lo": -113.835,
+       "hi": -28.559,
+       "pnl": -12157.62
+      }
+     }
+    }
+   }
+  },
+  "pickPost_testPre": {
+   "6": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.7,
+     "nu": 3,
+     "trainLogLoss": 0.5127888304973994,
+     "fitMarkets": 70641
+    },
+    "calibration": {
+     "combinedFit": [
+      -0.013,
+      0.672,
+      0.393
+     ],
+     "train": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.16954,
+       "logloss": 0.51045
+      },
+      "model": {
+       "brier": 0.17054,
+       "logloss": 0.5127
+      },
+      "both": {
+       "brier": 0.16874,
+       "logloss": 0.50789
+      }
+     },
+     "test": {
+      "markets": 110331,
+      "market mid": {
+       "brier": 0.17181,
+       "logloss": 0.51553
+      },
+      "model": {
+       "brier": 0.17187,
+       "logloss": 0.51509
+      },
+      "both": {
+       "brier": 0.17053,
+       "logloss": 0.51177
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 15379,
+     "withModel": 15379
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 14,
+       "perBet": -81.918,
+       "mu": -84.672,
+       "lo": null,
+       "hi": null,
+       "pnl": -10.73
+      },
+      "test": {
+       "bets": 25,
+       "perBet": -55.481,
+       "mu": -54.741,
+       "lo": null,
+       "hi": null,
+       "pnl": -13.14
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 81,
+       "perBet": -48.701,
+       "mu": -48.29,
+       "lo": -123.453,
+       "hi": 26.874,
+       "pnl": -37.41
+      },
+      "test": {
+       "bets": 31,
+       "perBet": -141.107,
+       "mu": -142.061,
+       "lo": -293.64,
+       "hi": 9.517,
+       "pnl": -41.64
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 361,
+       "perBet": -11.003,
+       "mu": -11.142,
+       "lo": -42.42,
+       "hi": 20.137,
+       "pnl": -37.74
+      },
+      "test": {
+       "bets": 230,
+       "perBet": -25.878,
+       "mu": -25.937,
+       "lo": -66.973,
+       "hi": 15.099,
+       "pnl": -56.37
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 1124,
+       "perBet": -4.446,
+       "mu": -4.244,
+       "lo": -20.506,
+       "hi": 12.018,
+       "pnl": -47.61
+      },
+      "test": {
+       "bets": 1037,
+       "perBet": -1.376,
+       "mu": -1.359,
+       "lo": -17.455,
+       "hi": 14.737,
+       "pnl": -13.6
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 2027,
+       "perBet": 2.994,
+       "mu": 3.243,
+       "lo": -7.481,
+       "hi": 13.967,
+       "pnl": 58.05
+      },
+      "test": {
+       "bets": 2160,
+       "perBet": 2.558,
+       "mu": 2.72,
+       "lo": -7.21,
+       "hi": 12.651,
+       "pnl": 53.04
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 2608,
+       "perBet": 9.727,
+       "mu": 9.833,
+       "lo": 0.444,
+       "hi": 19.221,
+       "pnl": 242.04
+      },
+      "test": {
+       "bets": 2438,
+       "perBet": 10.313,
+       "mu": 10.326,
+       "lo": 1.606,
+       "hi": 19.046,
+       "pnl": 240.26
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 1879,
+       "perBet": 17.015,
+       "mu": 17.245,
+       "lo": 3.939,
+       "hi": 30.55,
+       "pnl": 302.88
+      },
+      "test": {
+       "bets": 1364,
+       "perBet": 6.577,
+       "mu": 6.598,
+       "lo": -8.23,
+       "hi": 21.427,
+       "pnl": 84.85
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 8094,
+      "perBet": 6.089,
+      "mu": 6.268,
+      "lo": -0.725,
+      "hi": 13.26,
+      "pnl": 469.48
+     },
+     "test": {
+      "bets": 7285,
+      "perBet": 3.645,
+      "mu": 3.693,
+      "lo": -3.005,
+      "hi": 10.391,
+      "pnl": 253.4
+     }
+    },
+    "b_filter": {
+     "chosenMargin": -0.03,
+     "chosen": {
+      "train": {
+       "bets": 7077,
+       "perBet": 9.208,
+       "mu": 9.429,
+       "lo": 2.407,
+       "hi": 16.451,
+       "pnl": 620.99
+      },
+      "test": {
+       "bets": 6495,
+       "perBet": 6.377,
+       "mu": 6.461,
+       "lo": -0.47,
+       "hi": 13.393,
+       "pnl": 395.51
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 8094,
+       "trainPerBet": 6.089,
+       "trainPnl": 469.48,
+       "testBets": 7285,
+       "testPerBet": 3.645,
+       "testPnl": 253.4
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 8080,
+       "trainPerBet": 6.239,
+       "trainPnl": 480.22,
+       "testBets": 7260,
+       "testPerBet": 3.847,
+       "testPnl": 266.54
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 8063,
+       "trainPerBet": 6.635,
+       "trainPnl": 509.65,
+       "testBets": 7255,
+       "testPerBet": 3.949,
+       "testPnl": 273.45
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 7999,
+       "trainPerBet": 6.792,
+       "trainPnl": 517.62,
+       "testBets": 7229,
+       "testPerBet": 4.467,
+       "testPnl": 308.19
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 7875,
+       "trainPerBet": 7.027,
+       "trainPnl": 527.2,
+       "testBets": 7155,
+       "testPerBet": 4.572,
+       "testPnl": 312.22
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 7638,
+       "trainPerBet": 7.631,
+       "trainPnl": 555.36,
+       "testBets": 6999,
+       "testPerBet": 5.456,
+       "testPnl": 364.55
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 7077,
+       "trainPerBet": 9.208,
+       "trainPnl": 620.99,
+       "testBets": 6495,
+       "testPerBet": 6.377,
+       "testPnl": 395.51
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 6514,
+       "trainPerBet": 9.714,
+       "trainPnl": 602.97,
+       "testBets": 5962,
+       "testPerBet": 6.642,
+       "testPnl": 378.15
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 5661,
+       "trainPerBet": 10.7,
+       "trainPnl": 576.96,
+       "testBets": 5070,
+       "testPerBet": 7.76,
+       "testPnl": 375.6
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 4487,
+       "trainPerBet": 12.766,
+       "trainPnl": 544.92,
+       "testBets": 3802,
+       "testPerBet": 8.981,
+       "testPnl": 325.11
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 3124,
+       "trainPerBet": 20.153,
+       "trainPnl": 597.43,
+       "testBets": 2400,
+       "testPerBet": 11.936,
+       "testPnl": 271.61
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1879,
+       "trainPerBet": 17.015,
+       "trainPnl": 302.88,
+       "testBets": 1364,
+       "testPerBet": 6.577,
+       "testPnl": 84.85
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.0,
+     "chosen": {
+      "train": {
+       "bets": 6681,
+       "perBet": 9.013,
+       "mu": 9.212,
+       "lo": 1.862,
+       "hi": 16.561,
+       "pnl": 573.14
+      },
+      "test": {
+       "bets": 5668,
+       "perBet": 6.114,
+       "mu": 6.183,
+       "lo": -1.369,
+       "hi": 13.735,
+       "pnl": 330.04
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 8094,
+       "trainPnl": 469.48,
+       "testBets": 7285,
+       "testPnl": 253.4
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 8094,
+       "trainPnl": 469.48,
+       "testBets": 7284,
+       "testPnl": 263.16
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 8092,
+       "trainPnl": 468.77,
+       "testBets": 7284,
+       "testPnl": 263.16
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 8091,
+       "trainPnl": 468.03,
+       "testBets": 7283,
+       "testPnl": 262.36
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 8088,
+       "trainPnl": 475.5,
+       "testBets": 7265,
+       "testPnl": 269.46
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 8084,
+       "trainPnl": 472.68,
+       "testBets": 7262,
+       "testPnl": 267.97
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 8056,
+       "trainPnl": 503.76,
+       "testBets": 7252,
+       "testPnl": 281.02
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 8006,
+       "trainPnl": 532.73,
+       "testBets": 7223,
+       "testPnl": 293.97
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 7783,
+       "trainPnl": 545.55,
+       "testBets": 7060,
+       "testPnl": 302.04
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 6681,
+       "trainPnl": 573.14,
+       "testBets": 5668,
+       "testPnl": 330.04
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 3572,
+       "trainPnl": 524.32,
+       "testBets": 2592,
+       "testPnl": 271.32
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1227,
+       "trainPnl": 287.71,
+       "testBets": 723,
+       "testPnl": 65.45
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.07,
+     "chosen": {
+      "train": {
+       "bets": 11517,
+       "perBet": 47.045,
+       "mu": 47.083,
+       "lo": 20.305,
+       "hi": 73.862,
+       "pnl": 5290.72
+      },
+      "test": {
+       "bets": 11901,
+       "perBet": 16.13,
+       "mu": 16.148,
+       "lo": -9.635,
+       "hi": 41.931,
+       "pnl": 1872.68
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 1036,
+        "perBet": 176.448,
+        "mu": 176.099,
+        "lo": -14.686,
+        "hi": 366.884,
+        "pnl": 1812.77
+       },
+       "test": {
+        "bets": 903,
+        "perBet": 34.481,
+        "mu": 33.74,
+        "lo": -175.806,
+        "hi": 243.287,
+        "pnl": 308.9
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 4104,
+        "perBet": 33.997,
+        "mu": 34.477,
+        "lo": -12.221,
+        "hi": 81.175,
+        "pnl": 1373.08
+       },
+       "test": {
+        "bets": 3952,
+        "perBet": -1.012,
+        "mu": -0.966,
+        "lo": -48.695,
+        "hi": 46.763,
+        "pnl": -39.35
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 5448,
+        "perBet": 33.939,
+        "mu": 34.107,
+        "lo": 12.983,
+        "hi": 55.232,
+        "pnl": 1795.16
+       },
+       "test": {
+        "bets": 6127,
+        "perBet": 22.608,
+        "mu": 22.619,
+        "lo": 2.534,
+        "hi": 42.704,
+        "pnl": 1344.4
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 929,
+        "perBet": 34.776,
+        "mu": 34.993,
+        "lo": 7.083,
+        "hi": 62.903,
+        "pnl": 309.72
+       },
+       "test": {
+        "bets": 919,
+        "perBet": 29.41,
+        "mu": 29.316,
+        "lo": 1.863,
+        "hi": 56.769,
+        "pnl": 258.73
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 39330,
+       "trainPerBet": -8.711,
+       "trainPnl": -3336.18,
+       "testBets": 47426,
+       "testPerBet": -24.139,
+       "testPnl": -11136.05
+      },
+      {
+       "X": 0.03,
+       "trainBets": 31034,
+       "trainPerBet": 3.744,
+       "trainPnl": 1131.75,
+       "testBets": 35968,
+       "testPerBet": -15.939,
+       "testPnl": -5579.51
+      },
+      {
+       "X": 0.05,
+       "trainBets": 18844,
+       "trainPerBet": 24.638,
+       "trainPnl": 4528.22,
+       "testBets": 20567,
+       "testPerBet": 0.461,
+       "testPnl": 92.42
+      },
+      {
+       "X": 0.07,
+       "trainBets": 11517,
+       "trainPerBet": 47.045,
+       "trainPnl": 5290.72,
+       "testBets": 11901,
+       "testPerBet": 16.13,
+       "testPnl": 1872.68
+      },
+      {
+       "X": 0.1,
+       "trainBets": 5801,
+       "trainPerBet": 85.882,
+       "trainPnl": 4873.36,
+       "testBets": 5770,
+       "testPerBet": 62.783,
+       "testPnl": 3539.32
+      },
+      {
+       "X": 0.15,
+       "trainBets": 2123,
+       "trainPerBet": 143.822,
+       "trainPnl": 2993.46,
+       "testBets": 2100,
+       "testPerBet": 124.951,
+       "testPnl": 2569.33
+      },
+      {
+       "X": 0.2,
+       "trainBets": 883,
+       "trainPerBet": 223.701,
+       "trainPnl": 1940.56,
+       "testBets": 936,
+       "testPerBet": 223.341,
+       "testPnl": 2051.26
+      }
+     ]
+    }
+   },
+   "8": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.7,
+     "nu": 4,
+     "trainLogLoss": 0.4450991254225406,
+     "fitMarkets": 70641
+    },
+    "calibration": {
+     "combinedFit": [
+      -0.002,
+      0.733,
+      0.335
+     ],
+     "train": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.14278,
+       "logloss": 0.44072
+      },
+      "model": {
+       "brier": 0.14451,
+       "logloss": 0.44504
+      },
+      "both": {
+       "brier": 0.14213,
+       "logloss": 0.43818
+      }
+     },
+     "test": {
+      "markets": 110337,
+      "market mid": {
+       "brier": 0.14416,
+       "logloss": 0.44408
+      },
+      "model": {
+       "brier": 0.14427,
+       "logloss": 0.44309
+      },
+      "both": {
+       "brier": 0.14273,
+       "logloss": 0.43915
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 32091,
+     "withModel": 32091
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 36,
+       "perBet": -87.223,
+       "mu": -85.674,
+       "lo": -227.81,
+       "hi": 56.462,
+       "pnl": -29.84
+      },
+      "test": {
+       "bets": 44,
+       "perBet": 31.744,
+       "mu": 32.94,
+       "lo": -16.221,
+       "hi": 82.102,
+       "pnl": 13.39
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 149,
+       "perBet": -46.096,
+       "mu": -47.737,
+       "lo": -102.267,
+       "hi": 6.793,
+       "pnl": -65.12
+      },
+      "test": {
+       "bets": 91,
+       "perBet": -33.626,
+       "mu": -34.302,
+       "lo": -96.904,
+       "hi": 28.3,
+       "pnl": -29.01
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 662,
+       "perBet": -33.897,
+       "mu": -33.978,
+       "lo": -58.96,
+       "hi": -8.996,
+       "pnl": -213.33
+      },
+      "test": {
+       "bets": 524,
+       "perBet": -20.428,
+       "mu": -20.218,
+       "lo": -45.053,
+       "hi": 4.617,
+       "pnl": -101.58
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 1768,
+       "perBet": -6.402,
+       "mu": -6.224,
+       "lo": -18.181,
+       "hi": 5.733,
+       "pnl": -108.15
+      },
+      "test": {
+       "bets": 1619,
+       "perBet": -10.614,
+       "mu": -10.479,
+       "lo": -23.085,
+       "hi": 2.127,
+       "pnl": -164.34
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 3752,
+       "perBet": 3.626,
+       "mu": 3.731,
+       "lo": -3.346,
+       "hi": 10.808,
+       "pnl": 130.97
+      },
+      "test": {
+       "bets": 4198,
+       "perBet": -0.624,
+       "mu": -0.519,
+       "lo": -7.023,
+       "hi": 5.985,
+       "pnl": -25.32
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 6263,
+       "perBet": 8.124,
+       "mu": 8.175,
+       "lo": 3.38,
+       "hi": 12.97,
+       "pnl": 491.78
+      },
+      "test": {
+       "bets": 6527,
+       "perBet": 4.191,
+       "mu": 4.103,
+       "lo": -0.492,
+       "hi": 8.699,
+       "pnl": 265.04
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 3811,
+       "perBet": 16.954,
+       "mu": 16.918,
+       "lo": 8.55,
+       "hi": 25.286,
+       "pnl": 613.61
+      },
+      "test": {
+       "bets": 2647,
+       "perBet": 11.634,
+       "mu": 11.558,
+       "lo": 1.498,
+       "hi": 21.618,
+       "pnl": 291.67
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 16441,
+      "perBet": 5.196,
+      "mu": 5.229,
+      "lo": 0.876,
+      "hi": 9.583,
+      "pnl": 819.92
+     },
+     "test": {
+      "bets": 15650,
+      "perBet": 1.659,
+      "mu": 1.659,
+      "lo": -2.476,
+      "hi": 5.794,
+      "pnl": 249.85
+     }
+    },
+    "b_filter": {
+     "chosenMargin": -0.02,
+     "chosen": {
+      "train": {
+       "bets": 13826,
+       "perBet": 9.306,
+       "mu": 9.379,
+       "lo": 5.079,
+       "hi": 13.678,
+       "pnl": 1236.36
+      },
+      "test": {
+       "bets": 13372,
+       "perBet": 4.123,
+       "mu": 4.128,
+       "lo": 0.018,
+       "hi": 8.237,
+       "pnl": 531.4
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 16441,
+       "trainPerBet": 5.196,
+       "trainPnl": 819.92,
+       "testBets": 15650,
+       "testPerBet": 1.659,
+       "testPnl": 249.85
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 16405,
+       "trainPerBet": 5.397,
+       "trainPnl": 849.76,
+       "testBets": 15606,
+       "testPerBet": 1.574,
+       "testPnl": 236.46
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 16371,
+       "trainPerBet": 5.391,
+       "trainPnl": 847.15,
+       "testBets": 15592,
+       "testPerBet": 1.656,
+       "testPnl": 248.49
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 16256,
+       "trainPerBet": 5.863,
+       "trainPnl": 914.88,
+       "testBets": 15515,
+       "testPerBet": 1.778,
+       "testPnl": 265.47
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 16007,
+       "trainPerBet": 6.132,
+       "trainPnl": 942.27,
+       "testBets": 15327,
+       "testPerBet": 2.212,
+       "testPnl": 326.42
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 15594,
+       "trainPerBet": 7.534,
+       "trainPnl": 1128.21,
+       "testBets": 14991,
+       "testPerBet": 2.542,
+       "testPnl": 367.06
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 14684,
+       "trainPerBet": 8.533,
+       "trainPnl": 1203.74,
+       "testBets": 14166,
+       "testPerBet": 3.177,
+       "testPnl": 433.6
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 13826,
+       "trainPerBet": 9.306,
+       "trainPnl": 1236.36,
+       "testBets": 13372,
+       "testPerBet": 4.123,
+       "testPnl": 531.4
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 12400,
+       "trainPerBet": 9.432,
+       "trainPnl": 1123.99,
+       "testBets": 11857,
+       "testPerBet": 4.936,
+       "testPnl": 564.32
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 10074,
+       "trainPerBet": 11.428,
+       "trainPnl": 1105.39,
+       "testBets": 9174,
+       "testPerBet": 6.304,
+       "testPnl": 556.72
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 6609,
+       "trainPerBet": 13.902,
+       "trainPnl": 877.44,
+       "testBets": 5221,
+       "testPerBet": 8.748,
+       "testPnl": 436.12
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 3811,
+       "trainPerBet": 16.954,
+       "trainPnl": 613.61,
+       "testBets": 2647,
+       "testPerBet": 11.634,
+       "testPnl": 291.67
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.0,
+     "chosen": {
+      "train": {
+       "bets": 14225,
+       "perBet": 9.342,
+       "mu": 9.403,
+       "lo": 5.058,
+       "hi": 13.748,
+       "pnl": 1275.1
+      },
+      "test": {
+       "bets": 12620,
+       "perBet": 4.279,
+       "mu": 4.291,
+       "lo": -0.097,
+       "hi": 8.679,
+       "pnl": 519.08
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 16441,
+       "trainPnl": 819.92,
+       "testBets": 15650,
+       "testPnl": 249.85
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 16440,
+       "trainPnl": 819.64,
+       "testBets": 15650,
+       "testPnl": 249.85
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 16440,
+       "trainPnl": 819.64,
+       "testBets": 15650,
+       "testPnl": 249.85
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 16438,
+       "trainPnl": 829.32,
+       "testBets": 15650,
+       "testPnl": 249.85
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 16435,
+       "trainPnl": 837.29,
+       "testBets": 15642,
+       "testPnl": 242.71
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 16428,
+       "trainPnl": 853.25,
+       "testBets": 15626,
+       "testPnl": 243.81
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 16405,
+       "trainPnl": 847.21,
+       "testBets": 15609,
+       "testPnl": 234.9
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 16342,
+       "trainPnl": 854.82,
+       "testBets": 15570,
+       "testPnl": 264.17
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 16058,
+       "trainPnl": 968.56,
+       "testBets": 15328,
+       "testPnl": 372.89
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 14225,
+       "trainPnl": 1275.1,
+       "testBets": 12620,
+       "testPnl": 519.08
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 6500,
+       "trainPnl": 963.43,
+       "testBets": 4431,
+       "testPnl": 471.46
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1918,
+       "trainPnl": 359.9,
+       "testBets": 1086,
+       "testPnl": 147.71
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.15,
+     "chosen": {
+      "train": {
+       "bets": 2601,
+       "perBet": 136.484,
+       "mu": 135.717,
+       "lo": 71.512,
+       "hi": 199.922,
+       "pnl": 3481.41
+      },
+      "test": {
+       "bets": 2614,
+       "perBet": 136.198,
+       "mu": 135.778,
+       "lo": 48.514,
+       "hi": 223.042,
+       "pnl": 3490.41
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 305,
+        "perBet": 532.752,
+        "mu": 531.809,
+        "lo": 144.589,
+        "hi": 919.028,
+        "pnl": 1611.82
+       },
+       "test": {
+        "bets": 328,
+        "perBet": 361.548,
+        "mu": 360.961,
+        "lo": -218.368,
+        "hi": 940.29,
+        "pnl": 1177.1
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 1325,
+        "perBet": 87.712,
+        "mu": 87.383,
+        "lo": 7.914,
+        "hi": 166.851,
+        "pnl": 1143.52
+       },
+       "test": {
+        "bets": 1194,
+        "perBet": 107.784,
+        "mu": 107.624,
+        "lo": 18.413,
+        "hi": 196.834,
+        "pnl": 1266.49
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 959,
+        "perBet": 76.407,
+        "mu": 76.799,
+        "lo": 27.771,
+        "hi": 125.826,
+        "pnl": 712.8
+       },
+       "test": {
+        "bets": 1076,
+        "perBet": 96.858,
+        "mu": 97.225,
+        "lo": 51.873,
+        "hi": 142.576,
+        "pnl": 1013.77
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 12,
+        "perBet": 114.163,
+        "mu": 113.781,
+        "lo": null,
+        "hi": null,
+        "pnl": 13.26
+       },
+       "test": {
+        "bets": 16,
+        "perBet": 213.354,
+        "mu": 213.267,
+        "lo": null,
+        "hi": null,
+        "pnl": 33.04
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 38812,
+       "trainPerBet": -20.917,
+       "trainPnl": -7896.39,
+       "testBets": 47444,
+       "testPerBet": -27.349,
+       "testPnl": -12611.28
+      },
+      {
+       "X": 0.03,
+       "trainBets": 30441,
+       "trainPerBet": -2.169,
+       "trainPnl": -642.68,
+       "testBets": 36322,
+       "testPerBet": -13.861,
+       "testPnl": -4896.59
+      },
+      {
+       "X": 0.05,
+       "trainBets": 18877,
+       "trainPerBet": 18.293,
+       "trainPnl": 3366.84,
+       "testBets": 21442,
+       "testPerBet": 8.63,
+       "testPnl": 1802.9
+      },
+      {
+       "X": 0.07,
+       "trainBets": 11959,
+       "trainPerBet": 28.717,
+       "trainPnl": 3353.03,
+       "testBets": 12944,
+       "testPerBet": 41.344,
+       "testPnl": 5222.6
+      },
+      {
+       "X": 0.1,
+       "trainBets": 6380,
+       "trainPerBet": 53.403,
+       "trainPnl": 3332.92,
+       "testBets": 6644,
+       "testPerBet": 85.03,
+       "testPnl": 5522.78
+      },
+      {
+       "X": 0.15,
+       "trainBets": 2601,
+       "trainPerBet": 136.484,
+       "trainPnl": 3481.41,
+       "testBets": 2614,
+       "testPerBet": 136.198,
+       "testPnl": 3490.41
+      },
+      {
+       "X": 0.2,
+       "trainBets": 1184,
+       "trainPerBet": 209.433,
+       "trainPnl": 2435.28,
+       "testBets": 1223,
+       "testPerBet": 216.313,
+       "testPnl": 2597.92
+      }
+     ]
+    },
+    "staleSpot1min": {
+     "b": {
+      "train": {
+       "bets": 11620,
+       "perBet": 8.428,
+       "mu": 8.489,
+       "lo": 3.689,
+       "hi": 13.289,
+       "pnl": 941.13
+      },
+      "test": {
+       "bets": 11048,
+       "perBet": 5.695,
+       "mu": 5.707,
+       "lo": 1.258,
+       "hi": 10.156,
+       "pnl": 606.54
+      }
+     },
+     "c": {
+      "train": {
+       "bets": 12240,
+       "perBet": -50.255,
+       "mu": -50.424,
+       "lo": -89.44,
+       "hi": -11.408,
+       "pnl": -6040.58
+      },
+      "test": {
+       "bets": 16635,
+       "perBet": -98.927,
+       "mu": -98.544,
+       "lo": -133.491,
+       "hi": -63.597,
+       "pnl": -16167.75
+      }
+     }
+    }
+   },
+   "10": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.7,
+     "nu": 4,
+     "trainLogLoss": 0.37525830892652745,
+     "fitMarkets": 70641
+    },
+    "calibration": {
+     "combinedFit": [
+      0.002,
+      0.697,
+      0.344
+     ],
+     "train": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.11701,
+       "logloss": 0.36942
+      },
+      "model": {
+       "brier": 0.11925,
+       "logloss": 0.37521
+      },
+      "both": {
+       "brier": 0.1165,
+       "logloss": 0.36709
+      }
+     },
+     "test": {
+      "markets": 110350,
+      "market mid": {
+       "brier": 0.11474,
+       "logloss": 0.36349
+      },
+      "model": {
+       "brier": 0.11507,
+       "logloss": 0.36313
+      },
+      "both": {
+       "brier": 0.11312,
+       "logloss": 0.3579
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 53201,
+     "withModel": 53201
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 88,
+       "perBet": -169.361,
+       "mu": -170.129,
+       "lo": -262.297,
+       "hi": -77.961,
+       "pnl": -142.15
+      },
+      "test": {
+       "bets": 83,
+       "perBet": -10.216,
+       "mu": -10.007,
+       "lo": -60.27,
+       "hi": 40.257,
+       "pnl": -8.16
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 347,
+       "perBet": -48.391,
+       "mu": -49.286,
+       "lo": -84.059,
+       "hi": -14.513,
+       "pnl": -159.66
+      },
+      "test": {
+       "bets": 207,
+       "perBet": -45.614,
+       "mu": -44.819,
+       "lo": -88.072,
+       "hi": -1.566,
+       "pnl": -90.14
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 1343,
+       "perBet": -25.967,
+       "mu": -25.671,
+       "lo": -41.576,
+       "hi": -9.767,
+       "pnl": -333.43
+      },
+      "test": {
+       "bets": 1190,
+       "perBet": -16.002,
+       "mu": -16.179,
+       "lo": -32.066,
+       "hi": -0.292,
+       "pnl": -182.43
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 3317,
+       "perBet": -7.818,
+       "mu": -7.641,
+       "lo": -16.32,
+       "hi": 1.038,
+       "pnl": -249.72
+      },
+      "test": {
+       "bets": 3660,
+       "perBet": -5.649,
+       "mu": -5.537,
+       "lo": -12.681,
+       "hi": 1.607,
+       "pnl": -199.64
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 7574,
+       "perBet": -4.058,
+       "mu": -4.038,
+       "lo": -8.511,
+       "hi": 0.434,
+       "pnl": -299.63
+      },
+      "test": {
+       "bets": 9252,
+       "perBet": -2.204,
+       "mu": -2.227,
+       "lo": -5.804,
+       "hi": 1.35,
+       "pnl": -199.64
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 10728,
+       "perBet": 3.344,
+       "mu": 3.361,
+       "lo": -0.042,
+       "hi": 6.764,
+       "pnl": 350.23
+      },
+      "test": {
+       "bets": 10544,
+       "perBet": 2.909,
+       "mu": 2.91,
+       "lo": -0.055,
+       "hi": 5.874,
+       "pnl": 300.27
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 3016,
+       "perBet": 13.007,
+       "mu": 13.119,
+       "lo": 4.686,
+       "hi": 21.552,
+       "pnl": 373.03
+      },
+      "test": {
+       "bets": 1852,
+       "perBet": 19.903,
+       "mu": 20.013,
+       "lo": 10.46,
+       "hi": 29.566,
+       "pnl": 349.84
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 26413,
+      "perBet": -1.801,
+      "mu": -1.774,
+      "lo": -4.98,
+      "hi": 1.432,
+      "pnl": -461.32
+     },
+     "test": {
+      "bets": 26788,
+      "perBet": -0.115,
+      "mu": -0.093,
+      "lo": -2.622,
+      "hi": 2.436,
+      "pnl": -29.89
+     }
+    },
+    "b_filter": {
+     "chosenMargin": 0.0,
+     "chosen": {
+      "train": {
+       "bets": 13744,
+       "perBet": 5.421,
+       "mu": 5.502,
+       "lo": 2.0,
+       "hi": 9.005,
+       "pnl": 723.26
+      },
+      "test": {
+       "bets": 12396,
+       "perBet": 5.382,
+       "mu": 5.465,
+       "lo": 2.437,
+       "hi": 8.492,
+       "pnl": 650.11
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 26413,
+       "trainPerBet": -1.801,
+       "trainPnl": -461.32,
+       "testBets": 26788,
+       "testPerBet": -0.115,
+       "testPnl": -29.89
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 26325,
+       "trainPerBet": -1.25,
+       "trainPnl": -319.17,
+       "testBets": 26705,
+       "testPerBet": -0.084,
+       "testPnl": -21.74
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 26236,
+       "trainPerBet": -0.97,
+       "trainPnl": -246.89,
+       "testBets": 26662,
+       "testPerBet": -0.023,
+       "testPnl": -6.06
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 25978,
+       "trainPerBet": -0.633,
+       "trainPnl": -159.51,
+       "testBets": 26498,
+       "testPerBet": 0.265,
+       "testPnl": 68.4
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 25438,
+       "trainPerBet": -0.166,
+       "trainPnl": -41.0,
+       "testBets": 26040,
+       "testPerBet": 0.641,
+       "testPnl": 162.63
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 24635,
+       "trainPerBet": 0.727,
+       "trainPnl": 173.92,
+       "testBets": 25308,
+       "testPerBet": 1.017,
+       "testPnl": 250.83
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 22946,
+       "trainPerBet": 1.328,
+       "trainPnl": 296.0,
+       "testBets": 23476,
+       "testPerBet": 1.176,
+       "testPnl": 269.36
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 21318,
+       "trainPerBet": 2.044,
+       "trainPnl": 423.63,
+       "testBets": 21648,
+       "testPerBet": 2.131,
+       "testPnl": 450.47
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 18697,
+       "trainPerBet": 3.313,
+       "trainPnl": 602.47,
+       "testBets": 18439,
+       "testPerBet": 3.469,
+       "testPnl": 624.78
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 13744,
+       "trainPerBet": 5.421,
+       "trainPnl": 723.26,
+       "testBets": 12396,
+       "testPerBet": 5.382,
+       "testPnl": 650.11
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 6577,
+       "trainPerBet": 9.793,
+       "trainPnl": 618.29,
+       "testBets": 4654,
+       "testPerBet": 10.361,
+       "testPnl": 463.26
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 3016,
+       "trainPerBet": 13.007,
+       "trainPnl": 373.03,
+       "testBets": 1852,
+       "testPerBet": 19.903,
+       "testPnl": 349.84
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.0,
+     "chosen": {
+      "train": {
+       "bets": 17385,
+       "perBet": 4.082,
+       "mu": 4.158,
+       "lo": 0.856,
+       "hi": 7.46,
+       "pnl": 688.14
+      },
+      "test": {
+       "bets": 13963,
+       "perBet": 5.15,
+       "mu": 5.229,
+       "lo": 2.161,
+       "hi": 8.296,
+       "pnl": 698.86
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 26413,
+       "trainPnl": -461.32,
+       "testBets": 26788,
+       "testPnl": -29.89
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 26412,
+       "trainPnl": -461.56,
+       "testBets": 26788,
+       "testPnl": -29.89
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 26411,
+       "trainPnl": -462.02,
+       "testBets": 26787,
+       "testPnl": -30.03
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 26407,
+       "trainPnl": -434.15,
+       "testBets": 26785,
+       "testPnl": -20.74
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 26394,
+       "trainPnl": -412.7,
+       "testBets": 26769,
+       "testPnl": -31.22
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 26369,
+       "trainPnl": -387.63,
+       "testBets": 26739,
+       "testPnl": -32.88
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 26260,
+       "trainPnl": -267.48,
+       "testBets": 26669,
+       "testPnl": -10.78
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 25996,
+       "trainPnl": -149.88,
+       "testBets": 26476,
+       "testPnl": 15.8
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 24821,
+       "trainPnl": 142.05,
+       "testBets": 25059,
+       "testPnl": 272.38
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 17385,
+       "trainPnl": 688.14,
+       "testBets": 13963,
+       "testPnl": 698.86
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 4027,
+       "trainPnl": 401.01,
+       "testBets": 2196,
+       "testPnl": 405.46
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 934,
+       "trainPnl": 193.86,
+       "testBets": 474,
+       "testPnl": 141.89
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.07,
+     "chosen": {
+      "train": {
+       "bets": 11896,
+       "perBet": 65.167,
+       "mu": 64.122,
+       "lo": 25.26,
+       "hi": 102.985,
+       "pnl": 7589.82
+      },
+      "test": {
+       "bets": 13627,
+       "perBet": 35.145,
+       "mu": 34.891,
+       "lo": 0.372,
+       "hi": 69.41,
+       "pnl": 4686.61
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 2464,
+        "perBet": 220.995,
+        "mu": 220.086,
+        "lo": 61.809,
+        "hi": 378.362,
+        "pnl": 5408.97
+       },
+       "test": {
+        "bets": 2596,
+        "perBet": 125.508,
+        "mu": 124.905,
+        "lo": -23.571,
+        "hi": 273.381,
+        "pnl": 3236.4
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 4376,
+        "perBet": 39.575,
+        "mu": 39.212,
+        "lo": -6.34,
+        "hi": 84.764,
+        "pnl": 1705.02
+       },
+       "test": {
+        "bets": 4840,
+        "perBet": -34.495,
+        "mu": -34.572,
+        "lo": -78.267,
+        "hi": 9.123,
+        "pnl": -1643.53
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 4115,
+        "perBet": 2.68,
+        "mu": 2.593,
+        "lo": -21.297,
+        "hi": 26.484,
+        "pnl": 106.94
+       },
+       "test": {
+        "bets": 5002,
+        "perBet": 55.631,
+        "mu": 55.481,
+        "lo": 34.457,
+        "hi": 76.505,
+        "pnl": 2699.84
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 941,
+        "perBet": 40.974,
+        "mu": 40.643,
+        "lo": 15.281,
+        "hi": 66.005,
+        "pnl": 368.89
+       },
+       "test": {
+        "bets": 1189,
+        "perBet": 34.582,
+        "mu": 34.494,
+        "lo": 12.506,
+        "hi": 56.481,
+        "pnl": 393.9
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 34545,
+       "trainPerBet": -7.314,
+       "trainPnl": -2466.23,
+       "testBets": 43687,
+       "testPerBet": -51.083,
+       "testPnl": -21776.73
+      },
+      {
+       "X": 0.03,
+       "trainBets": 27161,
+       "trainPerBet": 8.159,
+       "trainPnl": 2164.49,
+       "testBets": 33673,
+       "testPerBet": -26.403,
+       "testPnl": -8680.24
+      },
+      {
+       "X": 0.05,
+       "trainBets": 17648,
+       "trainPerBet": 35.954,
+       "trainPnl": 6205.71,
+       "testBets": 21096,
+       "testPerBet": 5.771,
+       "testPnl": 1190.25
+      },
+      {
+       "X": 0.07,
+       "trainBets": 11896,
+       "trainPerBet": 65.167,
+       "trainPnl": 7589.82,
+       "testBets": 13627,
+       "testPerBet": 35.145,
+       "testPnl": 4686.61
+      },
+      {
+       "X": 0.1,
+       "trainBets": 6921,
+       "trainPerBet": 94.736,
+       "trainPnl": 6427.09,
+       "testBets": 7483,
+       "testPerBet": 92.467,
+       "testPnl": 6778.7
+      },
+      {
+       "X": 0.15,
+       "trainBets": 3258,
+       "trainPerBet": 181.176,
+       "trainPnl": 5796.55,
+       "testBets": 3389,
+       "testPerBet": 157.266,
+       "testPnl": 5231.75
+      },
+      {
+       "X": 0.2,
+       "trainBets": 1645,
+       "trainPerBet": 307.285,
+       "trainPnl": 4970.94,
+       "testBets": 1701,
+       "testPerBet": 227.211,
+       "testPnl": 3801.91
+      }
+     ]
+    }
+   },
+   "12": {
+    "model": {
+     "src": "cb",
+     "spec": "ewma30",
+     "k": 0.75,
+     "nu": 6,
+     "trainLogLoss": 0.27953629713997646,
+     "fitMarkets": 70641
+    },
+    "calibration": {
+     "combinedFit": [
+      -0.013,
+      0.749,
+      0.295
+     ],
+     "train": {
+      "markets": 70722,
+      "market mid": {
+       "brier": 0.0831,
+       "logloss": 0.2688
+      },
+      "model": {
+       "brier": 0.08665,
+       "logloss": 0.27957
+      },
+      "both": {
+       "brier": 0.08265,
+       "logloss": 0.26658
+      }
+     },
+     "test": {
+      "markets": 110363,
+      "market mid": {
+       "brier": 0.0801,
+       "logloss": 0.26229
+      },
+      "model": {
+       "brier": 0.08132,
+       "logloss": 0.26454
+      },
+      "both": {
+       "brier": 0.07861,
+       "logloss": 0.2566
+      }
+     }
+    },
+    "liveCryptoBets": {
+     "all": 75843,
+     "withModel": 75843
+    },
+    "edgeBuckets": [
+     {
+      "gap": "-1.00 to -0.20",
+      "train": {
+       "bets": 190,
+       "perBet": -60.003,
+       "mu": -59.711,
+       "lo": -104.966,
+       "hi": -14.455,
+       "pnl": -109.54
+      },
+      "test": {
+       "bets": 223,
+       "perBet": -61.146,
+       "mu": -62.108,
+       "lo": -101.21,
+       "hi": -23.007,
+       "pnl": -133.02
+      }
+     },
+     {
+      "gap": "-0.20 to -0.10",
+      "train": {
+       "bets": 676,
+       "perBet": -50.257,
+       "mu": -49.615,
+       "lo": -75.351,
+       "hi": -23.88,
+       "pnl": -325.71
+      },
+      "test": {
+       "bets": 616,
+       "perBet": -38.165,
+       "mu": -38.035,
+       "lo": -60.289,
+       "hi": -15.78,
+       "pnl": -225.75
+      }
+     },
+     {
+      "gap": "-0.10 to -0.05",
+      "train": {
+       "bets": 1745,
+       "perBet": -7.841,
+       "mu": -7.719,
+       "lo": -18.368,
+       "hi": 2.929,
+       "pnl": -131.89
+      },
+      "test": {
+       "bets": 1860,
+       "perBet": -23.812,
+       "mu": -24.083,
+       "lo": -35.508,
+       "hi": -12.659,
+       "pnl": -427.98
+      }
+     },
+     {
+      "gap": "-0.05 to -0.02",
+      "train": {
+       "bets": 3775,
+       "perBet": -8.499,
+       "mu": -8.593,
+       "lo": -15.191,
+       "hi": -1.995,
+       "pnl": -312.05
+      },
+      "test": {
+       "bets": 4630,
+       "perBet": -8.062,
+       "mu": -8.009,
+       "lo": -13.386,
+       "hi": -2.632,
+       "pnl": -364.6
+      }
+     },
+     {
+      "gap": "-0.02 to +0.00",
+      "train": {
+       "bets": 10214,
+       "perBet": -5.467,
+       "mu": -5.502,
+       "lo": -8.563,
+       "hi": -2.44,
+       "pnl": -551.27
+      },
+      "test": {
+       "bets": 14492,
+       "perBet": -2.23,
+       "mu": -2.198,
+       "lo": -4.064,
+       "hi": -0.331,
+       "pnl": -320.25
+      }
+     },
+     {
+      "gap": "+0.00 to +0.02",
+      "train": {
+       "bets": 17607,
+       "perBet": 0.155,
+       "mu": 0.158,
+       "lo": -1.463,
+       "hi": 1.779,
+       "pnl": 27.04
+      },
+      "test": {
+       "bets": 16705,
+       "perBet": -0.261,
+       "mu": -0.237,
+       "lo": -1.884,
+       "hi": 1.409,
+       "pnl": -43.13
+      }
+     },
+     {
+      "gap": "+0.02 to +1.00",
+      "train": {
+       "bets": 1931,
+       "perBet": 12.563,
+       "mu": 12.8,
+       "lo": 1.909,
+       "hi": 23.69,
+       "pnl": 231.04
+      },
+      "test": {
+       "bets": 1179,
+       "perBet": 17.769,
+       "mu": 17.893,
+       "lo": 6.777,
+       "hi": 29.01,
+       "pnl": 199.83
+      }
+     }
+    ],
+    "a_live": {
+     "train": {
+      "bets": 36138,
+      "perBet": -3.299,
+      "mu": -3.307,
+      "lo": -5.268,
+      "hi": -1.345,
+      "pnl": -1172.37
+     },
+     "test": {
+      "bets": 39705,
+      "perBet": -3.357,
+      "mu": -3.372,
+      "lo": -4.929,
+      "hi": -1.815,
+      "pnl": -1314.9
+     }
+    },
+    "b_filter": {
+     "chosenMargin": 0.01,
+     "chosen": {
+      "train": {
+       "bets": 4815,
+       "perBet": 5.859,
+       "mu": 6.013,
+       "lo": 0.075,
+       "hi": 11.95,
+       "pnl": 272.59
+      },
+      "test": {
+       "bets": 3326,
+       "perBet": 9.601,
+       "mu": 9.788,
+       "lo": 4.292,
+       "hi": 15.284,
+       "pnl": 309.12
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 36138,
+       "trainPerBet": -3.299,
+       "trainPnl": -1172.37,
+       "testBets": 39705,
+       "testPerBet": -3.357,
+       "testPnl": -1314.9
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 35948,
+       "trainPerBet": -3.006,
+       "trainPnl": -1062.83,
+       "testBets": 39482,
+       "testPerBet": -3.034,
+       "testPnl": -1181.88
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 35762,
+       "trainPerBet": -2.602,
+       "trainPnl": -915.1,
+       "testBets": 39347,
+       "testPerBet": -2.875,
+       "testPnl": -1115.98
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 35272,
+       "trainPerBet": -2.124,
+       "trainPnl": -737.13,
+       "testBets": 38866,
+       "testPerBet": -2.493,
+       "testPnl": -956.13
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 34521,
+       "trainPerBet": -1.864,
+       "trainPnl": -633.4,
+       "testBets": 38137,
+       "testPerBet": -1.963,
+       "testPnl": -739.06
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 33527,
+       "trainPerBet": -1.833,
+       "trainPnl": -605.24,
+       "testBets": 37006,
+       "testPerBet": -1.445,
+       "testPnl": -528.15
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 31565,
+       "trainPerBet": -1.136,
+       "trainPnl": -353.57,
+       "testBets": 34576,
+       "testPerBet": -0.877,
+       "testPnl": -299.93
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 29752,
+       "trainPerBet": -0.999,
+       "trainPnl": -293.18,
+       "testBets": 32376,
+       "testPerBet": -0.51,
+       "testPnl": -163.55
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 26799,
+       "trainPerBet": -0.117,
+       "trainPnl": -31.0,
+       "testBets": 28401,
+       "testPerBet": -0.221,
+       "testPnl": -62.15
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 19538,
+       "trainPerBet": 1.339,
+       "trainPnl": 258.08,
+       "testBets": 17884,
+       "testPerBet": 0.886,
+       "testPnl": 156.7
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 4815,
+       "trainPerBet": 5.859,
+       "trainPnl": 272.59,
+       "testBets": 3326,
+       "testPerBet": 9.601,
+       "testPnl": 309.12
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 1931,
+       "trainPerBet": 12.563,
+       "trainPnl": 231.04,
+       "testBets": 1179,
+       "testPerBet": 17.769,
+       "testPnl": 199.83
+      }
+     ]
+    },
+    "b2_filterBoth": {
+     "chosenMargin": 0.01,
+     "chosen": {
+      "train": {
+       "bets": 2407,
+       "perBet": 9.512,
+       "mu": 9.83,
+       "lo": 0.183,
+       "hi": 19.476,
+       "pnl": 218.54
+      },
+      "test": {
+       "bets": 1289,
+       "perBet": 20.359,
+       "mu": 20.522,
+       "lo": 10.821,
+       "hi": 30.222,
+       "pnl": 250.88
+      }
+     },
+     "table": [
+      {
+       "margin": "none",
+       "trainBets": 36138,
+       "trainPnl": -1172.37,
+       "testBets": 39705,
+       "testPnl": -1314.9
+      },
+      {
+       "margin": -0.2,
+       "trainBets": 36138,
+       "trainPnl": -1172.37,
+       "testBets": 39705,
+       "testPnl": -1314.9
+      },
+      {
+       "margin": -0.15,
+       "trainBets": 36136,
+       "trainPnl": -1163.19,
+       "testBets": 39705,
+       "testPnl": -1314.9
+      },
+      {
+       "margin": -0.1,
+       "trainBets": 36131,
+       "trainPnl": -1145.89,
+       "testBets": 39705,
+       "testPnl": -1314.9
+      },
+      {
+       "margin": -0.07,
+       "trainBets": 36122,
+       "trainPnl": -1141.68,
+       "testBets": 39697,
+       "testPnl": -1288.5
+      },
+      {
+       "margin": -0.05,
+       "trainBets": 36105,
+       "trainPnl": -1141.22,
+       "testBets": 39669,
+       "testPnl": -1243.14
+      },
+      {
+       "margin": -0.03,
+       "trainBets": 35979,
+       "trainPnl": -1067.44,
+       "testBets": 39555,
+       "testPnl": -1218.28
+      },
+      {
+       "margin": -0.02,
+       "trainBets": 35693,
+       "trainPnl": -924.46,
+       "testBets": 39274,
+       "testPnl": -1115.85
+      },
+      {
+       "margin": -0.01,
+       "trainBets": 34544,
+       "trainPnl": -649.58,
+       "testBets": 37579,
+       "testPnl": -593.44
+      },
+      {
+       "margin": 0.0,
+       "trainBets": 22866,
+       "trainPnl": 175.46,
+       "testBets": 16646,
+       "testPnl": 276.9
+      },
+      {
+       "margin": 0.01,
+       "trainBets": 2407,
+       "trainPnl": 218.54,
+       "testBets": 1289,
+       "testPnl": 250.88
+      },
+      {
+       "margin": 0.02,
+       "trainBets": 543,
+       "trainPnl": 123.03,
+       "testBets": 262,
+       "testPnl": 92.24
+      }
+     ]
+    },
+    "c_modelOnly": {
+     "chosenX": 0.1,
+     "chosen": {
+      "train": {
+       "bets": 8027,
+       "perBet": 151.035,
+       "mu": 149.446,
+       "lo": 83.669,
+       "hi": 215.223,
+       "pnl": 11912.81
+      },
+      "test": {
+       "bets": 8989,
+       "perBet": 82.848,
+       "mu": 82.055,
+       "lo": 25.18,
+       "hi": 138.931,
+       "pnl": 7319.83
+      }
+     },
+     "byPrice": [
+      {
+       "price": "0.00-0.20",
+       "train": {
+        "bets": 2488,
+        "perBet": 390.214,
+        "mu": 389.063,
+        "lo": 193.633,
+        "hi": 584.493,
+        "pnl": 9647.83
+       },
+       "test": {
+        "bets": 2832,
+        "perBet": 193.279,
+        "mu": 192.623,
+        "lo": 30.457,
+        "hi": 354.79,
+        "pnl": 5441.14
+       }
+      },
+      {
+       "price": "0.20-0.50",
+       "train": {
+        "bets": 3117,
+        "perBet": 60.843,
+        "mu": 61.092,
+        "lo": 4.98,
+        "hi": 117.205,
+        "pnl": 1866.64
+       },
+       "test": {
+        "bets": 3516,
+        "perBet": 6.914,
+        "mu": 6.719,
+        "lo": -45.244,
+        "hi": 58.683,
+        "pnl": 239.28
+       }
+      },
+      {
+       "price": "0.50-0.80",
+       "train": {
+        "bets": 2153,
+        "perBet": 18.397,
+        "mu": 18.424,
+        "lo": -14.809,
+        "hi": 51.656,
+        "pnl": 384.47
+       },
+       "test": {
+        "bets": 2294,
+        "perBet": 63.133,
+        "mu": 62.744,
+        "lo": 31.731,
+        "hi": 93.757,
+        "pnl": 1406.19
+       }
+      },
+      {
+       "price": "0.80-1.00",
+       "train": {
+        "bets": 269,
+        "perBet": 5.393,
+        "mu": 5.669,
+        "lo": -47.408,
+        "hi": 58.746,
+        "pnl": 13.87
+       },
+       "test": {
+        "bets": 347,
+        "perBet": 70.269,
+        "mu": 70.687,
+        "lo": 34.026,
+        "hi": 107.347,
+        "pnl": 233.22
+       }
+      }
+     ],
+     "table": [
+      {
+       "X": 0.02,
+       "trainBets": 29062,
+       "trainPerBet": -29.992,
+       "trainPnl": -8540.7,
+       "testBets": 37819,
+       "testPerBet": -48.059,
+       "testPnl": -17823.94
+      },
+      {
+       "X": 0.03,
+       "trainBets": 23852,
+       "trainPerBet": -2.753,
+       "trainPnl": -643.59,
+       "testBets": 30612,
+       "testPerBet": -20.171,
+       "testPnl": -6056.81
+      },
+      {
+       "X": 0.05,
+       "trainBets": 16848,
+       "trainPerBet": 29.524,
+       "trainPnl": 4881.44,
+       "testBets": 20800,
+       "testPerBet": 13.721,
+       "testPnl": 2802.01
+      },
+      {
+       "X": 0.07,
+       "trainBets": 12348,
+       "trainPerBet": 80.15,
+       "trainPnl": 9719.84,
+       "testBets": 14574,
+       "testPerBet": 57.381,
+       "testPnl": 8215.99
+      },
+      {
+       "X": 0.1,
+       "trainBets": 8027,
+       "trainPerBet": 151.035,
+       "trainPnl": 11912.81,
+       "testBets": 8989,
+       "testPerBet": 82.848,
+       "testPnl": 7319.83
+      },
+      {
+       "X": 0.15,
+       "trainBets": 4278,
+       "trainPerBet": 262.845,
+       "trainPnl": 11061.17,
+       "testBets": 4358,
+       "testPerBet": 194.454,
+       "testPnl": 8336.98
+      },
+      {
+       "X": 0.2,
+       "trainBets": 2443,
+       "trainPerBet": 362.045,
+       "trainPnl": 8708.03,
+       "testBets": 2371,
+       "testPerBet": 305.686,
+       "testPnl": 7136.45
+      }
+     ]
+    },
+    "staleSpot1min": {
+     "b": {
+      "train": {
+       "bets": 6042,
+       "perBet": -1.107,
+       "mu": -1.064,
+       "lo": -7.539,
+       "hi": 5.411,
+       "pnl": -64.48
+      },
+      "test": {
+       "bets": 4446,
+       "perBet": 2.36,
+       "mu": 2.476,
+       "lo": -3.591,
+       "hi": 8.544,
+       "pnl": 101.18
+      }
+     },
+     "c": {
+      "train": {
+       "bets": 17989,
+       "perBet": -88.209,
+       "mu": -88.069,
+       "lo": -132.931,
+       "hi": -43.206,
+       "pnl": -15608.81
+      },
+      "test": {
+       "bets": 25133,
+       "perBet": -156.643,
+       "mu": -155.615,
+       "lo": -188.47,
+       "hi": -122.76,
+       "pnl": -38718.71
+      }
+     }
+    }
+   }
+  }
+ },
+ "liveAllGroups": {
+  "all": {
+   "bets": 35793,
+   "perBet": 4.468,
+   "mu": 4.501,
+   "lo": 1.716,
+   "hi": 7.287,
+   "pnl": 1536.47
+  },
+  "pre": {
+   "bets": 15650,
+   "perBet": 1.659,
+   "mu": 1.659,
+   "lo": -2.476,
+   "hi": 5.794,
+   "pnl": 249.85
+  },
+  "post": {
+   "bets": 20143,
+   "perBet": 6.658,
+   "mu": 6.71,
+   "lo": 2.945,
+   "hi": 10.474,
+   "pnl": 1286.63
+  }
+ }
+}

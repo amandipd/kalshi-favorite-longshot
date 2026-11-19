@@ -1,0 +1,440 @@
+{
+ "main": [
+  {
+   "K": 1,
+   "T": 0.7,
+   "all": {
+    "windows": 687,
+    "positions": 1791,
+    "total": -84.57,
+    "perWindow": -0.123,
+    "t": -0.6247845950393568,
+    "soldBid": 0.928,
+    "soldWon": 0.928
+   },
+   "older": {
+    "windows": 121,
+    "positions": 227,
+    "total": -33.92,
+    "perWindow": -0.28,
+    "t": -0.6571704437819532,
+    "soldBid": 0.9114,
+    "soldWon": 0.9207
+   },
+   "newer": {
+    "windows": 566,
+    "positions": 1564,
+    "total": -50.65,
+    "perWindow": -0.089,
+    "t": -0.40452421718596304,
+    "soldBid": 0.9305,
+    "soldWon": 0.929
+   },
+   "julyOn": {
+    "windows": 399,
+    "positions": 1184,
+    "total": -106.78,
+    "perWindow": -0.268,
+    "t": -1.040433121611667,
+    "soldBid": 0.9338,
+    "soldWon": 0.9383
+   },
+   "bestDay": {
+    "day": "2026-07-30",
+    "total": 40.78
+   },
+   "withoutBestDay": {
+    "windows": 681,
+    "positions": 1771,
+    "total": -125.35,
+    "perWindow": -0.184,
+    "t": -0.9427177986062792,
+    "soldBid": 0.9277,
+    "soldWon": 0.93
+   },
+   "verdict": "fail"
+  },
+  {
+   "K": 1,
+   "T": 0.5,
+   "all": {
+    "windows": 454,
+    "positions": 1207,
+    "total": 11.34,
+    "perWindow": 0.025,
+    "t": 0.09125501664886604,
+    "soldBid": 0.903,
+    "soldWon": 0.8964
+   },
+   "older": {
+    "windows": 79,
+    "positions": 142,
+    "total": -65.69,
+    "perWindow": -0.832,
+    "t": -1.8187458472510516,
+    "soldBid": 0.8693,
+    "soldWon": 0.9085
+   },
+   "newer": {
+    "windows": 375,
+    "positions": 1065,
+    "total": 77.03,
+    "perWindow": 0.205,
+    "t": 0.6489928707834051,
+    "soldBid": 0.9075,
+    "soldWon": 0.8948
+   },
+   "julyOn": {
+    "windows": 261,
+    "positions": 805,
+    "total": 3.45,
+    "perWindow": 0.013,
+    "t": 0.03509633399531406,
+    "soldBid": 0.9136,
+    "soldWon": 0.9081
+   },
+   "bestDay": {
+    "day": "2026-07-30",
+    "total": 54.47
+   },
+   "withoutBestDay": {
+    "windows": 448,
+    "positions": 1185,
+    "total": -43.13,
+    "perWindow": -0.096,
+    "t": -0.3587293193845257,
+    "soldBid": 0.9024,
+    "soldWon": 0.9004
+   },
+   "verdict": "fail"
+  },
+  {
+   "K": 2,
+   "T": 0.7,
+   "all": {
+    "windows": 164,
+    "positions": 408,
+    "total": -10.2,
+    "perWindow": -0.062,
+    "t": -0.14700260907006446,
+    "soldBid": 0.9124,
+    "soldWon": 0.9093
+   },
+   "older": {
+    "windows": 21,
+    "positions": 37,
+    "total": 8.37,
+    "perWindow": 0.399,
+    "t": 0.3595358735028976,
+    "soldBid": 0.8683,
+    "soldWon": 0.8378
+   },
+   "newer": {
+    "windows": 143,
+    "positions": 371,
+    "total": -18.57,
+    "perWindow": -0.13,
+    "t": -0.28339107018511034,
+    "soldBid": 0.9168,
+    "soldWon": 0.9164
+   },
+   "julyOn": {
+    "windows": 101,
+    "positions": 280,
+    "total": -66.34,
+    "perWindow": -0.657,
+    "t": -1.4202392418800713,
+    "soldBid": 0.9208,
+    "soldWon": 0.9393
+   },
+   "bestDay": {
+    "day": "2026-05-28",
+    "total": 27.32
+   },
+   "withoutBestDay": {
+    "windows": 163,
+    "positions": 405,
+    "total": -37.52,
+    "perWindow": -0.23,
+    "t": -0.5891605847676591,
+    "soldBid": 0.9124,
+    "soldWon": 0.916
+   },
+   "verdict": "fail"
+  },
+  {
+   "K": 2,
+   "T": 0.5,
+   "all": {
+    "windows": 101,
+    "positions": 240,
+    "total": 10.82,
+    "perWindow": 0.107,
+    "t": 0.17447882364707162,
+    "soldBid": 0.8657,
+    "soldWon": 0.8542
+   },
+   "older": {
+    "windows": 17,
+    "positions": 24,
+    "total": 8.3,
+    "perWindow": 0.488,
+    "t": 0.5062161369273686,
+    "soldBid": 0.8347,
+    "soldWon": 0.7917
+   },
+   "newer": {
+    "windows": 84,
+    "positions": 216,
+    "total": 2.52,
+    "perWindow": 0.03,
+    "t": 0.04203288426700561,
+    "soldBid": 0.8692,
+    "soldWon": 0.8611
+   },
+   "julyOn": {
+    "windows": 60,
+    "positions": 170,
+    "total": -40.07,
+    "perWindow": -0.668,
+    "t": -0.8743257520913044,
+    "soldBid": 0.8715,
+    "soldWon": 0.8882
+   },
+   "bestDay": {
+    "day": "2026-07-30",
+    "total": 30.62
+   },
+   "withoutBestDay": {
+    "windows": 98,
+    "positions": 233,
+    "total": -19.8,
+    "perWindow": -0.202,
+    "t": -0.35217510664517815,
+    "soldBid": 0.8655,
+    "soldWon": 0.867
+   },
+   "verdict": "fail"
+  }
+ ],
+ "extra": [
+  {
+   "K": 1,
+   "T": 0.8,
+   "all": {
+    "windows": 955,
+    "positions": 2480,
+    "total": -197.81,
+    "perWindow": -0.207,
+    "t": -1.421529831056749,
+    "soldBid": 0.944,
+    "soldWon": 0.948
+   },
+   "older": {
+    "windows": 173,
+    "positions": 341,
+    "total": -54.55,
+    "perWindow": -0.315,
+    "t": -1.0348600718507,
+    "soldBid": 0.9441,
+    "soldWon": 0.956
+   },
+   "newer": {
+    "windows": 782,
+    "positions": 2139,
+    "total": -143.26,
+    "perWindow": -0.183,
+    "t": -1.1119310626755317,
+    "soldBid": 0.944,
+    "soldWon": 0.9467
+   },
+   "julyOn": {
+    "windows": 541,
+    "positions": 1587,
+    "total": -181.28,
+    "perWindow": -0.335,
+    "t": -1.7364806858285506,
+    "soldBid": 0.9465,
+    "soldWon": 0.954
+   },
+   "bestDay": {
+    "day": "2026-09-28",
+    "total": 47.39
+   },
+   "withoutBestDay": {
+    "windows": 947,
+    "positions": 2451,
+    "total": -245.2,
+    "perWindow": -0.259,
+    "t": -1.820870115584901,
+    "soldBid": 0.9442,
+    "soldWon": 0.9502
+   },
+   "verdict": null
+  },
+  {
+   "K": 2,
+   "T": 0.8,
+   "all": {
+    "windows": 247,
+    "positions": 605,
+    "total": -32.11,
+    "perWindow": -0.13,
+    "t": -0.43582429122970134,
+    "soldBid": 0.9332,
+    "soldWon": 0.9339
+   },
+   "older": {
+    "windows": 32,
+    "positions": 53,
+    "total": 30.85,
+    "perWindow": 0.964,
+    "t": 1.0137169095554834,
+    "soldBid": 0.9309,
+    "soldWon": 0.8679
+   },
+   "newer": {
+    "windows": 215,
+    "positions": 552,
+    "total": -62.96,
+    "perWindow": -0.293,
+    "t": -0.9400251792494401,
+    "soldBid": 0.9334,
+    "soldWon": 0.9402
+   },
+   "julyOn": {
+    "windows": 154,
+    "positions": 425,
+    "total": -86.43,
+    "perWindow": -0.561,
+    "t": -1.739529467543889,
+    "soldBid": 0.937,
+    "soldWon": 0.9529
+   },
+   "bestDay": {
+    "day": "2026-05-28",
+    "total": 27.56
+   },
+   "withoutBestDay": {
+    "windows": 246,
+    "positions": 602,
+    "total": -59.67,
+    "perWindow": -0.243,
+    "t": -0.874543357476942,
+    "soldBid": 0.9333,
+    "soldWon": 0.9385
+   },
+   "verdict": null
+  },
+  {
+   "K": 1,
+   "T": 0.3,
+   "all": {
+    "windows": 339,
+    "positions": 898,
+    "total": 2.65,
+    "perWindow": 0.008,
+    "t": 0.023158533456580026,
+    "soldBid": 0.8716,
+    "soldWon": 0.8653
+   },
+   "older": {
+    "windows": 62,
+    "positions": 112,
+    "total": -63.0,
+    "perWindow": -1.016,
+    "t": -1.92503554535368,
+    "soldBid": 0.8261,
+    "soldWon": 0.875
+   },
+   "newer": {
+    "windows": 277,
+    "positions": 786,
+    "total": 65.65,
+    "perWindow": 0.237,
+    "t": 0.6001712866194414,
+    "soldBid": 0.8781,
+    "soldWon": 0.8639
+   },
+   "julyOn": {
+    "windows": 194,
+    "positions": 598,
+    "total": 0.46,
+    "perWindow": 0.002,
+    "t": 0.004932097000717225,
+    "soldBid": 0.8836,
+    "soldWon": 0.8779
+   },
+   "bestDay": {
+    "day": "2026-07-30",
+    "total": 57.11
+   },
+   "withoutBestDay": {
+    "windows": 333,
+    "positions": 874,
+    "total": -54.46,
+    "perWindow": -0.164,
+    "t": -0.4998128885428343,
+    "soldBid": 0.8717,
+    "soldWon": 0.8719
+   },
+   "verdict": null
+  },
+  {
+   "K": 2,
+   "T": 0.3,
+   "all": {
+    "windows": 70,
+    "positions": 181,
+    "total": -47.47,
+    "perWindow": -0.678,
+    "t": -0.7194755726164545,
+    "soldBid": 0.7778,
+    "soldWon": 0.7956
+   },
+   "older": {
+    "windows": 13,
+    "positions": 22,
+    "total": -20.78,
+    "perWindow": -1.598,
+    "t": -1.0006305628151424,
+    "soldBid": 0.6889,
+    "soldWon": 0.7727
+   },
+   "newer": {
+    "windows": 57,
+    "positions": 159,
+    "total": -26.69,
+    "perWindow": -0.468,
+    "t": -0.42474099095739426,
+    "soldBid": 0.7901,
+    "soldWon": 0.7987
+   },
+   "julyOn": {
+    "windows": 39,
+    "positions": 123,
+    "total": -69.63,
+    "perWindow": -1.785,
+    "t": -1.3974922084700012,
+    "soldBid": 0.7888,
+    "soldWon": 0.8374
+   },
+   "bestDay": {
+    "day": "2026-05-28",
+    "total": 27.32
+   },
+   "withoutBestDay": {
+    "windows": 69,
+    "positions": 178,
+    "total": -74.79,
+    "perWindow": -1.084,
+    "t": -1.2557534038667748,
+    "soldBid": 0.7755,
+    "soldWon": 0.809
+   },
+   "verdict": null
+  }
+ ],
+ "ruleProfit": 795.33,
+ "halfSplit": "2026-05-15"
+}

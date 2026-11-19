@@ -1,0 +1,333 @@
+{
+ "timing": {
+  "0": {
+   "points": 36,
+   "first_seen_after_stamp_s": 9.0,
+   "last_change_after_stamp_s": 66.2,
+   "last_change_p90_s": 69.4
+  },
+  "60": {
+   "points": 32,
+   "first_seen_after_stamp_s": 8.8,
+   "last_change_after_stamp_s": 68.4,
+   "last_change_p90_s": 69.2
+  },
+  "120": {
+   "points": 28,
+   "first_seen_after_stamp_s": 8.9,
+   "last_change_after_stamp_s": 68.3,
+   "last_change_p90_s": 69.3
+  },
+  "180": {
+   "points": 32,
+   "first_seen_after_stamp_s": 8.8,
+   "last_change_after_stamp_s": 59.3,
+   "last_change_p90_s": 69.0
+  },
+  "240": {
+   "points": 32,
+   "first_seen_after_stamp_s": 8.9,
+   "last_change_after_stamp_s": 14.5,
+   "last_change_p90_s": 35.4
+  }
+ },
+ "depth_summary": {
+  "books": 29,
+  "favourite_92_99": 8,
+  "median_dollars_at_top": 102.42,
+  "min_dollars_at_top": 21.56,
+  "median_contracts_within_1c": 130.5
+ },
+ "depth": [
+  {
+   "slug": "cpc-btc-updown-5m-2026-11-09-0540z",
+   "book_age_at_read_s": 4.2,
+   "book_time_s": 181.0,
+   "fav": "yes",
+   "top": 0.87,
+   "contracts_at_top": 210.13,
+   "contracts_within_1c": 422.13,
+   "dollars_at_top": 182.81
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-09-0540z",
+   "book_age_at_read_s": 22.2,
+   "book_time_s": 163.0,
+   "fav": "yes",
+   "top": 0.89,
+   "contracts_at_top": 4.0,
+   "contracts_within_1c": 5.0,
+   "dollars_at_top": 3.56
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-09-0540z",
+   "book_age_at_read_s": 18.2,
+   "book_time_s": 167.0,
+   "fav": "yes",
+   "top": 0.79,
+   "contracts_at_top": 10.0,
+   "contracts_within_1c": 10.05,
+   "dollars_at_top": 7.9
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-09-0540z",
+   "book_age_at_read_s": 17.2,
+   "book_time_s": 168.0,
+   "fav": "no",
+   "top": 0.81,
+   "contracts_at_top": 97.0,
+   "contracts_within_1c": 194.0,
+   "dollars_at_top": 78.57
+  },
+  {
+   "slug": "cpc-btc-updown-5m-2026-11-09-0545z",
+   "book_age_at_read_s": 26.3,
+   "book_time_s": 139.0,
+   "fav": "yes",
+   "top": 0.91,
+   "contracts_at_top": 1258.2,
+   "contracts_within_1c": 3765.34,
+   "dollars_at_top": 1144.96
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-09-0545z",
+   "book_age_at_read_s": 14.3,
+   "book_time_s": 151.0,
+   "fav": "yes",
+   "top": 0.95,
+   "contracts_at_top": 42.61,
+   "contracts_within_1c": 102.61,
+   "dollars_at_top": 40.48
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-09-0545z",
+   "book_age_at_read_s": 14.3,
+   "book_time_s": 151.0,
+   "fav": "yes",
+   "top": 0.72,
+   "contracts_at_top": 10.0,
+   "contracts_within_1c": 11.0,
+   "dollars_at_top": 7.2
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-09-0545z",
+   "book_age_at_read_s": 14.3,
+   "book_time_s": 151.0,
+   "fav": "yes",
+   "top": 0.99,
+   "contracts_at_top": 841.0,
+   "contracts_within_1c": 841.0,
+   "dollars_at_top": 832.59
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-11-0445z",
+   "book_age_at_read_s": 14.1,
+   "book_time_s": 154.0,
+   "fav": "no",
+   "top": 0.81,
+   "contracts_at_top": 1.0,
+   "contracts_within_1c": 1.0,
+   "dollars_at_top": 0.81
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-11-0445z",
+   "book_age_at_read_s": 11.1,
+   "book_time_s": 157.0,
+   "fav": "no",
+   "top": 0.86,
+   "contracts_at_top": 554.0,
+   "contracts_within_1c": 864.44,
+   "dollars_at_top": 476.44
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-11-0445z",
+   "book_age_at_read_s": 11.1,
+   "book_time_s": 157.0,
+   "fav": "no",
+   "top": 0.93,
+   "contracts_at_top": 150.0,
+   "contracts_within_1c": 172.0,
+   "dollars_at_top": 139.5
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-11-0450z",
+   "book_age_at_read_s": 0.2,
+   "book_time_s": 168.0,
+   "fav": "yes",
+   "top": 0.88,
+   "contracts_at_top": 15.0,
+   "contracts_within_1c": 58.0,
+   "dollars_at_top": 13.2
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-11-0450z",
+   "book_age_at_read_s": 26.2,
+   "book_time_s": 142.0,
+   "fav": "yes",
+   "top": 0.74,
+   "contracts_at_top": 1.0,
+   "contracts_within_1c": 1.0,
+   "dollars_at_top": 0.74
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-11-0450z",
+   "book_age_at_read_s": 25.2,
+   "book_time_s": 143.0,
+   "fav": "yes",
+   "top": 0.81,
+   "contracts_at_top": 6.0,
+   "contracts_within_1c": 72.0,
+   "dollars_at_top": 4.86
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-11-0455z",
+   "book_age_at_read_s": 18.3,
+   "book_time_s": 150.0,
+   "fav": "no",
+   "top": 0.99,
+   "contracts_at_top": 58.0,
+   "contracts_within_1c": 58.0,
+   "dollars_at_top": 57.42
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-11-0455z",
+   "book_age_at_read_s": 16.3,
+   "book_time_s": 152.0,
+   "fav": "no",
+   "top": 0.99,
+   "contracts_at_top": 153.0,
+   "contracts_within_1c": 153.0,
+   "dollars_at_top": 151.47
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-11-0455z",
+   "book_age_at_read_s": 14.3,
+   "book_time_s": 154.0,
+   "fav": "no",
+   "top": 0.99,
+   "contracts_at_top": 66.0,
+   "contracts_within_1c": 66.0,
+   "dollars_at_top": 65.34
+  },
+  {
+   "slug": "cpc-btc-updown-5m-2026-11-11-0500z",
+   "book_age_at_read_s": 14.5,
+   "book_time_s": 154.0,
+   "fav": "yes",
+   "top": 0.65,
+   "contracts_at_top": 5641.86,
+   "contracts_within_1c": 6084.0199999999995,
+   "dollars_at_top": 3667.21
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-11-0500z",
+   "book_age_at_read_s": 6.5,
+   "book_time_s": 162.0,
+   "fav": "yes",
+   "top": 0.73,
+   "contracts_at_top": 22.0,
+   "contracts_within_1c": 34.0,
+   "dollars_at_top": 16.06
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-11-0500z",
+   "book_age_at_read_s": 3.5,
+   "book_time_s": 165.0,
+   "fav": "yes",
+   "top": 0.74,
+   "contracts_at_top": 1.0,
+   "contracts_within_1c": 1.0,
+   "dollars_at_top": 0.74
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-11-0500z",
+   "book_age_at_read_s": 1.5,
+   "book_time_s": 167.0,
+   "fav": "yes",
+   "top": 0.98,
+   "contracts_at_top": 22.0,
+   "contracts_within_1c": 108.0,
+   "dollars_at_top": 21.56
+  },
+  {
+   "slug": "cpc-btc-updown-5m-2026-11-11-0505z",
+   "book_age_at_read_s": 14.6,
+   "book_time_s": 154.0,
+   "fav": "no",
+   "top": 0.84,
+   "contracts_at_top": 377.78,
+   "contracts_within_1c": 387.78,
+   "dollars_at_top": 317.34
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-11-0505z",
+   "book_age_at_read_s": 5.6,
+   "book_time_s": 163.0,
+   "fav": "no",
+   "top": 0.89,
+   "contracts_at_top": 11.45,
+   "contracts_within_1c": 11.45,
+   "dollars_at_top": 10.19
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-11-0505z",
+   "book_age_at_read_s": 3.6,
+   "book_time_s": 165.0,
+   "fav": "no",
+   "top": 0.84,
+   "contracts_at_top": 0.13,
+   "contracts_within_1c": 0.13,
+   "dollars_at_top": 0.11
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-11-0505z",
+   "book_age_at_read_s": 0.6,
+   "book_time_s": 168.0,
+   "fav": "no",
+   "top": 0.85,
+   "contracts_at_top": 1.0,
+   "contracts_within_1c": 1.0,
+   "dollars_at_top": 0.85
+  },
+  {
+   "slug": "cpc-btc-updown-5m-2026-11-11-0510z",
+   "book_age_at_read_s": 14.8,
+   "book_time_s": 154.0,
+   "fav": "yes",
+   "top": 0.98,
+   "contracts_at_top": 1942.09,
+   "contracts_within_1c": 14640.28,
+   "dollars_at_top": 1903.25
+  },
+  {
+   "slug": "cpceth-eth-updown-5m-2026-11-11-0510z",
+   "book_age_at_read_s": 3.8,
+   "book_time_s": 165.0,
+   "fav": "yes",
+   "top": 0.73,
+   "contracts_at_top": 3.0,
+   "contracts_within_1c": 15.0,
+   "dollars_at_top": 2.19
+  },
+  {
+   "slug": "cpcsol-sol-updown-5m-2026-11-11-0510z",
+   "book_age_at_read_s": 1.8,
+   "book_time_s": 167.0,
+   "fav": "yes",
+   "top": 0.82,
+   "contracts_at_top": 1.0,
+   "contracts_within_1c": 444.0,
+   "dollars_at_top": 0.82
+  },
+  {
+   "slug": "cpcxrp-xrp-updown-5m-2026-11-11-0510z",
+   "book_age_at_read_s": 0.8,
+   "book_time_s": 168.0,
+   "fav": "no",
+   "top": 0.56,
+   "contracts_at_top": 8.0,
+   "contracts_within_1c": 108.0,
+   "dollars_at_top": 4.48
+  }
+ ]
+}

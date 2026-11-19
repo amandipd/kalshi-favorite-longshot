@@ -1,0 +1,729 @@
+# Journal
+
+A running, plain-language log of what got done on each working day. One entry
+per date, added to as the project progresses.
+
+## 2026-08-05
+
+Today I worked on figuring out what date range to actually use for pulling data from Kalshi, instead of just guessing a round number like "last 12 months." I wrote a throwaway script (not kept in the repository) that talks to Kalshi's public API directly. First it checked where Kalshi's "live vs. historical" data cutoff sits, since older settled markets live in a different set of endpoints. Then, instead of trying to pull every single market in every category (Politics alone has over 2,000 separate market series, which would've taken hours), I only looked at the 20 highest-trading-volume series per category (Politics, Economics, Sports, Crypto) to get a fast, representative sample. I also had to filter out markets that settle every 15 minutes or every hour (like short-term Bitcoin price bets), since those pile up thousands of "settlements" a month and would make a category look way more active than it really is. I actually got this wrong on the first attempt (accidentally excluded a bunch of legitimate Sports markets because my filter confused "First Half" with "hourly"), then fixed it using Kalshi's real frequency label instead of guessing from the market name. After counting how many markets settled each month per category, I charted it to see the pattern visually. The chart shows Economics and Sports both had real, steady activity starting around December 2025 through June 2026, Crypto had some too, but Politics stayed thin no matter what window I picked, likely because political markets tend to be big one-off events rather than steady recurring ones. Based on this, my current leading pick for the project's date range is December 2025 through June 6, 2026, but I haven't locked that into `config.yaml` yet.
+
+## 2026-08-28
+
+Today I finished Phase 1: I ran the real data pull, built a health check for it, and wrote up the design decisions behind the ingestion layer.
+
+The pull itself took about twenty minutes and brought back **145,047 settled markets across 772 pages**. The milestone only asked for 1,000, so there's no shortage of data. It walked the top 20 highest-volume series in each of Politics, Economics, Sports and Crypto, and nothing had to be re-fetched or restarted, which was the whole point of building it to be resumable.
+
+Then I wrote `kalshi_calibration/ingest/summary.py`, which reads back everything sitting in `data/raw/` and prints what's actually there: page counts, market counts, the date range covered, the split by category, and a short list of anomalies. The idea is to not trust the run's own log: the log tells you what one run *did*, and this tells you what's on disk after every run that ever touched it. It surfaced four things worth knowing before I start cleaning:
+
+- **Sports is 91% of the sample** (132,456 of 145,047 markets). Politics is 433. That lopsidedness is a real problem for the headline result. If I just pool everything and compute one calibration curve, I'm publishing a chart about Sports and calling it "prediction markets." The Phase 3 segmentation was already planned, but now it's load-bearing rather than a nice-to-have, and I'll need to say plainly in the writeup that the pooled number is Sports-weighted.
+- **1,904 markets came back with `result: "scalar"`** rather than yes/no. Those aren't binary contracts at all, so they have to be dropped in Phase 2. Good thing to have caught now: if I'd assumed every result was yes-or-no, they'd have quietly become zeros.
+- **Settlements go back to 2021-07-30**, well before my December 2025 start date. That's on purpose: the pull stops walking a series once it's gone past the window, but the page that trips that check gets written whole rather than trimmed, so some older markets ride along. `clean.py` filters the window, not the ingestion layer, which means I can widen the study window later without re-downloading anything.
+- **Zero duplicate tickers.** I'd expected some overlap between series and there was none.
+
+One thing moved underneath me: Kalshi's live-vs-historical cutoff was 2026-06-06 when I explored this on Aug 5, and it's 2026-06-29 now. Kalshi keeps migrating recent data across that line, so the historical endpoints now reach about three weeks further forward than when I picked my date range. I left the config window alone, because I'd rather have one fixed, defensible window than quietly extend it every time I re-run. But every run saves the cutoff it saw to `_cutoff.json`, so there's a record of what "everything available" meant on the day of each pull.
+
+Finally, the documentation. `docs/000-overview.md` had been a TBD stub since day one and now states the actual research question, the hypothesis in a falsifiable form, and six concrete success criteria, including that a *negative* result (Kalshi turns out to be well calibrated) still counts as success, as long as it's measured honestly. I also wrote the two ADRs: `001-storage-layers.md` on why raw JSON is kept immutable and separate from the parsed and cleaned layers, and `002-ingestion-idempotency.md` on why resumption keys off file paths rather than a checkpoint file, why cached pages still get read (each page carries the next one's cursor), and why writes go through a temp file and a rename: a run killed mid-write would otherwise leave a truncated page that the next run happily treats as finished. And `docs/data-sources.md` documents every endpoint, the live-vs-historical trap, the rate limits, and the fact that every price Kalshi returns is a *string*.
+
+Writing the data-sources doc turned up something that decides the next big call for me. I'd assumed the Phase 2 price choice was a free judgment between last trade, bid-ask mid, and closing price. It isn't: on a settled market the order book is gone, and Kalshi reports `yes_bid: 0.0000` / `yes_ask: 1.0000`, a maximally wide quote that isn't a price at all. A mid computed from that is 0.50 for every single contract. The historical endpoint gives one post-settlement snapshot rather than a time series, so last traded price is the only usable implied probability available. That's a constraint to document honestly in ADR 003, not a preference to defend. And it's a real limitation of the study, since a last trade in a thin market can be hours stale.
+
+Next up is the Phase 1 gate, then Phase 2: the price definition ADR, then parsing raw JSON into the interim dataset.
+
+*(later the same day: Phase 2 begins)*
+
+Phase 2 started with what was supposed to be a quick decision (pick which price counts as "the market's implied probability") and turned into the most important finding of the project so far.
+
+I'd assumed this was a free choice between three options the proposal listed: last traded price, the midpoint of the bid and ask, or a volume-weighted average. Before writing the ADR I decided to actually measure all three against the 145,047 markets I'd pulled, rather than reasoning about them from the docs. Two of the three died immediately.
+
+**The bid-ask midpoint doesn't exist.** On a settled market the order book is gone: 54.9% of markets report a bid of $0.00 and an ask of $1.00, which isn't a wide spread so much as the absence of any quote at all. The median spread across the whole corpus is a full dollar, and open interest is exactly zero on all 145,047 records. A midpoint computed from that returns 50¢ for most of the dataset regardless of what anyone ever believed.
+
+**The last traded price is the answer in disguise.** This is the one that would have quietly ruined the project. I cross-tabulated the settled snapshot's last price against how each market actually resolved, and **92.5% of binary markets have a last price already pinned to the correct settlement value**: under 1¢ when the answer was no, over 99¢ when it was yes. Only 6.8% sit anywhere in between. Had I built a calibration curve on that number, I'd have gotten a beautiful near-perfect result and it would have meant nothing, because the "forecast" and the outcome would have been the same variable. Nothing about the field looks wrong: it's well named, present on every record, correctly typed. You only catch it by checking.
+
+My first instinct was that this was a contamination bug, that the snapshot was picking up trades from after settlement. It isn't. I checked the last trade before the market's official *close* time and it's 90% pinned too. The price is real; the market has simply stopped being uncertain. Kalshi's universe is mostly short-lived recurring contracts (median lifetime from open to close is about 24 hours), and whatever uncertainty they have burns off in the final minutes. So the problem was never *which* price but *when*: a price sampled at the moment of resolution isn't a forecast no matter which field it lives in.
+
+The fix came from a different endpoint. `/historical/trades` accepts a ticker and a `max_ts`, so I can ask for the last trade at or before any moment I choose: a price from while the market was still genuinely guessing. I swept the horizon over 250 sampled markets and it's a real trade-off in both directions:
+
+| horizon | retention | still pinned | usable |
+|---|---|---|---|
+| at close | 99.6% | 90.0% | 10.0% |
+| **1h before** | **89.2%** | **17.5%** | **73.6%** |
+| 6h before | 74.8% | 4.8% | 71.2% |
+| 24h before | 30.8% | 7.8% | 28.4% |
+| 72h before | 6.8% | 29.4% | 4.8% |
+
+Sample too late and the price is just the answer. Sample too early and the market didn't exist yet. A contract with a 24-hour life has no 24-hour-out price by construction, so the survivors at that horizon are a sample selected on longevity, which correlates with category and event type. One hour before close is the sweet spot, and its price distribution finally looks like a calibration curve instead of two spikes: the 0 to 10¢ bucket resolves yes 0% of the time, the 40 to 50¢ bucket 63%, the 90 to 100¢ bucket 95%.
+
+Interestingly the 6-hour horizon looks *flatter* than the 1-hour one (longshots resolving above their price, favorites below, which is the favorite-longshot signature). But there are only 11 to 36 markets per bucket there, so that's a hint to check later, not a finding.
+
+All of this is written up in `docs/adr/003-implied-price-definition.md`, including the options I rejected and why. The one I want to remember rejecting is the lazy escape hatch: just study the 6.8% of markets whose snapshot price *isn't* pinned, and skip the extra data pull. That's tempting and it's badly wrong: that subsample is selected precisely on the market still being uncertain at close, which means conditioning on something downstream of the outcome I'm trying to predict.
+
+So Phase 2 grew a second ingestion pass that the proposal never anticipated. `kalshi_calibration/ingest/trades.py` walks every settled binary market and fetches its price at each configured horizon, writing one JSONL file per series per horizon (about 80 files, rather than 143,000 tiny ones). It resumes the same way the first pass does (it reads back which tickers are already in the file), and it records an explicit null when a market had no trade that early, so a re-run doesn't ask again and the cleaning log can *count* those exclusions rather than infer them from silence. The T-1h run is going now at about 11 markets/second, roughly 3.5 hours, and should land around 50 MB.
+
+I also wrote the first half of `kalshi_calibration/clean.py`: `compute_implied_price` supporting all four methods (including the two I proved unusable, kept deliberately so the writeup can *show* the degenerate curve rather than just assert it), and `parse_raw_to_interim`, which turns raw JSON into typed `Contract` rows. Everything it drops is counted against a named reason and broken down by category, because an exclusion that falls unevenly across categories is a bias rather than just a smaller sample. 82 tests pass.
+
+Still to do in this milestone: build the interim dataset once the pull finishes, then the exploration notebook.
+
+## 2026-09-01
+
+The T-1h pull finished (all 143,143 binary markets have a price from an hour
+before close), so today was about turning that into the two dataset layers the
+analysis reads, and the first look at what's in them.
+
+Before parsing anything I closed a gap between ADR 004 and the code. I wrote
+that ADR after `clean.py`, and its decision 6 says `event_ticker` has to be
+carried on every row so Phase 3 can cluster standard errors on it: "any
+interval computed without this clustering is wrong." The `Contract` model
+didn't have the field. Parsing 145k rows and then discovering they can't be
+clustered would have meant doing it twice, so the field went in first, along
+with two assertions the ADR calls for: a market whose `status` isn't
+`finalized` now raises rather than being dropped (an unsettled market's
+`result` isn't an outcome, so that's a bug in ingestion, not a row to skip),
+and a market with no `event_ticker` is dropped against a named reason rather
+than falling back to an empty string. A row that can't be clustered is worse
+than a missing one, because a shared empty key pools unrelated markets into a
+single fake event. I checked both against the corpus before writing the code:
+zero markets are missing an event ticker and all 145,047 are `finalized`, which
+is what ADR 004 claimed and is now enforced rather than assumed.
+
+Then I built the interim layer, and the horizon fix from Phase 2 held up:
+**pinned prices fell from 92.5% to 1.1%**. That single number is the whole
+justification for the second ingestion pass. The settled snapshot's last price
+was the answer wearing a forecast's clothes; the T-1h price is an actual
+forecast. 122,767 of 145,047 markets survive parsing; 20,376 had no trade an
+hour before close (5,860 of them Crypto strike ladders nobody ever took) and
+1,904 were scalar settlements.
+
+Next I wrote `interim_to_processed`, the step ADR 004 specifies. What's
+interesting about it is how little it does: two filters, a close-time window
+and a non-zero volume, plus two assertions. Everything else in that ADR is a
+filter I decided *not* to write (no volume floor, no de-duplication by event,
+no NO-framing flip), and each of those absences is as much a decision as the
+filters that run, so the function says so in its docstring. Someone reading it
+later shouldn't have to wonder whether the volume floor was omitted on purpose.
+
+The result: **100,210 contracts across 29,895 events**, closing between
+2025-12-01 and 2026-06-06. That's ahead of ADR 004's ~89,000 projection,
+because the projection had double-counted the volume filter. In fact the volume
+filter now removes **nothing at all**: every zero-volume market was already
+gone at the parse step, since a market that never traded has no trade at any
+horizon either. That's the ADR's own argument for the criterion turning out to
+be so completely true that the criterion is redundant. I kept it anyway and
+recorded why: it costs nothing, and it would bite immediately if the price
+method were ever switched back to a snapshot field, which happily reports a
+number for a market that never traded.
+
+Then the first honest look at a calibration curve:
+
+| price bucket | n | mean price | resolved yes | gap |
+|---|---|---|---|---|
+| 0.0–0.1 | 24,117 | 0.037 | 0.032 | −0.004 |
+| 0.1–0.2 | 10,037 | 0.152 | 0.125 | −0.027 |
+| 0.2–0.3 | 7,897 | 0.254 | 0.226 | −0.027 |
+| 0.3–0.4 | 7,070 | 0.355 | 0.325 | −0.029 |
+| 0.4–0.5 | 6,634 | 0.455 | 0.431 | −0.024 |
+| 0.5–0.6 | 6,384 | 0.555 | 0.573 | +0.018 |
+| 0.6–0.7 | 6,747 | 0.655 | 0.665 | +0.010 |
+| 0.7–0.8 | 6,813 | 0.757 | 0.769 | +0.013 |
+| 0.8–0.9 | 7,675 | 0.857 | 0.869 | +0.012 |
+| 0.9–1.0 | 16,836 | 0.969 | 0.961 | −0.008 |
+
+That is the favorite-longshot signature, and it flips sign cleanly at 0.50:
+everything priced below it resolves yes *less* often than its price says,
+everything above resolves yes *more* often. It is the shape the hypothesis
+predicted.
+
+I want to be careful about how much that's worth right now, because four things
+stand between this table and a finding. It's **96% Sports**, so this is a chart
+about sports betting that happens to include some other markets. The intervals
+aren't computed yet, and when they are they have to be **clustered on
+`event_ticker`**, which will widen them; the encouraging part is that the
+buckets are less concentrated than I feared (the 0.0 to 0.1 bucket holds 24,117
+contracts but 10,839 distinct events, so about 2.2 correlated rows per event
+rather than the 250-golfer worst case). There's **no multiple-comparison
+correction** yet. And the top bucket runs the *other* way, −0.008 where the
+pattern predicts positive, which may just be the ceiling at 1.0 or may be
+something real about heavy favorites.
+
+The one that genuinely surprised me is Economics, the category with real
+independence from the Sports bulk: its 0.25 to 0.50 bucket is priced at 0.370 and
+resolves yes 21.1% of the time, a 16-point gap, far larger than anything in
+the pooled table. n is only 123 contracts across a handful of events, so it is
+a lead and not a result. But if the effect is genuinely bigger away from
+sports, that inverts the assumption I'd been carrying, which was that Sports
+would show the strongest retail bias.
+
+114 tests pass. Next: the exploration notebook, and then Phase 3's calibration
+machinery, where the clustered intervals get built, and where that Economics
+gap either survives contact with an honest confidence interval or doesn't.
+
+---
+
+Later the same day: Phase 3's first milestone, which is where the table above
+either becomes a finding or stops being one.
+
+The whole milestone is about the *interval*, not the estimate. The point
+estimates were never in doubt (bucket the prices, average the outcomes,
+subtract), and I already had them this morning. What I did not have was any
+right to call the gaps real, because ADR 004 says plainly that an interval
+computed without clustering on `event_ticker` "is wrong and must not be
+reported," and until today nothing computed one.
+
+So `kalshi_calibration/analysis/statistics.py` is a small estimator library and the two things
+in it that matter are both about correlated siblings. The cluster-robust
+standard error sums residuals *within* an event before squaring them, which
+is the entire difference from the textbook formula: squaring each residual
+alone is what silently assumes the cross-terms vanish, and inside a golfer
+field they emphatically do not. The block bootstrap resamples whole events
+rather than contracts, for the same reason from the other direction: drawing
+contracts independently would happily produce a replicate with thirty copies
+of one golfer and none of his field, quietly rebuilding the independence the
+clustering exists to deny. And it runs **once for the whole table**, because a
+single event's contracts land in several price buckets and a replicate that
+drops that event has to drop it from all of them at once. Ten separately
+bootstrapped buckets would each be defensible and the table would be
+incoherent.
+
+The thing I got wrong on the first pass, and want to remember: I had assumed
+clustering means *wider*. It doesn't. It means *correct*. A mutually
+exclusive field is negatively correlated inside the cluster (exactly one
+winner, 249 losers), and the cluster totals then vary **less** than
+independent draws would, so the clustered SE can legitimately shrink. There's
+now a test asserting exactly that on a miniature golfer field, sitting next to
+its opposite. If I'd written the tests expecting one direction I'd have
+"fixed" the estimator until it was wrong.
+
+The Murphy decomposition needed similar honesty. `reliability − resolution +
+uncertainty = brier` holds *exactly* only when every forecast inside a bucket
+is the same number. That is true for a forecaster who only ever says 10%, 20%, false
+here where prices vary continuously inside each decile. The proposal asked for
+a test that the identity holds "≈", and an approximate assertion is precisely
+the kind that passes with a term subtly wrong. So `brier_decomposition` now
+returns both scores: `binned_brier`, which the identity closes on to machine
+precision and which the test asserts at 1e-12, and the real `brier` on unbinned
+prices, with their difference reported as `binning_residual`. That residual is
+a diagnostic rather than an error: it measures within-bucket price variation
+the buckets can't see. Here it's −0.00075 against a Brier of 0.1213, so 0.6%:
+deciles describe these prices well.
+
+Then the results, from `make analyze`:
+
+| bucket | n | events | price | actual | bias | 95% CI (clustered) | deff | q |
+|---|---|---|---|---|---|---|---|---|
+| 0.00–0.10 | 22,993 | 10,280 | 0.0335 | 0.0296 | −0.0040 | [0.0263, 0.0331] | 1.45 | 0.016 * |
+| 0.10–0.20 | 10,198 | 7,582 | 0.1421 | 0.1175 | −0.0246 | [0.1105, 0.1253] | 1.14 | 1.5e−10 *** |
+| 0.20–0.30 | 8,119 | 7,013 | 0.2430 | 0.2163 | −0.0268 | [0.2069, 0.2257] | 1.08 | 2.5e−07 *** |
+| 0.30–0.40 | 7,096 | 6,521 | 0.3444 | 0.3145 | −0.0298 | [0.3037, 0.3258] | 1.03 | 5.3e−07 *** |
+| 0.40–0.50 | 6,682 | 6,244 | 0.4449 | 0.4202 | −0.0247 | [0.4082, 0.4326] | 1.03 | 1.4e−04 *** |
+| 0.50–0.60 | 6,394 | 5,613 | 0.5443 | 0.5554 | +0.0111 | [0.5438, 0.5670] | 0.96 | 0.069 |
+| 0.60–0.70 | 6,766 | 6,389 | 0.6457 | 0.6543 | +0.0086 | [0.6426, 0.6659] | 1.03 | 0.147 |
+| 0.70–0.80 | 6,660 | 6,211 | 0.7461 | 0.7622 | +0.0161 | [0.7512, 0.7721] | 1.04 | 0.004 ** |
+| 0.80–0.90 | 7,568 | 6,745 | 0.8462 | 0.8622 | +0.0160 | [0.8537, 0.8706] | 1.07 | 2.6e−04 *** |
+| 0.90–1.00 | 17,734 | 10,635 | 0.9651 | 0.9566 | −0.0086 | [0.9529, 0.9602] | 1.20 | 5.7e−06 *** |
+
+Brier 0.1213 = reliability 0.00029 − resolution 0.1258 + uncertainty 0.2476.
+
+**The clustering cost what ADR 004 predicted, exactly where it predicted.**
+The design effect is ~1.03 through the middle and rises in both tails: 1.45
+in the 0 to 10¢ bucket, 1.20 in the 90¢ to 100¢ bucket, which are the two buckets
+holding the big mutually-exclusive fields. In the bottom bucket the corrected
+q moves from 5e−04 (naive) to 1.6e−02 (clustered): a thirtyfold weaker claim,
+still significant. No bucket's verdict actually flips in the pooled table, and
+I want to be careful not to read that as "the clustering didn't matter." It
+matters most in the longshot bucket the hypothesis is *about*, and the
+per-category segments have one to two orders of magnitude fewer events to
+spend, so this is the pooled table getting away with it, not the correction
+being unnecessary.
+
+Two things I didn't expect. First, **reliability is 0.00029**, three
+ten-thousandths. Decomposed, almost all of the Brier score is the base rate's
+own uncertainty (0.2476) offset by genuine discrimination (0.1258), and
+essentially none of it is miscalibration. The favorite-longshot bias here is
+real, it is significant in eight of ten buckets, and it is *small*: two to
+three points. That's a more honest headline than the shape of the curve
+suggests on its own, and it moves the interesting question to Phase 4. A
+3-point edge is not obviously a tradeable one once fees and the bid-ask
+spread are paid.
+
+Second, the top bucket is still going the wrong way. −0.0086 where the
+favorite-longshot story predicts positive, and now with a q of 5.7e−06 rather
+than a shrug. It's no longer something I can wave off as the ceiling at 1.0,
+because the clustering had its largest effect there and it survived. Heavy
+favorites at 96.5¢ resolving yes 95.7% of the time is a *specific* claim and I
+don't have an explanation for it yet.
+
+One discrepancy worth flagging against this morning's table: bucket counts
+moved (the bottom bucket from 24,117 to 22,993) because I fixed the bin edges
+to be left-closed. Pandas' default is right-closed, which put the 1,124
+contracts priced at exactly 0.10 in the *bottom* bucket. Left-closed matches
+how the bands are spoken about (10¢ starts the 10 to 20¢ band) and needs no
+special case at zero. Recorded in ADR 005 so nobody later has to wonder why
+two tables of the same data disagree.
+
+All of it is in `docs/adr/005-bucketing-and-tests.md`, including why Wilson
+intervals are computed but never reported (they're the denominator of the
+design effect and nothing else), and why BH rather than Bonferroni. `make
+analyze` regenerates the table and writes `reports/calibration_table.csv`, so
+there is exactly one place the headline numbers come from. 172 tests pass, 58
+of them new.
+
+Still open for Milestone 2: the logistic calibration (slope vs. the ideal 1),
+segmentation by category and time-to-resolution (which is where this morning's
+Economics lead gets its honest interval and where the 96%-Sports caveat either
+narrows or stays), and the figures.
+
+---
+
+Milestone 2, same day. The segmentation is where the 96%-Sports caveat stops
+being a caveat and becomes an answer, and it delivered, including one result
+that inverts what I'd been assuming for a month.
+
+Three things needed deciding before any code, and all three came from looking
+at the data rather than the proposal.
+
+**The logit is defined everywhere, which I expected to have to argue about.**
+Kalshi's tick floor is 0.001, so no price sits at exactly 0 or 1 and the
+logistic regression needs no clipping, winsorising, or dropping. I'd budgeted
+an ADR paragraph for a judgment call that turned out not to exist. It still
+raises on a boundary price rather than clipping silently, because if one ever
+appears, how to handle it is a research decision and not a numerical
+convenience.
+
+**Category sizes are brutal once you count events instead of contracts.**
+Sports has 29,471 events. Economics has 2,743 contracts but **186 events**.
+Politics has 265 contracts and **16 events**. Clustered inference is governed
+by events, so Economics has roughly a fifteenth of the sample its contract
+count advertises. That's what the power floor is for: a bucket under 30 events
+keeps its estimate and interval but is never tested and never enters the
+correction family. Politics comes back untestable in every single cell, which
+is the honest answer rather than a gap to paper over.
+
+**"Time to resolution" doesn't exist in this dataset.** The proposal asks for
+`bias_by_time_to_resolution`. But ADR 003 prices every market at exactly one
+hour before close, so time-from-forecast-to-outcome is ~1 hour for all 100,210
+rows *by construction*. A function with that name would be measuring settlement
+lag while claiming to measure forecast horizon. What actually varies is market
+**lifetime**, how long it traded before I priced it: median 25h, quartiles
+15.6 / 25.0 / 45.1, tail past two years. That supports the question the
+proposal was reaching for, and it turned out to be the most interesting split
+in the study.
+
+The mistake I made and had to back out: I wrote a test asserting that pooling
+segments into one Benjamini-Hochberg family always produces q-values at least
+as large as correcting each segment alone: "more tests, higher bar." It
+failed, and it was the test that was wrong, not the code. **BH is a step-up
+procedure**, so a segment full of strong signal lifts the other tests' ranks
+faster than it lifts m, and a marginal test can emerge with a *smaller* q
+pooled than alone. I checked it directly: five p-values at 1e-8 pull a
+neighbouring 0.02 from q=0.10 down to q=0.033. The FDR guarantee is about the
+share of false discoveries across the family, not about any individual q moving
+one way. I'd written the module docstring and a config comment both asserting
+the wrong version, so those got corrected too. Worth remembering that I'd have
+happily shipped that sentence in the writeup.
+
+Results.
+
+**The bucket-free check agrees with the bucketed one.** Slope 1.0442, 95% CI
+[1.0229, 1.0656], p=5.0e-05 against the ideal of 1; intercept −0.0542. Slope
+above 1 means true probabilities are more extreme than prices: longshots
+overpriced, favorites underpriced. That's the favorite-longshot direction, and
+it means the shape in the decile table isn't an artefact of where I put the bin
+edges. I derived the direction from the fitted equation rather than trusting
+memory, because it's the mirror image of the "slope < 1 means overconfident"
+convention from the forecast-evaluation literature, which regresses the other
+way round. Two tests now plant slope 1.3 and 0.7 so the convention can't
+silently invert on me later.
+
+**Miscalibration concentrates almost entirely in short-lived markets.** The
+shortest quartile (under 15.6h) is significantly miscalibrated in four of five
+price bands, including a −5.5 cent bias at 20 to 40¢, the largest anywhere in the
+pooled data. The two middle quartiles are essentially indistinguishable from
+calibrated. That's consistent with an information-aggregation story (less time
+open, less opportunity to incorporate what people know), but lifetime is
+confounded with contract type, since a 15-hour market is overwhelmingly a
+same-day game.
+
+**And the Economics lead survived.** This is the one that inverts my prior. Its
+20 to 40¢ band is priced at 28.8¢ and resolves yes 15.1% of the time, a
+**13.7-point** gap, five times anything in the pooled table, and it survives
+clustering *and* a family-wide correction on 85 events. Crypto shows the same
+thing (−15.2 at 20 to 40¢) plus a large positive bias at 60 to 80¢. Sports, the 96%
+that drives every pooled number, has the *weakest* effect of any testable
+category: −2.7 cents at its worst.
+
+So the assumption I'd carried since the proposal (that Sports, being the
+retail-money category, would show the strongest bias) is backwards. The pooled
+table isn't a measurement of prediction markets that happens to be mostly
+sports; it's a measurement of sports that *dilutes* a much larger effect
+elsewhere.
+
+One caution I want on the record, because it would be easy to get excited here:
+Economics is negative in four of five bands, including above 50¢. That is not
+the favorite-longshot shape, which requires a sign flip. It looks more like a
+general overpricing of YES. If it holds up it's a different effect wearing the
+same clothes, and I should stop calling it favorite-longshot bias until I know
+which it is.
+
+Also built: four figures (`make figures`), generated from the same functions
+`make analyze` prints so a chart can't drift from its table, and a notebook that
+displays results and computes none of its own. `docs/methodology.md` and
+`docs/findings.md` are written. 192 tests pass, 20 new.
+
+Next, Phase 4: the fee model, which is where a 2 to 3 cent pooled edge either
+becomes a strategy or doesn't. But the more interesting thread is the one this
+milestone opened: whether the non-Sports effect is real, which needs more
+Economics events than a six-month window gives, and whether the top-bucket
+anomaly and the Economics asymmetry are the same phenomenon.
+
+---
+
+Phase 4, Milestone 1. The backtest, and the number that decides the project.
+
+I started with the fee schedule, because nothing downstream means anything
+without it. Verified against Kalshi's CFTC rule filing and two independent
+sources: `fee = ceil(0.07 x C x P x (1-P))`, taker, no settlement fee. Since
+this strategy holds to settlement there is no exit trade, so the fee is paid
+once.
+
+The shape is the interesting part. It's a parabola peaking at 50¢ (the single
+worst place to have an edge) and falling toward zero at both extremes, exactly
+where longshots and heavy favourites live. It removes the 0.50 to 0.70 buckets
+outright, which happen to be the two the study couldn't call significant
+anyway. The fee schedule and my findings disagree about where the money is in
+a way that turns out to be lucky.
+
+I got the fee wrong on the first pass and it mattered. I defaulted to rounding
+the ceiling **per contract**, telling myself it was the conservative reading.
+It isn't conservative, it's just wrong: the filed formula puts C *inside* the
+ceiling, so the round-up is per order and worth well under a cent per contract
+at any real size. Per-contract rounding overcharges by **4.7×** at a 3¢ price
+and made the entire bottom bucket look untradeable. Being conservative in the
+wrong place isn't caution, it's a different error, and this one would have
+deleted a real result.
+
+Three more things broke, and each was worth breaking.
+
+**The control took zero trades.** I'd written `invert` to flip the side but
+leave the estimated bias alone, so every inverted position faced a negative
+Kelly fraction and got declined. The control "didn't lose money" by passing
+vacuously, which is the one outcome that proves nothing. A falsification test
+that can't fail is not a test. The fix is that the control has to invert the
+*belief*, not just the side: a trader who thinks longshots are underpriced both
+takes the other side and expects the opposite edge. There's now a test
+asserting the control actually opens positions.
+
+**A losing trade returns worse than −100%.** You forfeit the stake *and* pay
+the fee, so `pnl / stake` = −1.06. I was compounding that into an equity curve,
+which drove it through zero into negative territory, and the drawdown came out
+as NaN. The denominator has to be stake + fee + slippage: the cash that
+actually leaves the account.
+
+**The backtest was deploying 11× the bankroll.** This was the real one. Kelly
+sizes every bet as if it were the only one on the table; this strategy holds
+~570 positions on a typical settlement day, so the per-position 2% cap alone
+asks for eleven times the money. Without a portfolio budget the backtest isn't
+optimistic, it's incoherent, reporting returns on capital nobody has. I added
+a daily deployment cap that scales an over-budget day proportionally, keeping
+the relative Kelly weights.
+
+The honest consequence, which is now in ADR 007: **the budget binds on 99.9% of
+trades.** Kelly sets the relative weights and the portfolio constraint sets the
+level, so calling this "Kelly-sized" without that sentence would be overselling
+it.
+
+Results, out-of-sample on 27,404 trades over 48 settlement days:
+
+| | strategy | anti-bias control |
+|---|---|---|
+| ROI on deployed capital | **+1.23%** | −14.59% |
+| final equity | 1.74 | 0.0003 |
+| hit rate | 82.9% | 17.1% |
+| max drawdown | −11.4% | −99.97% |
+
+**The falsification control works.** Inverting the belief loses 14.6% where the
+strategy makes 1.2%, on the same contracts paying the same fees. That
+asymmetry is real, not a bug: the control buys longshot YES, so it wins rarely
+and its losses compound differently.
+
+But the number I'd actually lead with is none of those. The backtest fills at
+the last traded price, and a real taker crosses the spread. I can't measure the
+spread, because settled snapshots carry no usable book, which is the same ADR 003
+problem that forced the T-1h pull in the first place. So rather than invent a
+slippage number that would look rigorous, I compute the **breakeven slippage**:
+the adverse fill per contract that erases the whole edge.
+
+It's **0.98¢**. Under one cent.
+
+That reframes everything. The +1.23% ROI is real arithmetic and it is a
+*no-spread upper bound*. A 2¢ spread (entirely plausible on these markets)
+costs about a cent at the midpoint and takes the edge to zero. So the honest
+statement is not "this strategy makes 1.2%", it's "the edge after fees is under
+a cent per contract, which is inside the spread I can't measure." Fees already
+eat a third of the gross edge (1.20 → 0.58); the spread would eat the rest.
+
+I'm oddly pleased about this. A backtest that printed a big Sharpe would have
+been the least believable thing in the repo. This one says *here is exactly how
+much room there is, and it is not much*, which is a claim I can defend.
+
+225 tests pass, 33 new. The one that matters shuffles every out-of-sample
+outcome and asserts each position size is byte-identical: if the strategy
+peeked at an answer anywhere, a size would move.
+
+Still open for Milestone 2: the equity-curve notebook, `docs/limitations.md`
+(where the spread caveat and the 48-day window get stated properly), the
+literature-style writeup, and verifying `make all` on a clean clone.
+
+---
+
+Phase 4, Milestone 2. Sensitivity sweeps, the equity-curve figures, and the
+final writeups.
+
+The sweeps were the point of this milestone, and they came back clean. I swept
+three things the backtest could plausibly have been set differently on:
+`min_net_edge` (how much margin above the fee a bucket needs before it's
+traded), `train_fraction` (where ADR 006's estimate/trade split falls), and
+`kelly_fraction` (the risk dial, included as a sanity check rather than a
+search).
+
+The one I found genuinely interesting: raising `min_net_edge` from 0 to 1.0¢
+doesn't just hold the result steady, it **improves** it. ROI goes from 1.23%
+to 1.73% to 2.40% as fewer, higher-margin buckets get traded. That's the
+opposite of what a manufactured result looks like. If the edge were an
+artefact of including marginal buckets, tightening the filter would have
+*hurt*. Instead it says the real margin is concentrated in a handful of
+buckets and the strategy finds them. Above 1.0¢ nothing clears the bar at all.
+That's the ceiling on how much margin exists in this data, not a failure of
+the sweep.
+
+`train_fraction` from 0.4 to 0.8: ROI stays positive (1.05% to 2.23%) and the
+control keeps losing everywhere. `kelly_fraction` from 0.1 to 1.0: ROI nearly
+flat (1.03% to 1.23%), which is the correct behaviour for a parameter that's
+supposed to only rescale stakes, not change which side wins. I wrote that
+sweep as an invariance check rather than a search for a better number, and it
+passed the check.
+
+Building the sensitivity module surfaced one design question I want to record:
+what does "the threshold" mean when I never implemented the proposal's literal
+`longshot_threshold` / `favorite_threshold` price cutoffs? I'd replaced those
+with a derived rule (trade a bucket iff its in-sample bias is significant and
+survives the fee) specifically so no one could pick a cutoff by eye after
+seeing the full-sample answer (ADR 006, decision 4). So the sensitivity
+analysis the proposal asked for maps onto sweeping the parameters *of that
+derivation* rather than sweeping a manual price line. I think that's the more
+honest version of the same question, and I said so directly in the module
+docstring rather than silently reinterpreting the ask.
+
+The equity curve figure is the one I'm happiest with in this milestone. Strategy
+and control on the same axes, same scale, unavoidable to misread: the blue
+line climbs to 1.74x over 48 days while the red dashed line collapses to
+0.0003x in the first three weeks and flatlines near zero. It's the
+falsification test made visual: a reader doesn't need the ROI numbers to see
+that betting against the bias is a different kind of bad than not betting on
+it at all.
+
+Wrote `docs/limitations.md` last, after everything else, on purpose. I wanted
+every number in it to be one I'd actually computed rather than a hedge written
+in advance of the result. The single biggest line item is still the spread:
+0.98¢ breakeven against a cost I structurally cannot measure from this data.
+And now it sits next to the sensitivity numbers that say the *backtest's own
+thresholds* aren't the fragile part. The fragile part is the size of the bias
+itself: 2.98¢ peak, next to a left-closed-bucket choice and a T-1h horizon
+choice each worth a comparable amount. Both were made for stated reasons and
+neither has been shown to flip the sign, but a 3-cent effect earns more
+scepticism than a 30-cent one would, and the document says that plainly rather
+than only in a footnote.
+
+232 tests pass now (7 new, covering the sweep mechanics rather than
+re-asserting the real dataset's numbers, which are recorded by hand, once,
+in `reports/calibration-study.md` and `docs/limitations.md`, since a sweep
+over the real 100k-row dataset takes minutes per run and isn't something a
+test suite should be re-computing on every commit).
+
+`reports/calibration-study.md` is the literature-style writeup (abstract,
+motivation, method, results, backtest, discussion), the thing meant to read
+like an actual paper rather than an engineering doc. README is rewritten with
+the backtest section in the same plain-language style as the rest of it,
+including the "under one cent" number stated as the actual headline rather
+than buried under the ROI.
+
+That's Phase 4 done. Remaining loose ends, none blocking: `make all` hasn't
+been re-run from a genuinely clean clone (the ingest steps hit Kalshi's live
+API for hours; re-running them would just burn time against a service I've
+already validated works, not add confidence), no linter is configured, and the
+T-6h sensitivity horizon is ingested but not run through calibration or the
+backtest. All three are named explicitly in `docs/limitations.md` rather than
+quietly left out.
+
+## 2026-10-11
+
+Today I tested whether the 15-minute bot should start buying higher than 90¢.
+Live, its 90 to 91¢ bets had gone 37 won and 10 lost (−$5.97), and they were behind
+10 of its 15 losses, while every price band from 92¢ up had made money. (That
+count rounded the price paid. Banded the way the backtest bands its bets, by the
+ask the bot saw when it decided, they were 47 won and 11 lost, −$0.15: about
+break-even, but still the only band not clearly making money.) So
+`research/kalshi_15min/price_floor.py` replays the bot's exact rule over the
+whole history (Dec 10, 2025 to Oct 8, 2026, about 36,000 bets) with only the
+lowest price changed: 90, 91, 92, 93 or 95¢. It writes `price_floor.json`, and
+the dashboard's Research tab draws it at the bottom of the Edge view, next to
+the bot's own live results by band. To fit in little memory it loads only
+minutes 6 to 8 and favorites at 90¢+, and its tests check that this lean replay
+gives exactly the same bets as `strategies_backtest.py`'s full one.
+
+At a flat $10 a bet, 90 to 91¢ earned +6.5¢ a bet over 6,126 bets (95% range −1.3
+to +14.3¢), as much as any band. It was only negative from Sep 24 on (−8.4¢),
+and 95 to 97¢ was negative over the same weeks too. The one thing against it is
+fills. Using Kalshi's trade tape to see which orders would really have filled
+(it covers every live-rule bet since Dec 10), the orders that didn't fill won
+more often than the ones that did, in every band. That's adverse selection: you
+get filled most easily when other traders are keen to sell you the favorite,
+and they're keener when it's likelier to lose. The gap is about 2 points from
+90¢ to 94¢ (91.6% of filled 90 to 91¢ orders won, against 93.5% of unfilled ones)
+and a few tenths from 95¢ up. Once fills are realistic, 90 to 91¢ makes +3.4¢ a
+bet and 92 to 94¢ +2.1¢, against +5.3¢ to +6.6¢ from 95¢ up, though the ranges
+overlap. (Measured from Jul 18 only, as I first did, 90 to 91¢ looked the worst
+at +2.7¢; over the whole tape 92 to 94¢ is lower.)
+
+With the bot's own sizing from $500 and fills limited by the tape, the 90¢
+floor ended at $1,085 (worst drop 49%), 91¢ at $1,026 (42%), 92¢ at $1,212 (46%), 93¢ at $1,582 (33%)
+and 95¢ at $1,602 (23%). That looks like a case for 95¢ until it's split up:
+the order changes from one period to the next, and with every order filled in
+full it reverses. So there's no clear evidence a higher floor earns more. Its
+real case is smaller swings. The live floor stayed at 90¢ for now.
+
+That evening the question was what the bot's real orders say about the
+backtests, and whether the research backtests should be updated to fill like
+them. The bot sends one immediate-or-cancel order per bet
+(it takes whatever the book has at its price right then and cancels the rest),
+so it often gets only part of what it asks for, or nothing. Every backtest but
+the real-liquidity ones, which read Kalshi's trade tape, filled each order in
+full.
+
+First the data. `fetch_history.py` brought the minute files
+up to the end of Oct 11 UTC (5,378 more markets), and `liquidity.py` fetched and
+reduced the trade tape from Dec 10 again, which added 795 bets: `liquidity.json`
+now covers 36,588 live-rule bets.
+
+Then `research/kalshi_15min/live_fills.py`. It opens the bot's ledger read-only,
+copying it into memory at once so the bot is never held up, and sets every real
+order against the research data. It writes `live_fills.json`: how the orders
+filled (overall and by price band, size, market and group), the prices paid
+against the candle ask (the ask recorded at the end of minute 8), the fees, a
+check of the trade-tape model, a fill table, a market-by-market replay of the
+backtest against the bot, and what the strategy lab's changes would have done
+to the live bets. From the fill table, `strategies_backtest.py` adds two
+accounts, "The live bot · live fills" and "The live bot · all three · live
+fills". Each order gets what live orders of its size got in its market, at the
+candle ask plus the gap real fills paid over it, with Kalshi's exact fee. The
+dashboard's Research tab explains them and gives each a "Filled like live
+orders" panel. The tests came first: `test_live_fills.py` (27) and
+`test_live_fit.py` (42) in `research/kalshi_15min/tests/`, and
+`bot/test_research_live_fit.py` (64; removed later with the Research tab).
+
+The fill table took one idea. A real order shows how many contracts were waiting
+at the bot's price, but not always exactly: one that filled in part shows it
+exactly, one that got nothing shows zero, and one that filled in full shows only
+that there were at least that many. Kaplan-Meier, the method medical studies use
+when some patients are still alive when the study ends (they only show they
+lived at least that long), handles counts like that. It gives the chance the
+book had at least 1 contract, at least 2, and so on, and adding those up gives
+what an order of any size can expect. Over all the orders, one for 10 contracts
+can expect about 6, and one for 30 about 16. A market with 15 or more live
+orders gets its own table; the others use their group's.
+
+The first run covered 488 orders, Sep 28 to Oct 12 UTC. 246 filled in full, 102
+in part and 140 not at all: 3,724 of the 6,882 contracts asked for, 54.1%. Small
+orders filled best (72% for 1 to 5 contracts, about half above that). Energy filled
+71%, crypto 54% and metals 44%; BTC 79% and NEAR 41%.
+
+Three of the backtests' assumptions came out too cautious:
+
+- **Price.** Fills averaged 0.23¢ under the bot's limit, and the limit averaged
+  0.21¢ over the candle ask, so fills came to about 0.00¢ against the candle
+  ask (319 orders). The "live-like fills" scenario charges 0.4¢ a contract more.
+  Live fills cost what the candle ask says.
+- **Fees.** $13.53 paid, against $13.52 from Kalshi's formula and $15.48 with the
+  backtests' rounding up to the cent on every order. Kalshi charges the exact fee.
+- **The trade-tape model.** Used at the candle ask, as the real-liquidity
+  accounts use it, it predicted 2,104 contracts on the 421 orders it covers,
+  against 2,970 real. It undercounts because the bot's limit sits slightly above
+  the candle ask.
+
+And the misses don't look like the better bets. The orders that got nothing
+would have won 122 of 128 (95.3%), the filled ones 324 of 340 (95.3%). Earlier
+today the tape had the missed orders from 90¢ to 94¢ winning about 2 points more
+often; live, there's no sign of that yet.
+
+The replay over the 186 windows the bot was running lined up well. The
+backtest's rule picked 447 markets, and the bot ordered 421 of them, all on the
+same side. Of the 26 it didn't, 8 came while the bot was halted, 11 showed a
+warning sign at the bot's own moment, 6 were outside the band at its price and
+1 had no decision logged. Of the 67
+the bot ordered and the backtest didn't, 41 came after the data ends, 11 were
+outside the band at the candle and 15 showed a warning sign there. On the 299
+markets both bought and the bot filled, the backtest made +15.5¢ per $10 and
+the bot +16.1¢: on the same markets, live execution matches the backtest. The 20
+filled bets only the bot made won 15 of 20, −$1.19 on $111, too few to read
+much into.
+
+Last, the strategy lab's changes on the live bets, as profit they'd have given
+up. Skipping HYPE drops 41 filled bets (39 won, +$8.86). Skipping the 9:30 ET
+window drops none. At most 3 crypto bets a window drops 107 (98 won, +$28.07),
+and all three together drop 126 (117 won, +$30.92). So far each would have cost
+money. But the live bets have had only 16 losses in all, so that's no verdict.
+
+The caveats are real. It's 488 orders and 16 losses. The fill table applies
+today's order books to the whole history, back to December. And fills on larger
+orders are uncertain: only 30 orders were for 31 contracts or more.
+`strategies_backtest.py` is rerunning on the refreshed data with the two new
+accounts.
+
+## 2026-10-12
+
+Today was the dashboard's Historical Research tab: take the live view off the
+research page, make the page easier to read without dropping any content, and
+add the worst 24 hours to the strategies table.
+
+The live part went. The tab's Markets view (a watchlist, each market's order
+book and recent trades, and what each rule would do with it right now) is gone,
+leaving four views that read the backtests: Strategies, Edge, Market bias and
+Risk. A market's name on the Live tab's board used to open it in that view; now
+it opens the market on Kalshi in a new tab.
+
+Nothing else was taken out, only tucked away. Each view opens with one line on
+what it's for (the Market bias view's closing note on the favorite-longshot
+bias moved up to be its intro). The secondary panels fold: click a heading to
+open or close it, a closed one keeps a one-line summary, the page remembers the
+choice, and each view has "Open all / Close all". A folded panel is still in the
+page, just hidden. The Strategies table shows its key columns (Strategy, End,
+Return, Per $10, Max drop and Worst 24 hours) with a Columns switch from Key to
+All for the rest, and every column heading says what it means when hovered.
+Each strategy's detail splits into "Results" and "How it works" tabs. The "Real
+fills" panel starts closed, and its summary says how much of the profit real
+fills keep.
+
+Worst 24 hours is the deepest fall from a high within any 24 hours, the same
+measure the live bot's 35% halt watches. The table had the worst drop over the
+whole history and the worst 15 minutes, but neither is what the halt looks at.
+`strategies_backtest.py` now gives every run `worst24hPct`, `worst24h` and
+`worst24hAt` (the fall as a share of the high, in dollars, and when it hit
+bottom), in one pass over the windows with a sliding maximum (a short list of
+the highs that can still matter as the 24 hours move forward, so each window is
+looked at once). Rerun today, the live bot's worst 24 hours is −35.9% from
+Dec 10 (Jul 8, 2026) and −34.8% from Jul 18 (Jul 30), the same as the halt
+study. With live fills it's −20.0% and −23.0%, with real liquidity −26.1% and
+−23.5%, with all three of the lab's changes −27.0% and −27.0%, and with all
+three and live fills −16.0% and −12.2%.
+
+The page also stopped reading the live feed once a second, which it had been
+doing partly to learn whether the study had changed. It now asks the dashboard's
+new `/api/research/stamp` (just when the study's files last changed) about every
+30 seconds, and fetches the study only when that moves. And one bug turned up:
+the dashboard never sent the live-fills figures (`liveFit`) to the page, so
+yesterday's "Filled like live orders" panel never showed. It sends them now,
+with the worst 24 hours.
+
+The tests came first: `bot/test_research_layout.py` (removed later with the tab; the tab run for real in
+node: views, loading, folds, columns, worst 24 hours, the detail's tabs),
+`bot/tests/test_research_stamp.py` (what the server sends, the stamp route, the
+board's Kalshi link) and `research/kalshi_15min/tests/test_worst_24h.py` (the
+figure on windows worked out by hand, and against a brute force over every pair
+of moments). Seven existing test files changed with them.

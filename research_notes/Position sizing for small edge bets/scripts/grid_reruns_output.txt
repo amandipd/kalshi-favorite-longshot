@@ -1,0 +1,103 @@
+== grid_periods.py
+PERIODS: [('pre', 'Dec 10 to Jul 17 · untouched'), ('before', 'Jul 18 to Aug 23 · untouched'), ('build', 'Aug 24 to Sep 23 · rules built here'), ('paper', 'Sep 24 on · paper-trade days')]
+
+tape 1.0%/20%: final $3,065 maxDD 18% worst24h -8.3% bets 21069 perBet(c/$10) +3.5 fillshare 46%
+   pre     bets 10704 ret   +4.4% maxDD  16% per$10   +3.4c [-0.8,+7.5]
+   before  bets  3759 ret   +3.3% maxDD  13% per$10   +3.1c [-4.5,+10.6]
+   build   bets  3983 ret  +17.3% maxDD   5% per$10   +6.2c [-0.4,+12.9]
+   paper   bets  2623 ret  +21.2% maxDD   8% per$10  +12.3c [+5.1,+19.6]
+
+tape 1.5%/20%: final $3,330 maxDD 26% worst24h -12.3% bets 21069 perBet(c/$10) +3.1 fillshare 42%
+   pre     bets 10704 ret   -0.1% maxDD  23% per$10   +3.4c [-0.8,+7.6]
+   before  bets  3759 ret   +5.6% maxDD  18% per$10   +3.1c [-4.4,+10.6]
+   build   bets  3983 ret  +23.5% maxDD   7% per$10   +6.3c [-0.4,+12.9]
+   paper   bets  2623 ret  +27.8% maxDD  12% per$10  +12.3c [+5.1,+19.6]
+
+tape 2.0%/20%: final $3,518 maxDD 33% worst24h -15.4% bets 21069 perBet(c/$10) +2.9 fillshare 39%
+   pre     bets 10704 ret   -4.7% maxDD  29% per$10   +3.4c [-0.7,+7.6]
+   before  bets  3759 ret   +6.8% maxDD  23% per$10   +3.1c [-4.4,+10.7]
+   build   bets  3983 ret  +29.0% maxDD   9% per$10   +6.3c [-0.4,+13.0]
+   paper   bets  2623 ret  +34.0% maxDD  15% per$10  +12.4c [+5.1,+19.6]
+
+tape 3.0%/20%: final $3,605 maxDD 45% worst24h -21.2% bets 21069 perBet(c/$10) +2.4 fillshare 36%
+   pre     bets 10704 ret  -12.9% maxDD  39% per$10   +3.4c [-0.7,+7.6]
+   before  bets  3759 ret   +5.7% maxDD  30% per$10   +3.1c [-4.4,+10.7]
+   build   bets  3983 ret  +32.0% maxDD  11% per$10   +6.3c [-0.3,+13.0]
+   paper   bets  2623 ret  +48.3% maxDD  17% per$10  +12.4c [+5.1,+19.6]
+
+tape 2.0%/10%: final $3,306 maxDD 33% worst24h -15.6% bets 21069 perBet(c/$10) +2.7 fillshare 40%
+   pre     bets 10704 ret   -6.2% maxDD  29% per$10   +3.4c [-0.7,+7.6]
+   before  bets  3759 ret   +6.1% maxDD  20% per$10   +3.1c [-4.4,+10.7]
+   build   bets  3983 ret  +22.1% maxDD   8% per$10   +6.3c [-0.4,+12.9]
+   paper   bets  2623 ret  +36.1% maxDD  11% per$10  +12.3c [+5.1,+19.6]
+
+tape 1.5%/10%: final $3,246 maxDD 26% worst24h -12.3% bets 21069 perBet(c/$10) +3.1 fillshare 42%
+   pre     bets 10704 ret   -0.3% maxDD  23% per$10   +3.4c [-0.8,+7.6]
+   before  bets  3759 ret   +5.0% maxDD  17% per$10   +3.1c [-4.4,+10.6]
+   build   bets  3983 ret  +20.7% maxDD   7% per$10   +6.3c [-0.4,+12.9]
+   paper   bets  2623 ret  +28.3% maxDD  10% per$10  +12.3c [+5.1,+19.6]
+
+full 1.0%/20%: final $7,826 maxDD 23% worst24h -13.7% bets 30297 perBet(c/$10) +6.0 fillshare None
+   pre     bets 13501 ret  +30.1% maxDD  23% per$10   +2.3c [-1.6,+6.2]
+   before  bets  5581 ret  +13.9% maxDD  20% per$10   +2.7c [-3.7,+9.1]
+   build   bets  6713 ret  +69.1% maxDD   7% per$10   +8.2c [+2.8,+13.6]
+   paper   bets  4502 ret  +56.2% maxDD  14% per$10  +10.2c [+4.1,+16.3]
+
+full 1.5%/20%: final $15,344 maxDD 32% worst24h -20.2% bets 30297 perBet(c/$10) +6.8 fillshare None
+   pre     bets 13501 ret  +47.5% maxDD  32% per$10   +2.4c [-1.6,+6.3]
+   before  bets  5581 ret  +21.4% maxDD  29% per$10   +2.8c [-3.6,+9.2]
+   build   bets  6713 ret +119.9% maxDD  10% per$10   +8.3c [+2.8,+13.7]
+   paper   bets  4502 ret  +94.7% maxDD  21% per$10  +10.3c [+4.1,+16.4]
+
+full 2.0%/20%: final $27,966 maxDD 41% worst24h -25.8% bets 30297 perBet(c/$10) +7.4 fillshare None
+   pre     bets 13501 ret  +63.4% maxDD  41% per$10   +2.4c [-1.5,+6.3]
+   before  bets  5581 ret  +27.9% maxDD  37% per$10   +2.8c [-3.5,+9.2]
+   build   bets  6713 ret +178.8% maxDD  13% per$10   +8.3c [+2.9,+13.7]
+   paper   bets  4502 ret +139.9% maxDD  27% per$10  +10.3c [+4.2,+16.4]
+
+full 3.0%/20%: final $69,859 maxDD 56% worst24h -35.7% bets 30297 perBet(c/$10) +8.4 fillshare None
+   pre     bets 13501 ret  +88.6% maxDD  56% per$10   +2.4c [-1.5,+6.4]
+   before  bets  5581 ret  +36.6% maxDD  50% per$10   +2.9c [-3.5,+9.2]
+   build   bets  6713 ret +291.2% maxDD  19% per$10   +8.3c [+2.9,+13.7]
+   paper   bets  4502 ret +246.6% maxDD  33% per$10  +10.3c [+4.2,+16.4]
+
+full 2.0%/10%: final $21,330 maxDD 41% worst24h -23.5% bets 30297 perBet(c/$10) +7.0 fillshare None
+   pre     bets 13501 ret  +58.9% maxDD  41% per$10   +2.4c [-1.5,+6.3]
+   before  bets  5581 ret  +27.3% maxDD  34% per$10   +2.8c [-3.6,+9.2]
+   build   bets  6713 ret +139.9% maxDD  13% per$10   +8.3c [+2.9,+13.7]
+   paper   bets  4502 ret +119.8% maxDD  21% per$10  +10.3c [+4.1,+16.4]
+
+full 1.5%/10%: final $13,679 maxDD 32% worst24h -19.2% bets 30297 perBet(c/$10) +6.5 fillshare None
+   pre     bets 13501 ret  +47.2% maxDD  32% per$10   +2.4c [-1.6,+6.3]
+   before  bets  5581 ret  +20.5% maxDD  28% per$10   +2.8c [-3.6,+9.2]
+   build   bets  6713 ret +103.7% maxDD  10% per$10   +8.3c [+2.8,+13.7]
+   paper   bets  4502 ret  +89.2% maxDD  18% per$10  +10.2c [+4.1,+16.4]
+
+windows with bets: 11682 bets: 30297 mean per active window: 2.59
+cluster size distribution: [(1, 4757), (2, 2560), (3, 1464), (4, 1025), (5, 751), (6, 472), (7, 268), (8, 175), (9, 123), (10, 36), (11, 25), (12, 20), (13, 2), (14, 3), (15, 1)]
+design effect at phi=0.2: 1.63
+design effect at phi=0.33: 2.03
+
+== grid_drawdown.py
+tape 2%/20% flat                  : final $3,518 maxDD 33% worst24h -15.4% pre -4.7% | 24h falls>=7.5%: 10  >=10%: 3  >=15%: 2
+tape 2%/20% halve@15              : final $2,774 maxDD 28% worst24h -13.3% pre -5.0% | 24h falls>=7.5%: 7  >=10%: 1  >=15%: 0
+tape 2%/20% halve@10,quarter@20   : final $2,617 maxDD 23% worst24h -13.3% pre -4.1% | 24h falls>=7.5%: 5  >=10%: 1  >=15%: 0
+tape 2%/20% GZ cushion 35%        : final $3,172 maxDD 26% worst24h -13.9% pre -3.3% | 24h falls>=7.5%: 3  >=10%: 1  >=15%: 0
+tape 3%/20% flat                  : final $3,605 maxDD 45% worst24h -21.2% pre -12.9% | 24h falls>=7.5%: 28  >=10%: 12  >=15%: 3
+tape 3%/20% halve@15              : final $2,663 maxDD 35% worst24h -16.0% pre -19.5% | 24h falls>=7.5%: 14  >=10%: 5  >=15%: 1
+tape 3%/20% halve@10,quarter@20   : final $2,836 maxDD 28% worst24h -15.8% pre -6.0% | 24h falls>=7.5%: 10  >=10%: 1  >=15%: 1
+tape 3%/20% GZ cushion 35%        : final $3,004 maxDD 31% worst24h -16.7% pre -10.5% | 24h falls>=7.5%: 12  >=10%: 2  >=15%: 1
+
+== grid_corrscale.py
+tape 1.5%/12%               : final $3,278 maxDD 26% worst24h -12.3% worst15m -6.7% perBet +3.1c | pre -0.1%  before +5.4%  build +22.0%  paper +27.6%
+tape 1.5%/10%               : final $3,246 maxDD 26% worst24h -12.3% worst15m -6.5% perBet +3.1c | pre -0.3%  before +5.0%  build +20.7%  paper +28.3%
+tape 1.0%/10%               : final $3,061 maxDD 18% worst24h -8.3% worst15m -4.7% perBet +3.5c | pre +4.4%  before +3.3%  build +17.1%  paper +21.2%
+tape corr-scaled 2%/(1+(n-1)0.33): final $2,865 maxDD 24% worst24h -8.7% worst15m -3.2% perBet +2.7c | pre -3.7%  before +5.4%  build +13.7%  paper +24.0%
+tape corr-scaled 3%/(1+(n-1)0.33): final $2,920 maxDD 34% worst24h -12.2% worst15m -4.9% perBet +2.2c | pre -12.1%  before +6.1%  build +17.5%  paper +33.1%
+tape corr-scaled 4%/(1+(n-1)0.33): final $2,912 maxDD 43% worst24h -15.8% worst15m -6.3% perBet +1.8c | pre -20.5%  before +6.8%  build +21.1%  paper +41.6%
+
+== grid_caps.py
+tape 2.0%/12%: final $3,407 maxDD 32% worst24h -15.4% worst15m -7.4% perBet +2.8c | pre -4.6%  before +6.1%  build +24.2%  paper +35.5%
+tape 2.0%/15%: final $3,457 maxDD 33% worst24h -15.5% worst15m -8.2% perBet +2.8c | pre -4.8%  before +6.6%  build +26.7%  paper +34.4%
+tape 1.5%/15%: final $3,325 maxDD 26% worst24h -12.3% worst15m -6.7% perBet +3.1c | pre -0.1%  before +5.6%  build +23.4%  paper +27.8%
+tape 2.5%/15%: final $3,531 maxDD 39% worst24h -18.3% worst15m -8.7% perBet +2.6c | pre -8.7%  before +6.4%  build +27.8%  paper +42.1%

@@ -1,0 +1,17 @@
+# Phone alerts through ntfy (kalshi_bot/notify.py): a lost bet, and whatever else ALERTS in notify.py lets through.
+# Reads the ledger only. The ntfy topic comes from .env (NTFY_TOPIC). Placeholders as in kalshi-bot.service.
+[Unit]
+Description=Kalshi bot: phone alerts (notify.py)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=kalshi
+WorkingDirectory=/opt/kalshi-bot/bot
+ExecStart=/opt/kalshi-bot/venv/bin/python -u -m kalshi_bot.notify --log state/notify.log
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

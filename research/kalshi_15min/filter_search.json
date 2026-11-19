@@ -1,0 +1,106 @@
+{
+ "split": "2026-05-11T23:52:30+00:00",
+ "thresholdsTried": 152,
+ "train": [
+  {
+   "feature": "mean_spread_5_8",
+   "bets": 7943,
+   "windows": 4407,
+   "losses": 318,
+   "cents": 0.025,
+   "lo": -0.631,
+   "hi": 0.681,
+   "cut": 0.022499999999999992,
+   "pct": 40
+  },
+  {
+   "feature": "rel_spread",
+   "bets": 8204,
+   "windows": 3940,
+   "losses": 311,
+   "cents": 0.205,
+   "lo": -0.432,
+   "hi": 0.842,
+   "cut": 0.9666666666666702,
+   "pct": 40
+  },
+  {
+   "feature": "spread_trend",
+   "bets": 10280,
+   "windows": 5793,
+   "losses": 511,
+   "cents": -0.479,
+   "lo": -1.058,
+   "hi": 0.1,
+   "cut": -0.006000000000000005,
+   "pct": 50
+  },
+  {
+   "feature": "fav_minutes",
+   "bets": 12121,
+   "windows": 5671,
+   "losses": 602,
+   "cents": -0.709,
+   "lo": -1.313,
+   "hi": -0.105,
+   "cut": 7,
+   "pct": 25
+  },
+  {
+   "feature": "travel",
+   "bets": 13360,
+   "windows": 6165,
+   "losses": 727,
+   "cents": -1.153,
+   "lo": -1.754,
+   "hi": -0.552,
+   "cut": 0.5599999999999999,
+   "pct": 65
+  },
+  {
+   "feature": "worst_dip",
+   "bets": 18504,
+   "windows": 7887,
+   "losses": 1082,
+   "cents": -1.305,
+   "lo": -1.841,
+   "hi": -0.77,
+   "cut": 0.5499999999999999,
+   "pct": 90
+  },
+  {
+   "feature": "since_coinflip",
+   "bets": 12167,
+   "windows": 5692,
+   "losses": 609,
+   "cents": -0.749,
+   "lo": -1.356,
+   "hi": -0.142,
+   "cut": 7,
+   "pct": 30
+  },
+  {
+   "feature": "staleness",
+   "note": "no threshold kept enough bets"
+  }
+ ],
+ "picked": [],
+ "test": {
+  "bot": {
+   "bets": 29178,
+   "windows": 9381,
+   "losses": 1121,
+   "cents": 0.524,
+   "lo": 0.157,
+   "hi": 0.892
+  },
+  "floorOnly": {
+   "bets": 44822,
+   "windows": 11972,
+   "losses": 2230,
+   "cents": -0.272,
+   "lo": -0.616,
+   "hi": 0.072
+  }
+ }
+}

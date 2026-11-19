@@ -1,0 +1,34 @@
+{
+ "btc": {
+  "close_pairs": 1848,
+  "close_same": 1848,
+  "open_pairs": 1841,
+  "open_same": 1841,
+  "median_rel_diff": 0.0,
+  "kalshi_markets": 1856
+ },
+ "eth": {
+  "close_pairs": 1847,
+  "close_same": 1847,
+  "open_pairs": 1840,
+  "open_same": 1840,
+  "median_rel_diff": 0.0,
+  "kalshi_markets": 1856
+ },
+ "sol": {
+  "close_pairs": 1848,
+  "close_same": 1848,
+  "open_pairs": 1840,
+  "open_same": 1840,
+  "median_rel_diff": 0.0,
+  "kalshi_markets": 1856
+ },
+ "xrp": {
+  "close_pairs": 1847,
+  "close_same": 1847,
+  "open_pairs": 1840,
+  "open_same": 1840,
+  "median_rel_diff": 2.252252252250337e-05,
+  "kalshi_markets": 1856
+ }
+}

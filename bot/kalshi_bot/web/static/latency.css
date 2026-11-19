@@ -1,0 +1,23 @@
+/*
+ * The Latency tab (latency.js). It borrows Live Research's header, figures, notes and table styles (.lr-*, from
+ * live_research.css) so the two tabs read alike; this sheet holds only the tab's frame and its chart. Colours come
+ * from the page's tokens, sizes, spaces and radii keep to the page's scales, and every rule is scoped
+ * to #latency or a .lat- class, so it can't reach the other pages.
+ */
+#latency { display: grid; gap: 32px; min-width: 0; font-variant-numeric: tabular-nums; }
+#latency h2, #latency h3, #latency p, #latency figure { margin: 0; }
+/* a run of folded parts reads as one list: 8px apart, where open ones sit 32px apart */
+#latency > .fold[data-open="false"] + .fold[data-open="false"] { margin-top: -24px; }
+
+/* ------------------------------------------------------------ the chart: dots, the median and the slowest 1 in 20 */
+.lat-fig { display: grid; gap: 8px; min-width: 0; }
+.lat-scroll { overflow-x: auto; min-width: 0; }   /* a phone scrolls the chart in its box, never the page */
+.lat-chart { display: block; width: 100%; min-width: 600px; height: auto; }
+.lat-plot { fill: none; stroke: var(--line); }
+.lat-grid { stroke: var(--line); }
+.lat-dot { fill: var(--ink-2); opacity: 0.35; }
+.lat-med { stroke: var(--ink); stroke-width: 2; }
+.lat-p95 { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.lat-ax { font: 400 11px var(--sans); fill: var(--muted); }
+/* a level's label, ringed in the panel's colour so it reads over the dots */
+.lat-lbl { font: 400 11px var(--sans); fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }

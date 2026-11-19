@@ -1,0 +1,156 @@
+The live entry rule replayed on the 15-minute series the bot skips.
+
+The bot trades crypto, metals and energy (bot.py's EDGE_GROUPS). Kalshi runs 35 fifteen-minute
+series; the other 16 -- Coin Race, FX, Treasury yields, the stock indices and Brent -- have never
+been tested on their own data. This replays the live rule on them: at the end of minute 8 buy the
+favourite (the dearer of YES at its ask and NO at 1 - the YES bid) when that price is 92-99.9c,
+$10 flat, hold to settlement, paying Kalshi's taker fee rounded up to the cent.
+
+$10 flat from a bankroll that can't run out is strategies_backtest.py's edge() measure: it compares
+rules on what they earn a bet, apart from sizing and from going broke. The headline is cents per
+dollar staked, with its t-stat, so these series line up against the live bot's own +1.39c/$1.
+
+Reads minutes_skipped.csv (fetch_skipped.py) and the four minute files the rest of the research
+reads, each market once. Writes skipped_edge.json.
+
+    python fetch_skipped.py     (the minute history for the skipped series)
+    python skipped_edge.py      (then this)
+
+11 skipped series with settled markets.
+The control, the series the bot does trade under the same rule, is the last line of each block.
+
+=== the 92c floor alone, at the candle ask ===
+
+by series:
+  KXCRYPTOLEAD15M       14678 bets   700 lost    -2.21c/$1  t=-12.12   $ -3238.05 on $ 146780.00   2.6/window  worst    -39.91  spread  7.01c  95% CI [-2.56, -1.85]
+  KXEURUSD15M             553 bets    25 lost    -0.88c/$1  t=-0.95   $   -48.74 on $   5530.00   1.0/window  worst    -10.06  spread  3.24c  95% CI [-2.7, 0.94]
+  KXUSDJPY15M             510 bets    36 lost    -3.48c/$1  t=-2.93   $  -177.58 on $   5100.00   1.0/window  worst    -10.06  spread  3.94c  95% CI [-5.81, -1.15]
+  KXGBPUSD15M             498 bets    25 lost    -1.23c/$1  t=-1.20   $   -61.19 on $   4980.00   1.0/window  worst    -10.06  spread  4.01c  95% CI [-3.24, 0.78]
+  KXAUDUSD15M             352 bets    31 lost    -5.37c/$1  t=-3.40   $  -189.18 on $   3520.00   1.0/window  worst    -10.06  spread 10.46c  95% CI [-8.47, -2.28]
+  KXUSDCAD15M             318 bets    14 lost    -0.66c/$1  t=-0.54   $   -20.91 on $   3180.00   1.0/window  worst    -10.05  spread  8.63c  95% CI [-3.04, 1.73]
+  KX5YRRATE15M             59 bets    16 lost   -24.75c/$1  t=-4.08   $  -146.05 on $    590.00   1.0/window  worst    -10.05  spread 43.15c  95% CI [-36.65, -12.86]
+  KXBRENT15M               53 bets     2 lost    +0.28c/$1  t=+0.10   $     1.50 on $    530.00   1.0/window  worst    -10.05  spread  7.17c  95% CI [-5.28, 5.85]
+  KX10YRRATE15M            52 bets    12 lost   -20.43c/$1  t=-3.33   $  -106.23 on $    520.00   1.0/window  worst    -10.05  spread 38.71c  95% CI [-32.45, -8.41]
+  KX2YRRATE15M             52 bets    20 lost   -36.24c/$1  t=-5.10   $  -188.46 on $    520.00   1.0/window  worst    -10.05  spread 54.69c  95% CI [-50.17, -22.31]
+  KX30YRRATE15M            42 bets    10 lost   -21.51c/$1  t=-3.12   $   -90.32 on $    420.00   1.0/window  worst    -10.05  spread 46.21c  95% CI [-35.02, -8.0]
+
+by group:
+  coin race             14678 bets   700 lost    -2.21c/$1  t=-12.12   $ -3238.05 on $ 146780.00   2.6/window  worst    -39.91  spread  7.01c  95% CI [-2.56, -1.85]
+  fx                     1561 bets    86 lost    -1.84c/$1  t=-3.04   $  -287.52 on $  15610.00   1.6/window  worst    -20.08  spread  3.71c  95% CI [-3.03, -0.65]
+  other                   723 bets    47 lost    -2.88c/$1  t=-3.00   $  -208.58 on $   7230.00   1.3/window  worst    -20.10  spread  9.41c  95% CI [-4.77, -1.0]
+  rates                   205 bets    58 lost   -25.91c/$1  t=-7.90   $  -531.07 on $   2050.00   2.0/window  worst    -30.13  spread 45.58c  95% CI [-32.33, -19.48]
+
+by price band:
+  92-94                  1572 bets   152 lost    -2.94c/$1  t=-3.64   $  -461.62 on $  15720.00   1.1/window  worst    -20.12  spread  7.70c
+  94-96                  2860 bets   277 lost    -5.00c/$1  t=-8.56   $ -1431.36 on $  28600.00   1.3/window  worst    -30.13  spread 10.01c
+  96-98                  3240 bets   195 lost    -3.04c/$1  t=-7.04   $  -986.03 on $  32400.00   1.4/window  worst    -20.06  spread  7.54c
+  98-100                 9495 bets   267 lost    -1.46c/$1  t=-8.47   $ -1386.19 on $  94950.00   2.0/window  worst    -29.88  spread  6.29c
+
+by half (the second half is the holdout):
+  first                  8581 bets   441 lost    -2.53c/$1  t=-10.25   $ -2168.88 on $  85810.00   2.7/window  worst    -39.91  spread  7.77c
+  second                 8586 bets   450 lost    -2.44c/$1  t=-9.78   $ -2096.33 on $  85860.00   3.5/window  worst    -39.56  spread  6.78c
+
+  all skipped           17167 bets   891 lost    -2.48c/$1  t=-14.16   $ -4265.21 on $ 171670.00   3.0/window  worst    -39.91  spread  7.27c  95% CI [-2.83, -2.14]
+  what the bot trades   51345 bets  2158 lost    -0.15c/$1  t=-1.60   $  -764.37 on $ 513450.00   2.9/window  worst    -99.97  spread  3.02c  95% CI [-0.33, 0.03] 
+
+=== the 92c floor alone, 0.4c over the ask, where live fills landed ===
+
+by series:
+  KXCRYPTOLEAD15M       14678 bets   700 lost    -2.59c/$1  t=-14.30   $ -3803.65 on $ 146780.00   2.6/window  worst    -39.94  spread  7.01c  95% CI [-2.95, -2.24]
+  KXEURUSD15M             553 bets    25 lost    -1.27c/$1  t=-1.38   $   -70.28 on $   5530.00   1.0/window  worst    -10.06  spread  3.24c  95% CI [-3.08, 0.53]
+  KXUSDJPY15M             510 bets    36 lost    -3.86c/$1  t=-3.26   $  -196.86 on $   5100.00   1.0/window  worst    -10.06  spread  3.94c  95% CI [-6.18, -1.54]
+  KXGBPUSD15M             498 bets    25 lost    -1.62c/$1  t=-1.58   $   -80.58 on $   4980.00   1.0/window  worst    -10.06  spread  4.01c  95% CI [-3.63, 0.39]
+  KXAUDUSD15M             352 bets    31 lost    -5.74c/$1  t=-3.65   $  -202.15 on $   3520.00   1.0/window  worst    -10.06  spread 10.46c  95% CI [-8.83, -2.66]
+  KXUSDCAD15M             318 bets    14 lost    -1.04c/$1  t=-0.87   $   -33.22 on $   3180.00   1.0/window  worst    -10.05  spread  8.63c  95% CI [-3.4, 1.31]
+  KX5YRRATE15M             59 bets    16 lost   -25.04c/$1  t=-4.15   $  -147.71 on $    590.00   1.0/window  worst    -10.05  spread 43.15c  95% CI [-36.86, -13.21]
+  KXBRENT15M               53 bets     2 lost    -0.12c/$1  t=-0.04   $    -0.62 on $    530.00   1.0/window  worst    -10.05  spread  7.17c  95% CI [-5.85, 5.62]
+  KX10YRRATE15M            52 bets    12 lost   -20.72c/$1  t=-3.39   $  -107.72 on $    520.00   1.0/window  worst    -10.05  spread 38.71c  95% CI [-32.69, -8.74]
+  KX2YRRATE15M             52 bets    20 lost   -36.49c/$1  t=-5.16   $  -189.76 on $    520.00   1.0/window  worst    -10.04  spread 54.69c  95% CI [-50.35, -22.63]
+  KX30YRRATE15M            42 bets    10 lost   -21.79c/$1  t=-3.18   $   -91.52 on $    420.00   1.0/window  worst    -10.04  spread 46.21c  95% CI [-35.22, -8.36]
+
+by group:
+  coin race             14678 bets   700 lost    -2.59c/$1  t=-14.30   $ -3803.65 on $ 146780.00   2.6/window  worst    -39.94  spread  7.01c  95% CI [-2.95, -2.24]
+  fx                     1561 bets    86 lost    -2.23c/$1  t=-3.70   $  -347.73 on $  15610.00   1.6/window  worst    -20.08  spread  3.71c  95% CI [-3.41, -1.05]
+  other                   723 bets    47 lost    -3.26c/$1  t=-3.41   $  -235.99 on $   7230.00   1.3/window  worst    -20.10  spread  9.41c  95% CI [-5.14, -1.39]
+  rates                   205 bets    58 lost   -26.18c/$1  t=-8.02   $  -536.71 on $   2050.00   2.0/window  worst    -30.12  spread 45.58c  95% CI [-32.58, -19.78]
+
+by price band:
+  92-94                  1572 bets   152 lost    -3.36c/$1  t=-4.18   $  -527.66 on $  15720.00   1.1/window  worst    -20.12  spread  7.70c
+  94-96                  2860 bets   277 lost    -5.37c/$1  t=-9.22   $ -1535.66 on $  28600.00   1.3/window  worst    -30.12  spread 10.01c
+  96-98                  3240 bets   195 lost    -3.38c/$1  t=-7.85   $ -1095.44 on $  32400.00   1.4/window  worst    -20.06  spread  7.54c
+  98-100                 9495 bets   267 lost    -1.86c/$1  t=-10.83   $ -1765.30 on $  94950.00   2.0/window  worst    -29.92  spread  6.29c
+
+by half (the second half is the holdout):
+  first                  8581 bets   441 lost    -2.91c/$1  t=-11.85   $ -2497.45 on $  85810.00   2.7/window  worst    -39.94  spread  7.77c
+  second                 8586 bets   450 lost    -2.83c/$1  t=-11.37   $ -2426.62 on $  85860.00   3.5/window  worst    -39.66  spread  6.78c
+
+  all skipped           17167 bets   891 lost    -2.87c/$1  t=-16.42   $ -4924.07 on $ 171670.00   3.0/window  worst    -39.94  spread  7.27c  95% CI [-3.21, -2.53]
+  what the bot trades   51345 bets  2158 lost    -0.54c/$1  t=-5.81   $ -2767.36 on $ 513450.00   2.9/window  worst   -100.06  spread  3.02c  95% CI [-0.72, -0.36] 
+
+=== the full live rule, both warning signs skipped, at the candle ask ===
+
+by series:
+  KXCRYPTOLEAD15M         711 bets     9 lost    +1.12c/$1  t=+2.56   $    79.41 on $   7110.00   1.2/window  worst    -10.05  spread  1.00c  95% CI [0.26, 1.97]
+  KXEURUSD15M             147 bets     2 lost    +1.84c/$1  t=+1.82   $    27.00 on $   1470.00   1.0/window  worst    -10.05  spread  1.00c  95% CI [-0.14, 3.81]
+  KXUSDJPY15M             140 bets     3 lost    +1.25c/$1  t=+0.97   $    17.53 on $   1400.00   1.0/window  worst    -10.04  spread  1.00c  95% CI [-1.28, 3.78]
+  KXGBPUSD15M             129 bets     4 lost    +0.22c/$1  t=+0.14   $     2.81 on $   1290.00   1.0/window  worst    -10.05  spread  1.00c  95% CI [-2.83, 3.27]
+  KXAUDUSD15M             123 bets     7 lost    -2.70c/$1  t=-1.24   $   -33.17 on $   1230.00   1.0/window  worst    -10.06  spread  1.00c  95% CI [-6.96, 1.57]
+  KXUSDCAD15M              80 bets     3 lost    -0.40c/$1  t=-0.18   $    -3.21 on $    800.00   1.0/window  worst    -10.04  spread  1.00c  95% CI [-4.77, 3.97]
+  KXBRENT15M                3 bets     0 lost    +6.01c/$1  t=+2.88   $     1.80 on $     30.00   1.0/window  worst     +0.18  spread  1.00c  95% CI [1.92, 10.1]
+  KX10YRRATE15M             2 bets     0 lost    +1.85c/$1  t=+1.97   $     0.37 on $     20.00   1.0/window  worst     +0.09  spread  1.00c  95% CI [0.01, 3.69]
+  KX30YRRATE15M             2 bets     0 lost    +0.91c/$1  t=    -   $     0.18 on $     20.00   1.0/window  worst     +0.09  spread  1.00c  95% CI None
+  KX5YRRATE15M              1 bets     0 lost    +1.84c/$1  t=    -   $     0.18 on $     10.00   1.0/window  worst     +0.18  spread  1.00c  95% CI None
+
+by group:
+  coin race               711 bets     9 lost    +1.12c/$1  t=+2.56   $    79.41 on $   7110.00   1.2/window  worst    -10.05  spread  1.00c  95% CI [0.26, 1.97]
+  fx                      416 bets     9 lost    +1.14c/$1  t=+1.52   $    47.33 on $   4160.00   1.3/window  worst    -10.05  spread  1.00c  95% CI [-0.33, 2.61]
+  other                   206 bets    10 lost    -1.68c/$1  t=-1.07   $   -34.57 on $   2060.00   1.1/window  worst    -10.05  spread  1.00c  95% CI [-4.75, 1.4]
+  rates                     5 bets     0 lost    +1.47c/$1  t=+3.92   $     0.74 on $     50.00   1.7/window  worst     +0.09  spread  1.00c  95% CI [0.74, 2.21]
+
+by price band:
+  92-94                   110 bets     1 lost    +6.54c/$1  t=+6.65   $    71.98 on $   1100.00   1.0/window  worst    -10.06  spread  1.00c
+  94-96                   183 bets    11 lost    -1.06c/$1  t=-0.57   $   -19.41 on $   1830.00   1.1/window  worst    -10.05  spread  1.00c
+  96-98                   287 bets     8 lost    +0.32c/$1  t=+0.32   $     9.28 on $   2870.00   1.1/window  worst    -10.03  spread  1.00c
+  98-100                  758 bets     8 lost    +0.41c/$1  t=+1.08   $    31.05 on $   7580.00   1.2/window  worst    -10.02  spread  1.00c
+
+by half (the second half is the holdout):
+  first                   669 bets    11 lost    +0.68c/$1  t=+1.34   $    45.53 on $   6690.00   1.2/window  worst    -10.05  spread  1.00c
+  second                  669 bets    17 lost    +0.71c/$1  t=+1.11   $    47.37 on $   6690.00   1.4/window  worst    -10.05  spread  1.00c
+
+  all skipped            1338 bets    28 lost    +0.69c/$1  t=+1.70   $    92.90 on $  13380.00   1.3/window  worst    -10.05  spread  1.00c  95% CI [-0.11, 1.49]
+  what the bot trades   30375 bets   911 lost    +0.82c/$1  t=+7.96   $  2486.00 on $ 303750.00   2.6/window  worst   -100.16  spread  0.66c  95% CI [0.62, 1.02] 
+
+=== the full live rule, both warning signs skipped, 0.4c over the ask, where live fills landed ===
+
+by series:
+  KXCRYPTOLEAD15M         711 bets     9 lost    +0.72c/$1  t=+1.65   $    51.00 on $   7110.00   1.2/window  worst    -10.04  spread  1.00c  95% CI [-0.13, 1.57]
+  KXEURUSD15M             147 bets     2 lost    +1.44c/$1  t=+1.43   $    21.12 on $   1470.00   1.0/window  worst    -10.04  spread  1.00c  95% CI [-0.53, 3.41]
+  KXUSDJPY15M             140 bets     3 lost    +0.85c/$1  t=+0.66   $    11.92 on $   1400.00   1.0/window  worst    -10.04  spread  1.00c  95% CI [-1.68, 3.38]
+  KXGBPUSD15M             129 bets     4 lost    -0.18c/$1  t=-0.11   $    -2.31 on $   1290.00   1.0/window  worst    -10.04  spread  1.00c  95% CI [-3.37, 3.01]
+  KXAUDUSD15M             123 bets     7 lost    -3.07c/$1  t=-1.41   $   -37.75 on $   1230.00   1.0/window  worst    -10.06  spread  1.00c  95% CI [-7.34, 1.2]
+  KXUSDCAD15M              80 bets     3 lost    -0.78c/$1  t=-0.35   $    -6.25 on $    800.00   1.0/window  worst    -10.04  spread  1.00c  95% CI [-5.16, 3.6]
+  KXBRENT15M                3 bets     0 lost    +5.56c/$1  t=+2.69   $     1.67 on $     30.00   1.0/window  worst     +0.14  spread  1.00c  95% CI [1.51, 9.61]
+  KX10YRRATE15M             2 bets     0 lost    +1.49c/$1  t=+1.51   $     0.30 on $     20.00   1.0/window  worst     +0.05  spread  1.00c  95% CI [-0.44, 3.42]
+  KX30YRRATE15M             2 bets     0 lost    +0.50c/$1  t=    -   $     0.10 on $     20.00   1.0/window  worst     +0.05  spread  1.00c  95% CI None
+  KX5YRRATE15M              1 bets     0 lost    +1.43c/$1  t=    -   $     0.14 on $     10.00   1.0/window  worst     +0.14  spread  1.00c  95% CI None
+
+by group:
+  coin race               711 bets     9 lost    +0.72c/$1  t=+1.65   $    51.00 on $   7110.00   1.2/window  worst    -10.04  spread  1.00c  95% CI [-0.13, 1.57]
+  fx                      416 bets     9 lost    +0.74c/$1  t=+0.99   $    30.73 on $   4160.00   1.3/window  worst    -10.04  spread  1.00c  95% CI [-0.72, 2.2]
+  other                   206 bets    10 lost    -2.06c/$1  t=-1.32   $   -42.34 on $   2060.00   1.1/window  worst    -10.04  spread  1.00c  95% CI [-5.11, 1.0]
+  rates                     5 bets     0 lost    +1.08c/$1  t=+2.77   $     0.54 on $     50.00   1.7/window  worst     +0.05  spread  1.00c  95% CI [0.32, 1.85]
+
+by price band:
+  92-94                   110 bets     1 lost    +6.08c/$1  t=+6.21   $    66.91 on $   1100.00   1.0/window  worst    -10.06  spread  1.00c
+  94-96                   183 bets    11 lost    -1.44c/$1  t=-0.77   $   -26.28 on $   1830.00   1.1/window  worst    -10.04  spread  1.00c
+  96-98                   287 bets     8 lost    -0.03c/$1  t=-0.03   $    -0.88 on $   2870.00   1.1/window  worst    -10.03  spread  1.00c
+  98-100                  758 bets     8 lost    +0.00c/$1  t=+0.01   $     0.18 on $   7580.00   1.2/window  worst    -10.02  spread  1.00c
+
+by half (the second half is the holdout):
+  first                   669 bets    11 lost    +0.28c/$1  t=+0.56   $    18.86 on $   6690.00   1.2/window  worst    -10.04  spread  1.00c
+  second                  669 bets    17 lost    +0.32c/$1  t=+0.50   $    21.07 on $   6690.00   1.4/window  worst    -10.04  spread  1.00c
+
+  all skipped            1338 bets    28 lost    +0.30c/$1  t=+0.74   $    39.94 on $  13380.00   1.3/window  worst    -10.04  spread  1.00c  95% CI [-0.49, 1.09]
+  what the bot trades   30375 bets   911 lost    +0.43c/$1  t=+4.16   $  1292.91 on $ 303750.00   2.6/window  worst   -100.20  spread  0.66c  95% CI [0.23, 0.63] 
+
+wrote skipped_edge.json

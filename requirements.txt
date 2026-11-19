@@ -1,0 +1,16 @@
+# The study package (kalshi_calibration), the same list as pyproject.toml's dependencies.
+httpx
+tenacity
+numpy
+pandas
+pyarrow
+pydantic>=2
+pyyaml
+scipy
+statsmodels
+matplotlib
+
+# Tests and coverage (pyproject.toml's dev extra).
+pytest
+hypothesis
+coverage
